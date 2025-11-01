@@ -390,7 +390,7 @@ function GeneralSettings() {
             label="Hero Section Image"
             imageType="hero"
             currentImage={settings?.ourChapterHeroImage}
-            aspectRatio={16 / 9}
+            aspectRatio={3 / 2}
             testId="button-upload-hero-image"
           />
 
@@ -398,7 +398,7 @@ function GeneralSettings() {
             label="Mission Section Image"
             imageType="mission"
             currentImage={settings?.ourChapterMissionImage}
-            aspectRatio={16 / 9}
+            aspectRatio={2 / 1}
             testId="button-upload-mission-image"
           />
 
@@ -406,7 +406,7 @@ function GeneralSettings() {
             label="Why Choose Us Section Image"
             imageType="whyChoose"
             currentImage={settings?.ourChapterWhyChooseImage}
-            aspectRatio={4 / 3}
+            aspectRatio={5 / 4}
             testId="button-upload-why-choose-image"
           />
 
@@ -414,7 +414,7 @@ function GeneralSettings() {
             label="Services Section Image"
             imageType="services"
             currentImage={settings?.ourChapterServicesImage}
-            aspectRatio={4 / 3}
+            aspectRatio={5 / 4}
             testId="button-upload-services-image"
           />
         </CardContent>

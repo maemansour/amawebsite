@@ -202,16 +202,25 @@ export function ImageUploadWithCrop({
 
           {originalImage && (
             <div className="space-y-4">
-              <div className="relative h-96 bg-muted rounded-lg overflow-hidden">
-                <Cropper
-                  image={originalImage}
-                  crop={crop}
-                  zoom={zoom}
-                  aspect={aspectRatio}
-                  onCropChange={setCrop}
-                  onZoomChange={setZoom}
-                  onCropComplete={onCropComplete}
-                />
+              <div 
+                className="relative bg-muted rounded-lg overflow-hidden"
+                style={{
+                  width: '100%',
+                  paddingBottom: `${(1 / aspectRatio) * 100}%`,
+                  position: 'relative'
+                }}
+              >
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+                  <Cropper
+                    image={originalImage}
+                    crop={crop}
+                    zoom={zoom}
+                    aspect={aspectRatio}
+                    onCropChange={setCrop}
+                    onZoomChange={setZoom}
+                    onCropComplete={onCropComplete}
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">

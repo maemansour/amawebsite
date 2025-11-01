@@ -124,7 +124,8 @@ Preferred communication style: Simple, everyday language.
   - `ImageUploadWithCrop` - Reusable upload component with cropper dialog
   - Drag-and-drop support, file validation, and preview
   - Canvas-based image cropping with adjustable zoom (1x-3x)
-  - Configurable aspect ratios (16:9 for hero/mission, 4:3 for why choose/services)
+  - Aspect ratios matching page display: 3:2 (hero), 2:1 (mission), 5:4 (why choose/services)
+  - Responsive aspect ratio container using CSS padding-bottom technique
   
 - **Server Infrastructure:**
   - `server/objectStorage.ts` - Object storage service with presigned URL generation
