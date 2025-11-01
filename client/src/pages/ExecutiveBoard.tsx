@@ -86,7 +86,7 @@ export default function ExecutiveBoard() {
                   Executive <span className="text-primary">Board</span> <Users className="inline-block w-10 h-10 md:w-12 md:h-12 text-primary" />
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground mb-8" data-testid="text-executive-description">
-                  Meet the dedicated leaders driving our chapter's success and maintaining our <span className="font-bold text-foreground">TOP 10</span> national recognition.
+                  Meet the dedicated leaders driving our chapter's success and maintaining our national recognition.
                 </p>
                 <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-6 py-3 rounded-lg border-2 border-primary/30 font-semibold">
                   <Award className="w-5 h-5" />
