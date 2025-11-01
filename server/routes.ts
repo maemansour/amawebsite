@@ -285,7 +285,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Extract the permanent object URL by removing query parameters
       const objectURL = uploadURL.split('?')[0];
       
-      res.json({ uploadURL, objectURL });
+      // Normalize to /objects/xxx format for storage
+      const normalizedPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
+      
+      res.json({ uploadURL, objectURL, objectPath: normalizedPath });
     } catch (error) {
       console.error("Error getting upload URL:", error);
       res.status(500).json({ error: "Failed to get upload URL" });

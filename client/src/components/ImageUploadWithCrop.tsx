@@ -111,9 +111,9 @@ export function ImageUploadWithCrop({
       // Create cropped image
       const croppedBlob = await createCroppedImage();
 
-      // Get presigned upload URL and permanent object URL
+      // Get presigned upload URL
       const uploadResponse = await apiRequest("POST", "/api/objects/upload", {});
-      const uploadData = await uploadResponse.json() as { uploadURL: string; objectURL: string };
+      const uploadData = await uploadResponse.json() as { uploadURL: string };
 
       // Upload to object storage using the temporary signed URL
       const putResponse = await fetch(uploadData.uploadURL, {
@@ -128,10 +128,10 @@ export function ImageUploadWithCrop({
         throw new Error("Upload failed");
       }
 
-      // Update settings with the permanent object URL
+      // Update settings - the server will normalize the URL to /objects/xxx format
       await apiRequest("PUT", "/api/chapter-images", {
         imageType,
-        imageURL: uploadData.objectURL,
+        imageURL: uploadData.uploadURL,
       });
 
       // Invalidate and refetch settings query to refresh the image

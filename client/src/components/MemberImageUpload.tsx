@@ -108,9 +108,9 @@ export function MemberImageUpload({
       // Create cropped image
       const croppedBlob = await createCroppedImage();
 
-      // Get presigned upload URL and permanent object URL
+      // Get presigned upload URL and permanent object path
       const uploadResponse = await apiRequest("POST", "/api/objects/upload", {});
-      const uploadData = await uploadResponse.json() as { uploadURL: string; objectURL: string };
+      const uploadData = await uploadResponse.json() as { uploadURL: string; objectPath: string };
 
       // Upload to object storage using the temporary signed URL
       const putResponse = await fetch(uploadData.uploadURL, {
@@ -125,8 +125,8 @@ export function MemberImageUpload({
         throw new Error("Upload failed");
       }
 
-      // Return the permanent object URL to parent component
-      onImageChange(uploadData.objectURL);
+      // Return the normalized object path to parent component
+      onImageChange(uploadData.objectPath);
 
       toast({
         title: "Image uploaded",
@@ -197,7 +197,7 @@ export function MemberImageUpload({
       </div>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Crop Profile Image</DialogTitle>
             <DialogDescription>
@@ -206,12 +206,12 @@ export function MemberImageUpload({
           </DialogHeader>
 
           {originalImage && (
-            <div className="space-y-4">
+            <div className="space-y-4 flex-1 min-h-0">
               <div 
                 className="relative bg-muted rounded-lg overflow-hidden"
                 style={{
                   width: '100%',
-                  paddingBottom: '100%',
+                  height: '400px',
                   position: 'relative'
                 }}
               >
