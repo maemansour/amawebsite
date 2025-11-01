@@ -1,6 +1,7 @@
 import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import session from "express-session";
+import { z } from "zod";
 import { storage } from "./storage";
 import { 
   insertSettingsSchema, 
@@ -411,6 +412,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting executive member:", error);
       res.status(500).json({ error: "Failed to delete member" });
+    }
+  });
+
+  app.put("/api/executive-members/reorder", requireAuth, async (req, res) => {
+    try {
+      // Validate the request body with Zod
+      const reorderSchema = z.object({
+        updates: z.array(
+          z.object({
+            id: z.string(),
+            displayOrder: z.number().int().min(0),
+          })
+        ),
+      });
+
+      const validatedData = reorderSchema.parse(req.body);
+      
+      await storage.bulkUpdateMemberDisplayOrder(validatedData.updates);
+      res.json({ message: "Display order updated successfully" });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid request data", details: error });
+      }
+      console.error("Error updating member display order:", error);
+      res.status(500).json({ error: "Failed to update display order" });
     }
   });
 

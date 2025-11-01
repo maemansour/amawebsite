@@ -9,8 +9,26 @@ import {
   Trash2,
   Plus,
   LogOut,
-  Users
+  Users,
+  GripVertical
 } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -859,6 +877,79 @@ function ManageHighlights() {
   );
 }
 
+// Sortable Member Card Component
+interface SortableMemberCardProps {
+  member: ExecutiveMember;
+  onEdit: (member: ExecutiveMember) => void;
+  onDelete: (id: string) => void;
+}
+
+function SortableMemberCard({ member, onEdit, onDelete }: SortableMemberCardProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: member.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <Card ref={setNodeRef} style={style} data-testid={`card-admin-member-${member.id}`}>
+      <CardHeader>
+        <div className="flex items-start gap-4">
+          <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing mt-1">
+            <GripVertical className="h-5 w-5 text-muted-foreground" />
+          </div>
+          <div className="w-16 h-16 rounded-full overflow-hidden bg-muted flex-shrink-0">
+            <img
+              src={member.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${member.name}`}
+              alt={member.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-lg truncate">{member.name}</CardTitle>
+            <CardDescription className="truncate">{member.title}</CardDescription>
+            <p className="text-xs text-muted-foreground mt-1">
+              {member.major} • {member.year}
+            </p>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {member.bio && (
+          <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{member.bio}</p>
+        )}
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onEdit(member)}
+            data-testid={`button-edit-member-${member.id}`}
+          >
+            Edit
+          </Button>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => onDelete(member.id)}
+            data-testid={`button-delete-member-${member.id}`}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 function ManageExecutiveMembers() {
   const { toast } = useToast();
   const [isAdding, setIsAdding] = useState(false);
@@ -875,10 +966,31 @@ function ManageExecutiveMembers() {
     team: "",
     displayOrder: 0,
   });
+  const [localMembers, setLocalMembers] = useState<ExecutiveMember[]>([]);
+  const [teamOrder, setTeamOrder] = useState<string[]>([]);
 
   const { data: members = [], isLoading } = useQuery<ExecutiveMember[]>({
     queryKey: ["/api/executive-members"],
   });
+
+  // Update local state when members data changes
+  useEffect(() => {
+    setLocalMembers(members);
+    
+    // Derive team order from the actual order members appear in (not alphabetically)
+    // This preserves the order saved in displayOrder values
+    const seenTeams = new Set<string>();
+    const teams: string[] = [];
+    
+    members.forEach((member) => {
+      if (!seenTeams.has(member.team)) {
+        seenTeams.add(member.team);
+        teams.push(member.team);
+      }
+    });
+    
+    setTeamOrder(teams);
+  }, [members]);
 
   const createMutation = useMutation({
     mutationFn: async (data: Partial<InsertExecutiveMember>) =>
@@ -963,6 +1075,32 @@ function ManageExecutiveMembers() {
     },
   });
 
+  const reorderMutation = useMutation({
+    mutationFn: async (updates: Array<{ id: string; displayOrder: number }>) =>
+      apiRequest("PUT", "/api/executive-members/reorder", { updates }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/executive-members"] });
+      toast({
+        title: "Order updated",
+        description: "Member order has been saved successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update order. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingMember) {
@@ -1006,7 +1144,72 @@ function ManageExecutiveMembers() {
     });
   };
 
-  const groupedMembers = members.reduce((acc, member) => {
+  const handleMemberDragEnd = (event: DragEndEvent, team: string) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    const teamMembers = groupedMembers[team];
+    const oldIndex = teamMembers.findIndex((m) => m.id === active.id);
+    const newIndex = teamMembers.findIndex((m) => m.id === over.id);
+
+    const reorderedMembers = arrayMove(teamMembers, oldIndex, newIndex);
+    
+    // Update display order for all members in this team
+    const updates = reorderedMembers.map((member, index) => ({
+      id: member.id,
+      displayOrder: index,
+    }));
+
+    // Optimistically update local state
+    setLocalMembers((prev) => {
+      const otherMembers = prev.filter((m) => m.team !== team);
+      return [...otherMembers, ...reorderedMembers.map((m, i) => ({ ...m, displayOrder: i }))];
+    });
+
+    reorderMutation.mutate(updates);
+  };
+
+  const handleTeamDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = teamOrder.indexOf(active.id as string);
+    const newIndex = teamOrder.indexOf(over.id as string);
+
+    const newTeamOrder = arrayMove(teamOrder, oldIndex, newIndex);
+    setTeamOrder(newTeamOrder);
+
+    // Update displayOrder for all members to reflect new team ordering
+    // Members from team 0 get displayOrder 0-N, team 1 gets N+1-M, etc.
+    const updates: Array<{ id: string; displayOrder: number }> = [];
+    let currentOrder = 0;
+
+    newTeamOrder.forEach((team) => {
+      const teamMembers = groupedMembers[team];
+      if (teamMembers) {
+        teamMembers.forEach((member) => {
+          updates.push({
+            id: member.id,
+            displayOrder: currentOrder++,
+          });
+        });
+      }
+    });
+
+    // Optimistically update local state
+    setLocalMembers((prev) =>
+      prev.map((member) => {
+        const update = updates.find((u) => u.id === member.id);
+        return update ? { ...member, displayOrder: update.displayOrder } : member;
+      })
+    );
+
+    reorderMutation.mutate(updates);
+  };
+
+  const groupedMembers = localMembers.reduce((acc, member) => {
     if (!acc[member.team]) {
       acc[member.team] = [];
     }
@@ -1014,7 +1217,10 @@ function ManageExecutiveMembers() {
     return acc;
   }, {} as Record<string, ExecutiveMember[]>);
 
-  const teams = Object.keys(groupedMembers).sort();
+  // Sort members within each team by displayOrder
+  Object.keys(groupedMembers).forEach((team) => {
+    groupedMembers[team].sort((a, b) => a.displayOrder - b.displayOrder);
+  });
 
   if (isLoading) {
     return <div className="text-center py-12">Loading...</div>;
@@ -1182,69 +1388,60 @@ function ManageExecutiveMembers() {
         </Card>
       )}
 
-      {members.length === 0 ? (
+      {localMembers.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground">No executive board members yet. Add your first member above.</p>
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-8">
-          {teams.map((team) => (
-            <div key={team}>
-              <h3 className="text-xl font-bold mb-4" data-testid={`heading-team-${team.toLowerCase().replace(/\s+/g, '-')}`}>
-                {team}
-              </h3>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {groupedMembers[team].map((member) => (
-                  <Card key={member.id} data-testid={`card-admin-member-${member.id}`}>
-                    <CardHeader>
-                      <div className="flex items-start gap-4">
-                        <div className="w-16 h-16 rounded-full overflow-hidden bg-muted flex-shrink-0">
-                          <img
-                            src={member.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${member.name}`}
-                            alt={member.name}
-                            className="w-full h-full object-cover"
-                          />
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleTeamDragEnd}
+        >
+          <SortableContext items={teamOrder} strategy={verticalListSortingStrategy}>
+            <div className="space-y-8">
+              {teamOrder.map((team) => {
+                if (!groupedMembers[team]) return null;
+                
+                return (
+                  <div key={team}>
+                    <div className="flex items-center gap-2 mb-4">
+                      <h3 className="text-xl font-bold" data-testid={`heading-team-${team.toLowerCase().replace(/\s+/g, '-')}`}>
+                        {team}
+                      </h3>
+                      <span className="text-sm text-muted-foreground">
+                        (Drag to reorder teams)
+                      </span>
+                    </div>
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={(event) => handleMemberDragEnd(event, team)}
+                    >
+                      <SortableContext
+                        items={groupedMembers[team].map((m) => m.id)}
+                        strategy={verticalListSortingStrategy}
+                      >
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {groupedMembers[team].map((member) => (
+                            <SortableMemberCard
+                              key={member.id}
+                              member={member}
+                              onEdit={startEdit}
+                              onDelete={(id) => deleteMutation.mutate(id)}
+                            />
+                          ))}
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <CardTitle className="text-lg truncate">{member.name}</CardTitle>
-                          <CardDescription className="truncate">{member.title}</CardDescription>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {member.major} • {member.year}
-                          </p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      {member.bio && (
-                        <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{member.bio}</p>
-                      )}
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => startEdit(member)}
-                          data-testid={`button-edit-member-${member.id}`}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => deleteMutation.mutate(member.id)}
-                          data-testid={`button-delete-member-${member.id}`}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                      </SortableContext>
+                    </DndContext>
+                  </div>
+                );
+              })}
             </div>
-          ))}
-        </div>
+          </SortableContext>
+        </DndContext>
       )}
     </div>
   );

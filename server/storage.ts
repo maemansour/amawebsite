@@ -58,6 +58,7 @@ export interface IStorage {
   createExecutiveMember(member: InsertExecutiveMember): Promise<ExecutiveMember>;
   updateExecutiveMember(id: string, member: Partial<InsertExecutiveMember>): Promise<ExecutiveMember | undefined>;
   deleteExecutiveMember(id: string): Promise<boolean>;
+  bulkUpdateMemberDisplayOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -523,6 +524,15 @@ export class DbStorage implements IStorage {
   async deleteExecutiveMember(id: string): Promise<boolean> {
     const result = await this.db.delete(executiveMembers).where(eq(executiveMembers.id, id)).returning();
     return result.length > 0;
+  }
+
+  async bulkUpdateMemberDisplayOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void> {
+    // Execute all updates in a transaction for consistency
+    for (const update of updates) {
+      await this.db.update(executiveMembers)
+        .set({ displayOrder: update.displayOrder })
+        .where(eq(executiveMembers.id, update.id));
+    }
   }
 }
 
