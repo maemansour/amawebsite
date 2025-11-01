@@ -74,31 +74,70 @@ export default function OurChapter() {
           </div>
         </section>
 
-        {/* Mission & Vision */}
+        {/* Mission */}
         <section className="py-16 md:py-20" data-testid="section-mission">
           <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8">
-            <div className="text-center mb-12">
+            <div className="mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-6" data-testid="heading-mission">
                 Our Mission
               </h2>
               <p className="text-lg text-muted-foreground" data-testid="text-mission-statement">
-                To provide SDSU students with premier opportunities for professional development, networking, and hands-on marketing experience while fostering a vibrant community of future marketing leaders.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6" data-testid="heading-vision">
-                Our Vision
-              </h2>
-              <p className="text-lg text-muted-foreground" data-testid="text-vision-statement">
-                To be the premier collegiate marketing organization at SDSU, recognized for developing tomorrow's marketing innovators and maintaining our status as a national TOP 10 chapter.
+                The American Marketing Association at San Diego State University is dedicated to providing students with professional development opportunities, networking experiences, and real-world marketing knowledge. We strive to bridge the gap between academic learning and industry practice, preparing our members for successful careers in marketing and business.
               </p>
             </div>
           </div>
         </section>
 
+        {/* What We Offer */}
+        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-what-we-offer">
+          <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12" data-testid="heading-what-we-offer">
+              What We Offer
+            </h2>
+            
+            <div className="grid md:grid-cols-2 gap-x-12 gap-y-4 max-w-4xl mx-auto">
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3" data-testid="offer-0">
+                  <span className="text-primary mt-1">•</span>
+                  <span className="text-lg">Weekly professional development meetings</span>
+                </li>
+                <li className="flex items-start gap-3" data-testid="offer-1">
+                  <span className="text-primary mt-1">•</span>
+                  <span className="text-lg">Networking events with industry professionals</span>
+                </li>
+                <li className="flex items-start gap-3" data-testid="offer-2">
+                  <span className="text-primary mt-1">•</span>
+                  <span className="text-lg">Marketing competitions and case study challenges</span>
+                </li>
+                <li className="flex items-start gap-3" data-testid="offer-3">
+                  <span className="text-primary mt-1">•</span>
+                  <span className="text-lg">Agency tours and company visits</span>
+                </li>
+              </ul>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3" data-testid="offer-4">
+                  <span className="text-primary mt-1">•</span>
+                  <span className="text-lg">Resume workshops and interview preparation</span>
+                </li>
+                <li className="flex items-start gap-3" data-testid="offer-5">
+                  <span className="text-primary mt-1">•</span>
+                  <span className="text-lg">Social events and team building activities</span>
+                </li>
+                <li className="flex items-start gap-3" data-testid="offer-6">
+                  <span className="text-primary mt-1">•</span>
+                  <span className="text-lg">Leadership development opportunities</span>
+                </li>
+                <li className="flex items-start gap-3" data-testid="offer-7">
+                  <span className="text-primary mt-1">•</span>
+                  <span className="text-lg">Access to exclusive job postings</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
         {/* Achievements */}
-        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-achievements">
+        <section className="py-16 md:py-20" data-testid="section-achievements">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12" data-testid="heading-achievements">
               Chapter Achievements
@@ -133,7 +172,7 @@ export default function OurChapter() {
         </section>
 
         {/* Our Values */}
-        <section className="py-16 md:py-20" data-testid="section-values">
+        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-values">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12" data-testid="heading-values">
               Our Values
@@ -162,7 +201,7 @@ export default function OurChapter() {
         </section>
 
         {/* Chapter History */}
-        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-history">
+        <section className="py-16 md:py-20" data-testid="section-history">
           <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12" data-testid="heading-history">
               Chapter History
