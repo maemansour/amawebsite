@@ -3,7 +3,6 @@ import { Hero } from "@/components/Hero";
 import { HighlightsCarousel } from "@/components/HighlightsCarousel";
 import { WeeklyMeetings } from "@/components/WeeklyMeetings";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
-import { Membership } from "@/components/Membership";
 import { Newsletter } from "@/components/Newsletter";
 import { Footer } from "@/components/Footer";
 import { type Settings, type Highlight, type Event } from "@shared/schema";
@@ -63,7 +62,6 @@ export default function Home() {
         <UpcomingEvents events={events} />
       )}
 
-      <Membership />
       <Newsletter onSubscribe={handleNewsletterSubscribe} />
       <Footer settings={settings} />
     </div>
