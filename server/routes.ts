@@ -212,9 +212,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Username and password required" });
       }
       
-      const user = await storage.getUserByUsername(username);
+      const isValid = await storage.verifyPassword(username, password);
       
-      if (!user || user.password !== password) {
+      if (!isValid) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      
+      const user = await storage.getUserByUsername(username);
+      if (!user) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
       

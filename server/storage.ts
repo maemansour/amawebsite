@@ -8,9 +8,18 @@ import {
   type Highlight,
   type InsertHighlight,
   type NewsletterSubscription,
-  type InsertNewsletterSubscription
+  type InsertNewsletterSubscription,
+  users,
+  settings as settingsTable,
+  events,
+  highlights,
+  newsletterSubscriptions
 } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
+import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 export interface IStorage {
   // User management
@@ -269,4 +278,214 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database storage using PostgreSQL
+export class DbStorage implements IStorage {
+  private db;
+
+  constructor() {
+    const sql = neon(process.env.DATABASE_URL!);
+    this.db = drizzle(sql);
+  }
+
+  async initialize() {
+    // Check if admin user exists, if not create it
+    const adminUser = await this.getUserByUsername("admin");
+    if (!adminUser) {
+      // createUser() will hash the password, so pass plaintext here
+      await this.createUser({
+        username: "admin",
+        password: "admin123"
+      });
+    }
+
+    // Initialize default settings if they don't exist
+    const existingSettings = await this.getSettings();
+    if (!existingSettings) {
+      await this.db.insert(settingsTable).values({
+        heroDescription: "Aiming to educate and empower young professionals looking to break into the marketing, sales, and advertising industries. At SDSU AMA we accomplish this through weekly meetings with industry professional guest speakers and elite marketing company and agency tours. We promote growth and learning through case studies, workshops, and events. Open to SDSU students of all majors and invites you to connect with our fAMAly!",
+        memberCount: 280,
+        meetingDay: "Tuesday",
+        meetingTime: "5:00 PM",
+        meetingLocation: "On Campus",
+        meetingRoom: "Varies",
+        meetingSemester: "Fall & Spring Semesters",
+        joinLink: "https://docs.google.com/forms/d/e/1FAIpQLSe...",
+        instagramLink: "https://www.instagram.com/sdsuama/",
+        instagramUsername: "@sdsuama",
+        instagramFollowers: "2,774 followers",
+        linkedinLink: "https://www.linkedin.com/company/sdsuama",
+        linkedinUsername: "AMA San Diego State",
+        tiktokLink: "https://www.tiktok.com/@sdsuama",
+        tiktokUsername: "@sdsuama",
+        spotifyLink: "https://open.spotify.com/show/2LsTf0B9ohPZ",
+        email: "membership.sdsuama@gmail.com"
+      });
+
+      // Add sample events
+      await this.db.insert(events).values([
+        {
+          title: "GBM #4 with Phil Hahn",
+          description: "Join us for our fourth General Body Meeting featuring Phil Hahn, a marketing industry expert who will share insights on career development and industry trends.",
+          date: "2025-11-15",
+          time: "5:00 PM",
+          location: "Hillel of San Diego",
+          category: "Weekly Meeting"
+        },
+        {
+          title: "Marketing Week: Day 1",
+          description: "Polish Your Presence: Resume & LinkedIn Workshop with industry speakers. Learn how to create a compelling professional presence.",
+          date: "2025-11-20",
+          time: "9:00 AM",
+          location: "TBD",
+          category: "Professional Development"
+        },
+        {
+          title: "Marketing Week: Day 2",
+          description: "Industry Insights: Personal Branding. Discover how to build and maintain your personal brand in the digital age.",
+          date: "2025-11-21",
+          time: "2:00 PM",
+          location: "TBD",
+          category: "Professional Development"
+        },
+        {
+          title: "Marketing Week: Day 3",
+          description: "Ace the Interview: Mock Interviews + Tips. Practice your interviewing skills with marketing professionals and get valuable feedback.",
+          date: "2025-11-22",
+          time: "4:00 PM",
+          location: "TBD",
+          category: "Professional Development"
+        }
+      ]);
+
+      // Add sample highlights
+      await this.db.insert(highlights).values([
+        {
+          title: "New Executive Board",
+          description: "Meet the new leadership team for the 2024-2025 academic year.",
+          category: "Announcement",
+          imageUrl: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&h=800&fit=crop"
+        },
+        {
+          title: "AMA Exec '25 Photos",
+          description: "Check out photos from our latest executive board photoshoot and team building event.",
+          category: "Event",
+          imageUrl: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&h=800&fit=crop"
+        }
+      ]);
+    }
+  }
+
+  // User methods
+  async getUser(id: string): Promise<User | undefined> {
+    const result = await this.db.select().from(users).where(eq(users.id, id));
+    return result[0];
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const result = await this.db.select().from(users).where(eq(users.username, username));
+    return result[0];
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    // Hash password before storing
+    const hashedPassword = await bcrypt.hash(insertUser.password, 10);
+    const result = await this.db.insert(users).values({
+      ...insertUser,
+      password: hashedPassword
+    }).returning();
+    return result[0];
+  }
+
+  async verifyPassword(username: string, password: string): Promise<boolean> {
+    const user = await this.getUserByUsername(username);
+    if (!user) return false;
+    return await bcrypt.compare(password, user.password);
+  }
+
+  // Settings methods
+  async getSettings(): Promise<Settings | undefined> {
+    const result = await this.db.select().from(settingsTable).limit(1);
+    return result[0];
+  }
+
+  async updateSettings(settings: InsertSettings): Promise<Settings> {
+    const existing = await this.getSettings();
+    if (existing) {
+      const result = await this.db
+        .update(settingsTable)
+        .set(settings)
+        .where(eq(settingsTable.id, existing.id))
+        .returning();
+      return result[0];
+    }
+    const result = await this.db.insert(settingsTable).values(settings).returning();
+    return result[0];
+  }
+
+  // Events methods
+  async getAllEvents(): Promise<Event[]> {
+    return await this.db.select().from(events);
+  }
+
+  async getEvent(id: string): Promise<Event | undefined> {
+    const result = await this.db.select().from(events).where(eq(events.id, id));
+    return result[0];
+  }
+
+  async createEvent(event: InsertEvent): Promise<Event> {
+    const result = await this.db.insert(events).values(event).returning();
+    return result[0];
+  }
+
+  async updateEvent(id: string, event: Partial<InsertEvent>): Promise<Event | undefined> {
+    const result = await this.db
+      .update(events)
+      .set(event)
+      .where(eq(events.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteEvent(id: string): Promise<boolean> {
+    const result = await this.db.delete(events).where(eq(events.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Highlights methods
+  async getAllHighlights(): Promise<Highlight[]> {
+    return await this.db.select().from(highlights);
+  }
+
+  async getHighlight(id: string): Promise<Highlight | undefined> {
+    const result = await this.db.select().from(highlights).where(eq(highlights.id, id));
+    return result[0];
+  }
+
+  async createHighlight(highlight: InsertHighlight): Promise<Highlight> {
+    const result = await this.db.insert(highlights).values(highlight).returning();
+    return result[0];
+  }
+
+  async deleteHighlight(id: string): Promise<boolean> {
+    const result = await this.db.delete(highlights).where(eq(highlights.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Newsletter subscription methods
+  async getAllNewsletterSubscriptions(): Promise<NewsletterSubscription[]> {
+    return await this.db.select().from(newsletterSubscriptions);
+  }
+
+  async getNewsletterSubscription(email: string): Promise<NewsletterSubscription | undefined> {
+    const result = await this.db.select().from(newsletterSubscriptions).where(eq(newsletterSubscriptions.email, email));
+    return result[0];
+  }
+
+  async createNewsletterSubscription(subscription: InsertNewsletterSubscription): Promise<NewsletterSubscription> {
+    const result = await this.db.insert(newsletterSubscriptions).values(subscription).returning();
+    return result[0];
+  }
+}
+
+// Use database storage
+export const storage = new DbStorage();
