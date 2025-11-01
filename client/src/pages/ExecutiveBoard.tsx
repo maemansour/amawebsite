@@ -2,6 +2,7 @@ import { Users, Mail, Linkedin } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ScrollReveal } from "@/components/ScrollReveal";
 
 export default function ExecutiveBoard() {
   const executiveMembers = [
@@ -73,45 +74,52 @@ export default function ExecutiveBoard() {
         {/* Header */}
         <section className="py-16 md:py-20 bg-gradient-to-br from-primary/10 to-primary/5" data-testid="section-executive-header">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <div className="text-center">
-              <div className="inline-block mb-4">
-                <Users className="w-16 h-16 text-primary mx-auto" />
+            <ScrollReveal direction="up">
+              <div className="text-center">
+                <div className="inline-block mb-4">
+                  <Users className="w-16 h-16 text-primary mx-auto" />
+                </div>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4" data-testid="heading-executive-board">
+                  Executive Board
+                </h1>
+                <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-executive-description">
+                  Meet our leadership team and executive board members.
+                </p>
               </div>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4" data-testid="heading-executive-board">
-                Executive Board
-              </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-executive-description">
-                Meet our leadership team and executive board members.
-              </p>
-            </div>
+            </ScrollReveal>
           </div>
         </section>
 
         {/* Leadership Message */}
         <section className="py-16 md:py-20" data-testid="section-leadership-message">
           <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6" data-testid="heading-leadership-message">
-              Leading with Purpose
-            </h2>
-            <p className="text-lg text-muted-foreground mb-4" data-testid="text-leadership-intro">
-              Our executive board is dedicated to maintaining AMA SDSU's status as a <span className="font-bold text-primary">#2 TOP 10 Chapter</span> while creating meaningful opportunities for professional growth and development.
-            </p>
-            <p className="text-lg text-muted-foreground" data-testid="text-leadership-commitment">
-              We are committed to fostering a vibrant community where students can build their marketing careers, develop leadership skills, and create lasting connections.
-            </p>
+            <ScrollReveal direction="up">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6" data-testid="heading-leadership-message">
+                Leading with Purpose
+              </h2>
+              <p className="text-lg text-muted-foreground mb-4" data-testid="text-leadership-intro">
+                Our executive board is dedicated to maintaining AMA SDSU's status as a <span className="font-bold text-primary">#2 TOP 10 Chapter</span> while creating meaningful opportunities for professional growth and development.
+              </p>
+              <p className="text-lg text-muted-foreground" data-testid="text-leadership-commitment">
+                We are committed to fostering a vibrant community where students can build their marketing careers, develop leadership skills, and create lasting connections.
+              </p>
+            </ScrollReveal>
           </div>
         </section>
 
         {/* Executive Team Grid */}
         <section className="py-16 md:py-20 bg-muted/30" data-testid="section-executive-team">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12" data-testid="heading-team-members">
-              Our Team
-            </h2>
+            <ScrollReveal direction="up">
+              <h2 className="text-3xl md:text-4xl font-bold text-center mb-12" data-testid="heading-team-members">
+                Our Team
+              </h2>
+            </ScrollReveal>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {executiveMembers.map((member, index) => (
-                <Card key={index} className="p-6" data-testid={`card-executive-${index}`}>
+                <ScrollReveal key={index} delay={index * 0.1}>
+                  <Card className="p-6" data-testid={`card-executive-${index}`}>
                   <div className="flex flex-col items-center text-center">
                     <div className="w-32 h-32 rounded-full overflow-hidden mb-4 bg-muted">
                       <img 
@@ -160,6 +168,7 @@ export default function ExecutiveBoard() {
                     </div>
                   </div>
                 </Card>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -168,6 +177,7 @@ export default function ExecutiveBoard() {
         {/* Join the Team CTA */}
         <section className="py-16 md:py-20" data-testid="section-join-cta">
           <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
+            <ScrollReveal direction="up">
             <h2 className="text-3xl md:text-4xl font-bold mb-6" data-testid="heading-join-team">
               Interested in Leadership?
             </h2>
@@ -177,6 +187,7 @@ export default function ExecutiveBoard() {
             <Button size="lg" asChild data-testid="button-get-involved">
               <a href="/membership">Learn About Membership</a>
             </Button>
+            </ScrollReveal>
           </div>
         </section>
       </div>
