@@ -15,10 +15,11 @@ Preferred communication style: Simple, everyday language.
 - **State Management:** TanStack Query for server state; component-level state with hooks for client state.
 - **Key Design Decisions:** Component aliasing, clear separation of public and admin interfaces, toast notifications for user feedback.
 - **Features:**
-    - Professional image upload system for "Our Chapter" page with built-in cropping (`react-easy-crop`) and secure admin-only access.
+    - Professional image upload system with built-in cropping (`react-easy-crop`) and secure admin-only access for both site images and member profiles.
+    - Executive Board member management with full CRUD operations, team-based organization, profile image uploads with circular cropping, and dynamic public display.
     - Scroll-triggered animations using `framer-motion` for enhanced user experience.
     - Comprehensive navigation structure with a three-tiered dropdown system, mobile-responsive, covering "About Us," "Get Involved," and "Alumni" sections.
-    - Dedicated pages for Contact (with form, social links, FAQs), Membership (tiers, benefits, how to join), Resources (national AMA links), Alumni (spotlight, mentorship), and individual Committee pages.
+    - Dedicated pages for Contact (with form, social links, FAQs), Membership (tiers, benefits, how to join), Resources (national AMA links), Alumni (spotlight, mentorship), Executive Board (team-organized member display), and individual Committee pages.
     - Homepage enhancements including "Our Chapter" section, "Chapter History & Impact," "Partners & Collaborations," "Weekly Meetings," and "Committees" grid.
 
 ### Backend
@@ -26,8 +27,11 @@ Preferred communication style: Simple, everyday language.
 - **API Design:** RESTful API with endpoints for settings, events, highlights, newsletter, admin, and object storage.
 - **Authentication:** Session-based authentication using `express-session` with HTTP-only cookies; `requireAuth` middleware for admin routes.
 - **Database:** Drizzle ORM with PostgreSQL dialect (configured for Neon Database).
-- **Schema:** Tables for `settings` (site configuration, images), `events`, `highlights`, `newsletter_subscriptions`, and `users` (admin accounts with bcrypt hashed passwords).
+- **Schema:** Tables for `settings` (site configuration, images), `events`, `highlights`, `newsletter_subscriptions`, `users` (admin accounts with bcrypt hashed passwords), and `executiveMembers` (board members with team organization).
 - **Key Design Decisions:** Middleware for request logging, environment-specific configurations, Drizzle ORM with Zod validation.
+- **Image Upload System:** Two dedicated upload components:
+  - `ImageUploadWithCrop`: For site-wide images (hero sections, etc.) with configurable aspect ratios, uploads via `/api/objects/upload`, normalizes URLs via `/api/chapter-images`.
+  - `MemberImageUpload`: For executive member profile pictures with 1:1 circular crop, stores normalized `/objects/xxx` paths directly in database.
 
 ## External Dependencies
 - **Database:** Neon Database (PostgreSQL-compatible serverless) via `@neondatabase/serverless`.
