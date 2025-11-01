@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trophy } from "lucide-react";
+import { Trophy, Users, Calendar, Award } from "lucide-react";
 import { type Settings } from "@shared/schema";
 
 interface HeroProps {
@@ -23,13 +23,22 @@ export function Hero({ settings }: HeroProps) {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="space-y-8">
-            <Badge 
-              className="bg-gold text-primary-foreground border-none font-semibold text-sm px-4 py-1 flex items-center gap-2 w-fit"
-              data-testid="badge-top-chapter"
-            >
-              <Trophy className="w-4 h-4" />
-              TOP 10 Chapter
-            </Badge>
+            <div className="flex flex-wrap gap-3">
+              <Badge 
+                className="bg-gold text-primary-foreground border-none font-semibold text-sm px-4 py-1 flex items-center gap-2 w-fit"
+                data-testid="badge-top-chapter"
+              >
+                <Trophy className="w-4 h-4" />
+                TOP 10 Chapter
+              </Badge>
+              <Badge 
+                className="bg-gold text-primary-foreground border-none font-semibold text-sm px-4 py-1 flex items-center gap-2 w-fit"
+                data-testid="badge-rso"
+              >
+                <Award className="w-4 h-4" />
+                #1 RSO
+              </Badge>
+            </div>
 
             <div className="space-y-4">
               <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl leading-tight" data-testid="text-hero-title">
@@ -43,6 +52,31 @@ export function Hero({ settings }: HeroProps) {
             <p className="text-base md:text-lg leading-relaxed text-primary-foreground/90 max-w-xl" data-testid="text-hero-description">
               {heroDescription}
             </p>
+
+            {/* Stats Section */}
+            <div className="flex flex-wrap gap-8 md:gap-12">
+              <div className="flex flex-col items-center gap-2" data-testid="stat-members">
+                <Users className="w-8 h-8 text-primary-foreground" />
+                <div className="text-center">
+                  <div className="text-3xl font-heading font-bold text-primary-foreground">280</div>
+                  <div className="text-sm font-medium text-primary-foreground/80">Members</div>
+                </div>
+              </div>
+              <div className="flex flex-col items-center gap-2" data-testid="stat-meetings">
+                <Calendar className="w-8 h-8 text-primary-foreground" />
+                <div className="text-center">
+                  <div className="text-3xl font-heading font-bold text-primary-foreground">Weekly</div>
+                  <div className="text-sm font-medium text-primary-foreground/80">Meetings</div>
+                </div>
+              </div>
+              <div className="flex flex-col items-center gap-2" data-testid="stat-top10">
+                <Trophy className="w-8 h-8 text-primary-foreground" />
+                <div className="text-center">
+                  <div className="text-3xl font-heading font-bold text-primary-foreground">Top 10</div>
+                  <div className="text-sm font-medium text-primary-foreground/80">Nationally</div>
+                </div>
+              </div>
+            </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
