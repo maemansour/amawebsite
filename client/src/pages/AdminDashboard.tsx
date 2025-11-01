@@ -10,7 +10,9 @@ import {
   Plus,
   LogOut,
   Users,
-  GripVertical
+  GripVertical,
+  Handshake,
+  Pencil
 } from "lucide-react";
 import {
   DndContext,
