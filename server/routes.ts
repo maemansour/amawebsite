@@ -317,6 +317,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         mission: "ourChapterMissionImage",
         whyChoose: "ourChapterWhyChooseImage",
         services: "ourChapterServicesImage",
+        family: "familyImage",
       };
 
       const fieldName = fieldMap[imageType];
