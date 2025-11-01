@@ -1,235 +1,258 @@
-import { Award, Target, Users, Heart, TrendingUp } from "lucide-react";
+import { Award, Target, Users, Heart, TrendingUp, Building2, Lightbulb, Users as UsersIcon, Trophy } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 
 export default function OurChapter() {
-  const values = [
+  const offerings = [
     {
-      icon: Target,
-      title: "Professional Excellence",
-      description: "We strive for the highest standards in everything we do, from events to member development."
-    },
-    {
-      icon: Heart,
-      title: "Community First",
-      description: "Building a supportive network where members grow together and lift each other up."
-    },
-    {
-      icon: Users,
-      title: "Inclusive Environment",
-      description: "Welcoming students from all backgrounds and majors to explore marketing careers."
+      icon: UsersIcon,
+      title: "Professional Development",
+      items: ["Chapter meetings", "Industry workshops", "Skill building"]
     },
     {
       icon: TrendingUp,
-      title: "Continuous Growth",
-      description: "Encouraging personal and professional development through hands-on experiences."
+      title: "Networking",
+      items: ["Industry professionals", "Alumni connections", "Peer relationships"]
+    },
+    {
+      icon: Trophy,
+      title: "Competitions",
+      items: ["Case studies", "Marketing challenges", "National contests"]
+    },
+    {
+      icon: Heart,
+      title: "Community",
+      items: ["Social events", "Committees", "Leadership roles"]
+    }
+  ];
+
+  const whyChooseUs = [
+    {
+      icon: Lightbulb,
+      title: "Creativity Unleashed",
+      description: "Creativity is our core, driving fresh, impactful campaigns that stand out."
+    },
+    {
+      icon: Target,
+      title: "Tailored Solutions",
+      description: "We craft personalized strategies that match each client's unique needs."
+    },
+    {
+      icon: TrendingUp,
+      title: "Stay Ahead",
+      description: "We track trends and technologies to keep clients ahead in a fast-moving market."
+    },
+    {
+      icon: Users,
+      title: "Collaboration",
+      description: "We thrive on teamwork, welcoming clients into our supportive community."
     }
   ];
 
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-1">
-        {/* Header */}
-        <section className="py-16 md:py-20 bg-gradient-to-br from-primary/10 to-primary/5" data-testid="section-chapter-header">
+        {/* Hero Section */}
+        <section className="py-12 md:py-16" data-testid="section-hero">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <div className="text-center">
-              <div className="inline-flex items-center gap-2 bg-primary/20 text-primary px-4 py-2 rounded-full mb-6 font-medium">
-                <Award className="w-5 h-5" />
-                <span data-testid="text-top-ten-badge">TOP 10 Chapter</span>
+            <div className="grid lg:grid-cols-2 gap-12 items-start">
+              {/* Left Column */}
+              <div>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6" data-testid="heading-our-chapter">
+                  Our <span className="text-accent">Chapter</span> <Building2 className="inline-block w-10 h-10 md:w-12 md:h-12" />
+                </h1>
+                <p className="text-lg md:text-xl text-muted-foreground mb-8" data-testid="text-chapter-description">
+                  Discover what makes AMA SDSU a <span className="font-bold text-foreground">TOP 10</span> chapter and leader in professional development.
+                </p>
+                <div className="inline-flex items-center gap-2 bg-accent/20 text-accent-foreground px-6 py-3 rounded-lg border-2 border-accent/30 font-semibold">
+                  <Trophy className="w-5 h-5" />
+                  <span data-testid="text-top-ten-badge">TOP 10 Chapter Recognition</span>
+                  <Trophy className="w-5 h-5" />
+                </div>
               </div>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4" data-testid="heading-our-chapter">
-                Our Chapter
-              </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-chapter-description">
-                Learn about our TOP 10 chapter and discover what makes AMA SDSU a leader in professional development.
-              </p>
+
+              {/* Right Column */}
+              <div className="relative">
+                <div className="rounded-2xl overflow-hidden shadow-2xl">
+                  <img 
+                    src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop" 
+                    alt="GBM with Industry Professionals"
+                    className="w-full h-[400px] object-cover"
+                    data-testid="img-hero"
+                  />
+                </div>
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white dark:bg-card px-6 py-3 rounded-lg shadow-lg border-2">
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <Users className="w-4 h-4 text-primary" />
+                    <span data-testid="text-hero-caption">GBM w/ Industry Professionals</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Mission */}
+        {/* Our Mission */}
         <section className="py-16 md:py-20" data-testid="section-mission">
-          <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8">
-            <Card className="p-8 md:p-10 border-l-4 border-l-primary bg-gradient-to-br from-primary/5 to-transparent">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary" data-testid="heading-mission">
-                Our Mission
-              </h2>
-              <p className="text-lg text-muted-foreground leading-relaxed" data-testid="text-mission-statement">
-                The American Marketing Association at San Diego State University is dedicated to providing students with professional development opportunities, networking experiences, and real-world marketing knowledge. We strive to bridge the gap between academic learning and industry practice, preparing our members for successful careers in marketing and business.
-              </p>
-            </Card>
+          <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-2 gap-8 items-center">
+              {/* Mission Card */}
+              <Card className="bg-primary text-primary-foreground p-8 md:p-10 rounded-2xl">
+                <div className="flex items-center gap-3 mb-6">
+                  <Target className="w-8 h-8" />
+                  <h2 className="text-3xl md:text-4xl font-bold" data-testid="heading-mission">
+                    Our Mission
+                  </h2>
+                </div>
+                <p className="text-lg leading-relaxed mb-4 text-primary-foreground/90" data-testid="text-mission-statement">
+                  The American Marketing Association at San Diego State University is dedicated to providing students with professional development opportunities, networking experiences, and real-world marketing knowledge.
+                </p>
+                <p className="text-lg leading-relaxed text-primary-foreground/90" data-testid="text-mission-statement-2">
+                  We strive to bridge the gap between academic learning and industry practice, preparing our members for successful careers in marketing and business.
+                </p>
+              </Card>
+
+              {/* Images */}
+              <div className="space-y-4">
+                <div className="rounded-2xl overflow-hidden shadow-lg">
+                  <img 
+                    src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=400&fit=crop" 
+                    alt="AMA SDSU Team"
+                    className="w-full h-[280px] object-cover"
+                    data-testid="img-mission"
+                  />
+                </div>
+                <Card className="bg-accent/20 border-accent/30 p-4">
+                  <p className="font-bold text-lg text-foreground" data-testid="text-community-first">Community First</p>
+                  <p className="text-sm text-muted-foreground">Building lasting connections and friendships</p>
+                </Card>
+              </div>
+            </div>
           </div>
         </section>
 
         {/* What We Offer */}
-        <section className="py-16 md:py-20 bg-gradient-to-br from-accent/10 to-primary/5" data-testid="section-what-we-offer">
+        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-what-we-offer">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-primary" data-testid="heading-what-we-offer">
-              What We Offer
-            </h2>
             <div className="text-center mb-12">
-              <div className="inline-block h-1 w-24 bg-gradient-to-r from-primary to-accent rounded-full"></div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary" data-testid="heading-what-we-offer">
+                What We Offer
+              </h2>
+              <p className="text-lg text-muted-foreground" data-testid="text-what-we-offer-subtitle">
+                Comprehensive experiences that shape future marketing leaders
+              </p>
             </div>
             
-            <div className="grid md:grid-cols-2 gap-x-12 gap-y-4 max-w-4xl mx-auto">
-              <ul className="space-y-3">
-                <li className="flex items-start gap-3" data-testid="offer-0">
-                  <span className="text-primary mt-1">•</span>
-                  <span className="text-lg">Weekly professional development meetings</span>
-                </li>
-                <li className="flex items-start gap-3" data-testid="offer-1">
-                  <span className="text-primary mt-1">•</span>
-                  <span className="text-lg">Networking events with industry professionals</span>
-                </li>
-                <li className="flex items-start gap-3" data-testid="offer-2">
-                  <span className="text-primary mt-1">•</span>
-                  <span className="text-lg">Marketing competitions and case study challenges</span>
-                </li>
-                <li className="flex items-start gap-3" data-testid="offer-3">
-                  <span className="text-primary mt-1">•</span>
-                  <span className="text-lg">Agency tours and company visits</span>
-                </li>
-              </ul>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-3" data-testid="offer-4">
-                  <span className="text-primary mt-1">•</span>
-                  <span className="text-lg">Resume workshops and interview preparation</span>
-                </li>
-                <li className="flex items-start gap-3" data-testid="offer-5">
-                  <span className="text-primary mt-1">•</span>
-                  <span className="text-lg">Social events and team building activities</span>
-                </li>
-                <li className="flex items-start gap-3" data-testid="offer-6">
-                  <span className="text-primary mt-1">•</span>
-                  <span className="text-lg">Leadership development opportunities</span>
-                </li>
-                <li className="flex items-start gap-3" data-testid="offer-7">
-                  <span className="text-primary mt-1">•</span>
-                  <span className="text-lg">Access to exclusive job postings</span>
-                </li>
-              </ul>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {offerings.map((offering, index) => (
+                <Card key={index} className="p-6 text-center hover-elevate transition-all" data-testid={`card-offering-${index}`}>
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-accent/10 flex items-center justify-center">
+                    <offering.icon className="w-8 h-8 text-accent" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-4 text-primary" data-testid={`text-offering-title-${index}`}>
+                    {offering.title}
+                  </h3>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    {offering.items.map((item, itemIndex) => (
+                      <li key={itemIndex} className="flex items-center gap-2" data-testid={`offering-item-${index}-${itemIndex}`}>
+                        <span className="text-accent">•</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Our Values */}
-        <section className="py-16 md:py-20" data-testid="section-values">
+        {/* Why Choose Us */}
+        <section className="py-16 md:py-20" data-testid="section-why-choose-us">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-primary" data-testid="heading-values">
-              Our Values
-            </h2>
-            <div className="text-center mb-12">
-              <div className="inline-block h-1 w-24 bg-gradient-to-r from-primary to-accent rounded-full"></div>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-8">
-              {values.map((value, index) => {
-                const colors = [
-                  'bg-blue-500/10 text-blue-600',
-                  'bg-rose-500/10 text-rose-600', 
-                  'bg-amber-500/10 text-amber-600',
-                  'bg-emerald-500/10 text-emerald-600'
-                ];
-                const borderColors = [
-                  'hover:border-blue-500/20',
-                  'hover:border-rose-500/20',
-                  'hover:border-amber-500/20',
-                  'hover:border-emerald-500/20'
-                ];
-                return (
-                  <Card key={index} className={`p-8 hover-elevate transition-all border-2 border-transparent ${borderColors[index]}`} data-testid={`card-value-${index}`}>
-                    <div className="flex items-start gap-4">
-                      <div className={`w-12 h-12 rounded-md ${colors[index]} flex items-center justify-center flex-shrink-0`}>
-                        <value.icon className="w-6 h-6" />
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Image */}
+              <div className="rounded-2xl overflow-hidden shadow-xl">
+                <img 
+                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop" 
+                  alt="Students collaborating"
+                  className="w-full h-[500px] object-cover"
+                  data-testid="img-why-choose-us"
+                />
+              </div>
+
+              {/* Content */}
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-8 text-primary" data-testid="heading-why-choose-us">
+                  Why Choose Us?
+                </h2>
+                <div className="space-y-6">
+                  {whyChooseUs.map((item, index) => (
+                    <div key={index} className="flex items-start gap-4" data-testid={`why-choose-${index}`}>
+                      <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
+                        <item.icon className="w-5 h-5 text-accent" />
                       </div>
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold mb-2 text-primary" data-testid={`text-value-title-${index}`}>
-                          {value.title}
+                      <div>
+                        <h3 className="text-lg font-bold mb-1 text-primary" data-testid={`text-why-title-${index}`}>
+                          {item.title}
                         </h3>
-                        <p className="text-muted-foreground" data-testid={`text-value-desc-${index}`}>
-                          {value.description}
+                        <p className="text-muted-foreground" data-testid={`text-why-desc-${index}`}>
+                          {item.description}
                         </p>
                       </div>
                     </div>
-                  </Card>
-                );
-              })}
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Chapter History & Impact */}
-        <section className="py-16 md:py-20 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/10" data-testid="section-history">
+        {/* For Other Orgs: Our Services */}
+        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-services">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-primary" data-testid="heading-history">
-              Chapter History &amp; Impact
-            </h2>
-            <div className="text-center mb-12">
-              <div className="inline-block h-1 w-24 bg-gradient-to-r from-primary to-accent rounded-full"></div>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-12">
-              {/* Why Choose Us? */}
-              <Card className="p-8 bg-white/50 backdrop-blur-sm border-2 hover-elevate transition-all">
-                <h3 className="text-2xl font-bold mb-6 text-primary flex items-center gap-2" data-testid="heading-why-choose-us">
-                  <Award className="w-6 h-6 text-accent" />
-                  Why Choose Us?
-                </h3>
-                <ul className="space-y-4">
-                  <li className="flex items-start gap-3" data-testid="why-choose-0">
-                    <span className="text-accent font-bold mt-1 text-xl">•</span>
-                    <div>
-                      <span className="font-semibold text-primary">Creativity Unleashed:</span> Creativity is our core, driving fresh, impactful campaigns that stand out.
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3" data-testid="why-choose-1">
-                    <span className="text-accent font-bold mt-1 text-xl">•</span>
-                    <div>
-                      <span className="font-semibold text-primary">Tailored Solutions:</span> We craft personalized strategies that match each client's unique needs.
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3" data-testid="why-choose-2">
-                    <span className="text-accent font-bold mt-1 text-xl">•</span>
-                    <div>
-                      <span className="font-semibold text-primary">Stay Ahead of the Curve:</span> We track trends and technologies to keep clients ahead in a fast-moving market.
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3" data-testid="why-choose-3">
-                    <span className="text-accent font-bold mt-1 text-xl">•</span>
-                    <div>
-                      <span className="font-semibold text-primary">Collaboration and Teamwork:</span> We thrive on teamwork, welcoming clients into our supportive community.
-                    </div>
-                  </li>
-                </ul>
-              </Card>
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Content */}
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-8 text-primary" data-testid="heading-our-services">
+                  For Other Orgs: Our Services
+                </h2>
+                <div className="space-y-6">
+                  <div className="border-l-4 border-accent pl-6" data-testid="service-0">
+                    <h3 className="text-xl font-bold mb-2 text-primary">Social Media Management</h3>
+                    <p className="text-muted-foreground">
+                      Elevate your online presence through engaging content that pulls your audience in and drives sales.
+                    </p>
+                  </div>
+                  <div className="border-l-4 border-accent pl-6" data-testid="service-1">
+                    <h3 className="text-xl font-bold mb-2 text-primary">Content Creation</h3>
+                    <p className="text-muted-foreground">
+                      Our skilled creators craft compelling videos and content tailored to your audience.
+                    </p>
+                  </div>
+                  <div className="border-l-4 border-accent pl-6" data-testid="service-2">
+                    <h3 className="text-xl font-bold mb-2 text-primary">Digital Advertising</h3>
+                    <p className="text-muted-foreground">
+                      Captivating ads designed to ensure your investment yields maximum returns.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-              {/* Our Services */}
-              <Card className="p-8 bg-white/50 backdrop-blur-sm border-2 hover-elevate transition-all">
-                <h3 className="text-2xl font-bold mb-6 text-primary flex items-center gap-2" data-testid="heading-our-services">
-                  <Target className="w-6 h-6 text-accent" />
-                  Our Services:
-                </h3>
-                <ul className="space-y-4">
-                  <li className="flex items-start gap-3" data-testid="service-0">
-                    <span className="text-accent font-bold mt-1 text-xl">•</span>
-                    <div>
-                      <span className="font-semibold text-primary">Social Media Management:</span> Let us elevate your online presence through engaging social media content that pulls your audience in and makes you sales.
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3" data-testid="service-1">
-                    <span className="text-accent font-bold mt-1 text-xl">•</span>
-                    <div>
-                      <span className="font-semibold text-primary">Content Creation:</span> Our skilled content creators can craft compelling videos and content tailored to members.
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3" data-testid="service-2">
-                    <span className="text-accent font-bold mt-1 text-xl">•</span>
-                    <div>
-                      <span className="font-semibold text-primary">Digital Advertising:</span> Ready to take your business to the next level? Allow us to create captivating ads to ensure your investment yields maximum returns.
-                    </div>
-                  </li>
-                </ul>
-              </Card>
+              {/* Image */}
+              <div className="relative">
+                <div className="rounded-2xl overflow-hidden shadow-xl">
+                  <img 
+                    src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&h=600&fit=crop" 
+                    alt="Professional Leadership Development"
+                    className="w-full h-[500px] object-cover"
+                    data-testid="img-services"
+                  />
+                </div>
+                <div className="absolute bottom-6 left-6 right-6 bg-white/95 dark:bg-card/95 backdrop-blur-sm p-4 rounded-lg shadow-lg border-2">
+                  <p className="font-bold text-lg text-primary" data-testid="text-services-caption">Professional Leadership Development</p>
+                  <p className="text-sm text-muted-foreground">Building tomorrow's marketing leaders</p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
