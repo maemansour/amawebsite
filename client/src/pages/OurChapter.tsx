@@ -227,7 +227,7 @@ export default function OurChapter() {
           </div>
         </section>
 
-        {/* For Other Orgs: Our Services */}
+        {/* For Other Organizations: Our Services */}
         <section className="py-16 md:py-20 bg-muted/30" data-testid="section-services">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -235,7 +235,7 @@ export default function OurChapter() {
               <ScrollReveal direction="left">
                 <div>
                   <h2 className="text-3xl md:text-4xl font-bold mb-8 text-primary" data-testid="heading-our-services">
-                    For Other Orgs: Our Services
+                    For Other Organizations: Our Services
                   </h2>
                   <div className="space-y-6">
                     <div className="border-l-4 border-primary pl-6" data-testid="service-0">
