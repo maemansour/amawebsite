@@ -28,6 +28,8 @@ export const settings = pgTable("settings", {
   ourChapterMissionImage: text("our_chapter_mission_image").notNull().default("https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=400&fit=crop"),
   ourChapterWhyChooseImage: text("our_chapter_why_choose_image").notNull().default("https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop"),
   ourChapterServicesImage: text("our_chapter_services_image").notNull().default("https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&h=600&fit=crop"),
+  // Home page images
+  familyImage: text("family_image").notNull().default("https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&h=800&fit=crop"),
 });
 
 export const insertSettingsSchema = createInsertSchema(settings).omit({ id: true });
