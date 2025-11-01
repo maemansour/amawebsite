@@ -216,6 +216,40 @@ Preferred communication style: Simple, everyday language.
 - Added Committees grid with links to individual committee pages
 - Added comprehensive Membership comparison section
 
+### Scroll Animations (November 2025)
+
+**Feature Overview**
+- Smooth scroll-triggered animations using framer-motion
+- Professional fade-in and slide effects as users scroll through pages
+- Configurable animation directions (up, down, left, right, none) and delays
+- Viewport-based detection triggers animations when elements come into view
+
+**Technical Implementation**
+- **ScrollReveal Component** (`client/src/components/ScrollReveal.tsx`)
+  - Reusable wrapper component using framer-motion's `useInView` hook
+  - Animation directions: up (default), down, left, right, none
+  - Customizable delay for staggered animations
+  - Fires once per element using `once: true` for performance
+  - Smooth easing curve: `[0.21, 0.47, 0.32, 0.98]`
+  
+- **Pages with Animations:**
+  - Home page: Hero section, events grid, newsletter form
+  - Our Chapter page: All major sections with direction-based animations
+  - Executive Board: Header, team grid with staggered delays
+  - Additional pages: Contact, Membership, Calendar (animations added throughout)
+  
+- **Animation Patterns:**
+  - Headers/titles: Fade up from below
+  - Side-by-side content: Opposing directions (left/right) with delays
+  - Grid items: Staggered delays (`index * 0.1`) for cascade effect
+  - CTAs: Simple fade-up for emphasis
+
+**User Experience Benefits**
+- Professional, modern feel with subtle motion
+- Guides user attention through content hierarchy
+- Improves perceived performance and engagement
+- Never intrusive - animations respect reduced motion preferences via framer-motion
+
 ### Complete Navigation Structure (November 2025)
 
 **Navigation Component Architecture**
