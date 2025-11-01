@@ -30,7 +30,7 @@ export function UpcomingEvents({ events }: UpcomingEventsProps) {
   };
 
   return (
-    <section className="py-16 md:py-20" id="events">
+    <section className="pt-16 md:pt-20 pb-8 md:pb-12" id="events">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-12">
           <h2 className="font-heading font-bold text-3xl md:text-4xl" data-testid="text-upcoming-events-title">
