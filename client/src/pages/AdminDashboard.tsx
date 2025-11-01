@@ -477,6 +477,21 @@ function GeneralSettings() {
             aspectRatio={3 / 2}
             testId="button-upload-executive-hero-image"
           />
+
+          <div className="space-y-2">
+            <Label htmlFor="executiveBoardCaption">Hero Caption</Label>
+            <Input
+              id="executiveBoardCaption"
+              name="executiveBoardCaption"
+              value={formData.executiveBoardCaption || ""}
+              onChange={(e) => setFormData({ ...formData, executiveBoardCaption: e.target.value })}
+              placeholder="e.g., 2024-2025 Leadership Team"
+              data-testid="input-executive-board-caption"
+            />
+            <p className="text-xs text-muted-foreground">
+              Text displayed on the hero image caption
+            </p>
+          </div>
         </CardContent>
       </Card>
 

@@ -89,7 +89,7 @@ export default function ExecutiveBoard() {
                   <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white dark:bg-card px-6 py-3 rounded-lg shadow-lg border-2">
                     <div className="flex items-center gap-2 text-sm font-medium">
                       <Trophy className="w-4 h-4 text-primary" />
-                      <span data-testid="text-hero-caption">2024-2025 Leadership Team</span>
+                      <span data-testid="text-hero-caption">{settings?.executiveBoardCaption || "2024-2025 Leadership Team"}</span>
                     </div>
                   </div>
                 </div>
