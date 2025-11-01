@@ -138,21 +138,72 @@ export default function OurChapter() {
           </div>
         </section>
 
-        {/* Chapter History */}
+        {/* Chapter History & Impact */}
         <section className="py-16 md:py-20 bg-muted/30" data-testid="section-history">
-          <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12" data-testid="heading-history">
-              Chapter History
+              Chapter History &amp; Impact
             </h2>
             
-            <div className="space-y-8">
-              <div className="text-center">
-                <p className="text-lg text-muted-foreground mb-4" data-testid="text-history-intro">
-                  Founded at San Diego State University, AMA SDSU has grown to become one of the most prestigious collegiate marketing chapters in the nation.
-                </p>
-                <p className="text-lg text-muted-foreground" data-testid="text-history-achievement">
-                  Through years of dedication, innovation, and commitment to excellence, we've earned our place as a <span className="font-bold text-primary">TOP 10 Chapter</span>, recognized by the American Marketing Association for outstanding chapter operations and member impact.
-                </p>
+            <div className="grid md:grid-cols-2 gap-12">
+              {/* Why Choose Us? */}
+              <div>
+                <h3 className="text-2xl font-bold mb-6" data-testid="heading-why-choose-us">
+                  Why Choose Us?
+                </h3>
+                <ul className="space-y-4">
+                  <li className="flex items-start gap-3" data-testid="why-choose-0">
+                    <span className="text-primary mt-1">•</span>
+                    <div>
+                      <span className="font-semibold">Creativity Unleashed:</span> Creativity is our core, driving fresh, impactful campaigns that stand out.
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3" data-testid="why-choose-1">
+                    <span className="text-primary mt-1">•</span>
+                    <div>
+                      <span className="font-semibold">Tailored Solutions:</span> We craft personalized strategies that match each client's unique needs.
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3" data-testid="why-choose-2">
+                    <span className="text-primary mt-1">•</span>
+                    <div>
+                      <span className="font-semibold">Stay Ahead of the Curve:</span> We track trends and technologies to keep clients ahead in a fast-moving market.
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3" data-testid="why-choose-3">
+                    <span className="text-primary mt-1">•</span>
+                    <div>
+                      <span className="font-semibold">Collaboration and Teamwork:</span> We thrive on teamwork, welcoming clients into our supportive community.
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Our Services */}
+              <div>
+                <h3 className="text-2xl font-bold mb-6" data-testid="heading-our-services">
+                  Our Services:
+                </h3>
+                <ul className="space-y-4">
+                  <li className="flex items-start gap-3" data-testid="service-0">
+                    <span className="text-primary mt-1">•</span>
+                    <div>
+                      <span className="font-semibold">Social Media Management:</span> Let us elevate your online presence through engaging social media content that pulls your audience in and makes you sales.
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3" data-testid="service-1">
+                    <span className="text-primary mt-1">•</span>
+                    <div>
+                      <span className="font-semibold">Content Creation:</span> Our skilled content creators can craft compelling videos and content tailored to members.
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3" data-testid="service-2">
+                    <span className="text-primary mt-1">•</span>
+                    <div>
+                      <span className="font-semibold">Digital Advertising:</span> Ready to take your business to the next level? Allow us to create captivating ads to ensure your investment yields maximum returns.
+                    </div>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
