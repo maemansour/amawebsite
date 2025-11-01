@@ -32,7 +32,7 @@ export function HighlightsCarousel({ highlights }: HighlightsCarouselProps) {
 
   if (highlights.length === 0) {
     return (
-      <section className="py-16 md:py-20 bg-muted/30">
+      <section className="pt-16 md:pt-20 pb-8 md:pb-12 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="text-center space-y-4">
             <h2 className="font-heading font-bold text-3xl md:text-4xl" data-testid="text-highlights-title">
@@ -53,7 +53,7 @@ export function HighlightsCarousel({ highlights }: HighlightsCarouselProps) {
   const currentHighlight = highlights[currentIndex];
 
   return (
-    <section className="py-16 md:py-20 bg-muted/30">
+    <section className="pt-16 md:pt-20 pb-8 md:pb-12 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-12">
           <h2 className="font-heading font-bold text-3xl md:text-4xl" data-testid="text-highlights-title">
