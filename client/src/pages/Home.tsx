@@ -1,7 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Hero } from "@/components/Hero";
 import { HighlightsCarousel } from "@/components/HighlightsCarousel";
-import { OurChapter } from "@/components/OurChapter";
 import { ChapterHistory } from "@/components/ChapterHistory";
 import { WeeklyMeetings } from "@/components/WeeklyMeetings";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
@@ -49,7 +48,6 @@ export default function Home() {
         <HighlightsCarousel highlights={highlights} />
       )}
 
-      <OurChapter />
       <ChapterHistory />
       <WeeklyMeetings settings={settings} />
 
