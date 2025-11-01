@@ -6,7 +6,7 @@ export default function OurChapter() {
   const achievements = [
     {
       icon: Award,
-      title: "#2 TOP 10 Chapter",
+      title: "TOP 10 Chapter",
       description: "Recognized nationally for excellence in chapter operations and member engagement",
       year: "2024-2025"
     },
@@ -62,13 +62,13 @@ export default function OurChapter() {
             <div className="text-center">
               <div className="inline-flex items-center gap-2 bg-primary/20 text-primary px-4 py-2 rounded-full mb-6 font-medium">
                 <Award className="w-5 h-5" />
-                <span data-testid="text-top-ten-badge">#2 TOP 10 Chapter</span>
+                <span data-testid="text-top-ten-badge">TOP 10 Chapter</span>
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4" data-testid="heading-our-chapter">
                 Our Chapter
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-chapter-description">
-                Learn about our #2 TOP 10 chapter and what we offer.
+                Learn about our TOP 10 chapter and what we offer.
               </p>
             </div>
           </div>
@@ -174,7 +174,7 @@ export default function OurChapter() {
                   Founded at San Diego State University, AMA SDSU has grown to become one of the most prestigious collegiate marketing chapters in the nation.
                 </p>
                 <p className="text-lg text-muted-foreground" data-testid="text-history-achievement">
-                  Through years of dedication, innovation, and commitment to excellence, we've earned our place as a <span className="font-bold text-primary">#2 TOP 10 Chapter</span>, recognized by the American Marketing Association for outstanding chapter operations and member impact.
+                  Through years of dedication, innovation, and commitment to excellence, we've earned our place as a <span className="font-bold text-primary">TOP 10 Chapter</span>, recognized by the American Marketing Association for outstanding chapter operations and member impact.
                 </p>
               </div>
             </div>
