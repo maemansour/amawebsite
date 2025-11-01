@@ -450,6 +450,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Sponsors routes
+  app.get("/api/sponsors", async (_, res) => {
+    const sponsorsList = await storage.getAllSponsors();
+    res.json(sponsorsList);
+  });
+
+  app.get("/api/sponsors/:id", async (req, res) => {
+    const sponsor = await storage.getSponsor(req.params.id);
+    if (!sponsor) {
+      return res.status(404).json({ error: "Sponsor not found" });
+    }
+    res.json(sponsor);
+  });
+
+  app.post("/api/sponsors", requireAuth, async (req, res) => {
+    try {
+      const { insertSponsorSchema } = await import("@shared/schema");
+      const validatedData = insertSponsorSchema.parse(req.body);
+      const newSponsor = await storage.createSponsor(validatedData);
+      res.status(201).json(newSponsor);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid sponsor data", details: error });
+      }
+      console.error("Error creating sponsor:", error);
+      res.status(500).json({ error: "Failed to create sponsor" });
+    }
+  });
+
+  // IMPORTANT: Reorder endpoint must come BEFORE :id routes
+  app.put("/api/sponsors/reorder", requireAuth, async (req, res) => {
+    try {
+      const reorderSchema = z.object({
+        updates: z.array(
+          z.object({
+            id: z.string(),
+            displayOrder: z.number().int().min(0),
+          })
+        ),
+      });
+
+      const validatedData = reorderSchema.parse(req.body);
+      await storage.bulkUpdateSponsorDisplayOrder(validatedData.updates);
+      res.json({ message: "Sponsor display order updated successfully" });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid request data", details: error });
+      }
+      console.error("Error updating sponsor display order:", error);
+      res.status(500).json({ error: "Failed to update display order" });
+    }
+  });
+
+  app.put("/api/sponsors/:id", requireAuth, async (req, res) => {
+    try {
+      const { insertSponsorSchema } = await import("@shared/schema");
+      const validatedData = insertSponsorSchema.partial().parse(req.body);
+      const updated = await storage.updateSponsor(req.params.id, validatedData);
+      if (!updated) {
+        return res.status(404).json({ error: "Sponsor not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid sponsor data", details: error });
+      }
+      console.error("Error updating sponsor:", error);
+      res.status(500).json({ error: "Failed to update sponsor" });
+    }
+  });
+
+  app.delete("/api/sponsors/:id", requireAuth, async (req, res) => {
+    try {
+      const deleted = await storage.deleteSponsor(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Sponsor not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting sponsor:", error);
+      res.status(500).json({ error: "Failed to delete sponsor" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
