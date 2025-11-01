@@ -33,6 +33,10 @@ export const settings = pgTable("settings", {
   // Executive Board page images and content
   executiveBoardHeroImage: text("executive_board_hero_image").notNull().default("https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop"),
   executiveBoardCaption: text("executive_board_caption").notNull().default("2024-2025 Leadership Team"),
+  // Sponsors page images and content
+  sponsorsHeroImage: text("sponsors_hero_image").notNull().default("https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop"),
+  sponsorsPartnerImage1: text("sponsors_partner_image_1").notNull().default("https://images.unsplash.com/photo-1556761175-4b46a572b786?w=800&h=600&fit=crop"),
+  sponsorsPartnerImage2: text("sponsors_partner_image_2").notNull().default("https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=600&fit=crop"),
 });
 
 export const insertSettingsSchema = createInsertSchema(settings).omit({ id: true });

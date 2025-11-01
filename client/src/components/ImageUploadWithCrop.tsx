@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 
 interface ImageUploadWithCropProps {
   label: string;
-  imageType: "hero" | "mission" | "whyChoose" | "services" | "family" | "executiveBoard";
+  imageType: "hero" | "mission" | "whyChoose" | "services" | "family" | "executiveBoard" | "sponsorsHero" | "sponsorsPartner1" | "sponsorsPartner2";
   currentImage?: string;
   aspectRatio?: number;
   testId?: string;

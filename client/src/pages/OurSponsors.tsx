@@ -1,151 +1,162 @@
-import { Handshake, Users, Building, TrendingUp, ExternalLink } from "lucide-react";
-import { SiRedbull } from "react-icons/si";
+import { Handshake, Users, FileText, TrendingUp, Mail } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ScrollReveal } from "@/components/ScrollReveal";
+import { useQuery } from "@tanstack/react-query";
+import { type Settings } from "@shared/schema";
 
 export default function OurSponsors() {
-  const sponsors = [
-    {
-      name: "Red Bull",
-      type: "GBM Sponsor",
-      logo: SiRedbull,
-      description: "GBM #2 Sponsored by Redbull for our members!",
-      partnership: "Red Bull partners with AMA SDSU to bring energy and excitement to our General Body Meetings, providing refreshments and sponsor our events.",
-      website: "https://www.redbull.com",
-      tier: "premier"
-    }
-  ];
+  const { data: settings } = useQuery<Settings>({
+    queryKey: ["/api/settings"],
+  });
 
   const partnershipBenefits = [
     {
       icon: Users,
-      title: "Top Marketing Talent",
-      description: "Access to 200+ ambitious marketing students eager to learn and contribute"
+      title: "Talent Pipeline",
+      description: "Direct access to motivated marketing students and recent graduates"
     },
     {
-      icon: Building,
-      title: "Brand Visibility",
-      description: "Prominent placement at events, on our website, and across our social media channels"
+      icon: FileText,
+      title: "Brand Exposure",
+      description: "Visibility among engaged students and marketing professionals"
     },
     {
-      icon: TrendingUp,
-      title: "Meaningful Engagement",
-      description: "Direct interaction with future marketing professionals through workshops and events"
+      icon: Handshake,
+      title: "Community Impact",
+      description: "Support the next generation of marketing leaders and innovators"
     }
   ];
 
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-1">
-        {/* Header */}
-        <section className="py-16 md:py-20 bg-gradient-to-br from-primary/10 to-primary/5" data-testid="section-sponsors-header">
+        {/* Hero Section */}
+        <section className="py-12 md:py-16" data-testid="section-sponsors-hero">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <div className="text-center">
-              <div className="inline-block mb-4">
-                <Handshake className="w-16 h-16 text-primary mx-auto" />
-              </div>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4" data-testid="heading-our-sponsors">
-                Our Sponsors
-              </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-sponsors-description">
-                Meet the organizations that support our mission and help provide opportunities for our members.
-              </p>
+            <div className="grid lg:grid-cols-2 gap-12 items-start">
+              {/* Left Column */}
+              <ScrollReveal direction="left">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6" data-testid="heading-our-sponsors">
+                  <Handshake className="inline-block w-10 h-10 md:w-12 md:h-12 text-primary mb-2" /> Our Partners & <span className="text-primary">Collaborations</span>
+                </h1>
+                <p className="text-lg md:text-xl text-muted-foreground mb-8" data-testid="text-sponsors-description">
+                  We're proud to collaborate with these industry-leading organizations who help provide real-world experience and opportunities for our members.
+                </p>
+              </ScrollReveal>
+
+              {/* Right Column */}
+              <ScrollReveal direction="right" delay={0.2}>
+                <div className="relative">
+                  <div className="rounded-2xl overflow-hidden shadow-2xl">
+                    <img 
+                      src={settings?.sponsorsHeroImage || "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop"} 
+                      alt="Our Partners and Sponsors"
+                      className="w-full h-[400px] object-cover"
+                      data-testid="img-hero"
+                    />
+                  </div>
+                </div>
+              </ScrollReveal>
             </div>
           </div>
         </section>
 
-        {/* Premier Sponsors */}
-        <section className="py-16 md:py-20" data-testid="section-premier-sponsors">
+        {/* Partner Images Section */}
+        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-partners">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4" data-testid="heading-partners">
-              Our Partners & Collaborations
-            </h2>
-            <p className="text-lg text-muted-foreground text-center mb-12 max-w-3xl mx-auto" data-testid="text-partners-intro">
-              We're proud to collaborate with leading organizations who help provide exceptional experiences for our members.
-            </p>
-            
-            <div className="grid md:grid-cols-1 gap-8 max-w-4xl mx-auto">
-              {sponsors.map((sponsor, index) => (
-                <Card key={index} className="p-8 md:p-12" data-testid={`card-sponsor-${index}`}>
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-24 h-24 rounded-md bg-primary/10 flex items-center justify-center mb-6">
-                      <sponsor.logo className="w-16 h-16 text-primary" />
-                    </div>
-                    
-                    <h3 className="text-3xl font-bold mb-2" data-testid={`text-sponsor-name-${index}`}>
-                      {sponsor.name}
+            <div className="grid md:grid-cols-2 gap-8">
+              <ScrollReveal direction="left">
+                <Card className="overflow-hidden">
+                  <img 
+                    src={settings?.sponsorsPartnerImage1 || "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=800&h=600&fit=crop"} 
+                    alt="Partner Collaboration"
+                    className="w-full h-[300px] object-cover"
+                    data-testid="img-partner-1"
+                  />
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold mb-2" data-testid="text-partner-1-title">
+                      Industry Collaboration
                     </h3>
-                    <div className="inline-block bg-primary/20 text-primary px-4 py-1 rounded-full mb-6 text-sm font-medium" data-testid={`text-sponsor-type-${index}`}>
-                      {sponsor.type}
-                    </div>
-                    
-                    <div className="mb-6">
-                      <h4 className="text-xl font-bold mb-3" data-testid={`heading-partnership-${index}`}>
-                        About Our Partnership
-                      </h4>
-                      <p className="text-muted-foreground" data-testid={`text-partnership-${index}`}>
-                        {sponsor.partnership}
-                      </p>
-                    </div>
-                    
-                    <p className="text-lg font-medium text-primary mb-6" data-testid={`text-sponsor-desc-${index}`}>
-                      {sponsor.description}
+                    <p className="text-muted-foreground" data-testid="text-partner-1-desc">
+                      Collaborating with AMA SDSU to bring exceptional experiences to our members
                     </p>
-                    
-                    <Button asChild data-testid={`button-website-${index}`}>
-                      <a href={sponsor.website} target="_blank" rel="noopener noreferrer" className="gap-2">
-                        Visit Website
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    </Button>
                   </div>
                 </Card>
-              ))}
+              </ScrollReveal>
+
+              <ScrollReveal direction="right" delay={0.1}>
+                <Card className="overflow-hidden">
+                  <img 
+                    src={settings?.sponsorsPartnerImage2 || "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=600&fit=crop"} 
+                    alt="Event Partnership"
+                    className="w-full h-[300px] object-cover"
+                    data-testid="img-partner-2"
+                  />
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold mb-2" data-testid="text-partner-2-title">
+                      Event Partnerships
+                    </h3>
+                    <p className="text-muted-foreground" data-testid="text-partner-2-desc">
+                      Supporting our events and creating memorable experiences for students
+                    </p>
+                  </div>
+                </Card>
+              </ScrollReveal>
             </div>
           </div>
         </section>
 
-        {/* Why Partner With Us */}
-        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-why-partner">
+        {/* Why Companies Partner With Us */}
+        <section className="py-16 md:py-20" data-testid="section-why-partner">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4" data-testid="heading-why-partner">
-              Why Companies Partner With Us
-            </h2>
-            <p className="text-lg text-muted-foreground text-center mb-12 max-w-3xl mx-auto" data-testid="text-why-partner-intro">
-              Our partners gain access to top marketing talent and meaningful engagement opportunities
-            </p>
+            <ScrollReveal direction="up">
+              <h2 className="text-3xl md:text-4xl font-bold text-center mb-4" data-testid="heading-why-partner">
+                Why Companies Partner With Us
+              </h2>
+              <p className="text-lg text-muted-foreground text-center mb-12 max-w-3xl mx-auto" data-testid="text-why-partner-intro">
+                Our partners gain access to top marketing talent and meaningful engagement opportunities
+              </p>
+            </ScrollReveal>
             
             <div className="grid md:grid-cols-3 gap-8">
               {partnershipBenefits.map((benefit, index) => (
-                <Card key={index} className="p-8 text-center" data-testid={`card-benefit-${index}`}>
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <benefit.icon className="w-8 h-8 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3" data-testid={`text-benefit-title-${index}`}>
-                    {benefit.title}
-                  </h3>
-                  <p className="text-muted-foreground" data-testid={`text-benefit-desc-${index}`}>
-                    {benefit.description}
-                  </p>
-                </Card>
+                <ScrollReveal key={index} delay={index * 0.1}>
+                  <Card className="p-8 text-center h-full">
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                      <benefit.icon className="w-8 h-8 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-3" data-testid={`text-benefit-title-${index}`}>
+                      {benefit.title}
+                    </h3>
+                    <p className="text-muted-foreground" data-testid={`text-benefit-desc-${index}`}>
+                      {benefit.description}
+                    </p>
+                  </Card>
+                </ScrollReveal>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Become a Sponsor CTA */}
-        <section className="py-16 md:py-20" data-testid="section-become-sponsor">
+        {/* CTA Section */}
+        <section className="py-16 md:py-20 bg-primary text-primary-foreground" data-testid="section-partnership-cta">
           <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6" data-testid="heading-become-sponsor">
-              Interested in Partnering?
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8" data-testid="text-become-sponsor-desc">
-              Join Red Bull and other leading brands in supporting the next generation of marketing professionals. Contact us to learn about sponsorship opportunities.
-            </p>
-            <Button size="lg" asChild data-testid="button-contact-us">
-              <a href="/contact">Contact Us About Partnerships</a>
-            </Button>
+            <ScrollReveal direction="up">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6" data-testid="heading-partnership-cta">
+                Interested in Partnering with AMA SDSU?
+              </h2>
+              <p className="text-lg text-primary-foreground/90 mb-8" data-testid="text-partnership-cta-desc">
+                Join our community of industry leaders and help shape the future of marketing education. We offer customizable partnership opportunities to meet your organization's goals.
+              </p>
+              <Button size="lg" variant="secondary" asChild data-testid="button-contact-partnership">
+                <a href={`mailto:${settings?.email || 'finance.sdsuma@gmail.com'}`} className="gap-2">
+                  <Mail className="w-5 h-5" />
+                  Email: {settings?.email || 'finance.sdsuma@gmail.com'}
+                </a>
+              </Button>
+            </ScrollReveal>
           </div>
         </section>
       </div>

@@ -495,6 +495,38 @@ function GeneralSettings() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle>Sponsors Page Images</CardTitle>
+          <CardDescription>Upload and crop images for the Sponsors/Partners page</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <ImageUploadWithCrop
+            label="Hero Section Image"
+            imageType="sponsorsHero"
+            currentImage={settings?.sponsorsHeroImage}
+            aspectRatio={3 / 2}
+            testId="button-upload-sponsors-hero-image"
+          />
+
+          <ImageUploadWithCrop
+            label="Partner/Collaboration Image 1"
+            imageType="sponsorsPartner1"
+            currentImage={settings?.sponsorsPartnerImage1}
+            aspectRatio={3 / 2}
+            testId="button-upload-sponsors-partner-1"
+          />
+
+          <ImageUploadWithCrop
+            label="Partner/Collaboration Image 2"
+            imageType="sponsorsPartner2"
+            currentImage={settings?.sponsorsPartnerImage2}
+            aspectRatio={3 / 2}
+            testId="button-upload-sponsors-partner-2"
+          />
+        </CardContent>
+      </Card>
+
       <div className="flex justify-end">
         <Button 
           type="submit" 
