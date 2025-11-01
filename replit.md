@@ -16,7 +16,8 @@ Preferred communication style: Simple, everyday language.
 - **Key Design Decisions:** Component aliasing, clear separation of public and admin interfaces, toast notifications for user feedback.
 - **Features:**
     - Professional image upload system with built-in cropping (`react-easy-crop`) and secure admin-only access for both site images and member profiles.
-    - Executive Board member management with full CRUD operations, team-based organization, profile image uploads with circular cropping, and dynamic public display.
+    - Executive Board member management with full CRUD operations, team-based organization, profile image uploads with circular cropping, dynamic public display, and drag-and-drop reordering.
+    - Drag-and-drop functionality using `@dnd-kit` libraries for reordering both executive board teams and members within teams, with persistent storage via bulk update API endpoint.
     - Scroll-triggered animations using `framer-motion` for enhanced user experience.
     - Comprehensive navigation structure with a three-tiered dropdown system, mobile-responsive, covering "About Us," "Get Involved," and "Alumni" sections.
     - Dedicated pages for Contact (with form, social links, FAQs), Membership (tiers, benefits, how to join), Resources (national AMA links), Alumni (spotlight, mentorship), Executive Board (team-organized member display), and individual Committee pages.
@@ -24,11 +25,11 @@ Preferred communication style: Simple, everyday language.
 
 ### Backend
 - **Framework:** Express.js with TypeScript on Node.js.
-- **API Design:** RESTful API with endpoints for settings, events, highlights, newsletter, admin, and object storage.
+- **API Design:** RESTful API with endpoints for settings, events, highlights, newsletter, admin, executive members (including bulk reorder endpoint), and object storage.
 - **Authentication:** Session-based authentication using `express-session` with HTTP-only cookies; `requireAuth` middleware for admin routes.
 - **Database:** Drizzle ORM with PostgreSQL dialect (configured for Neon Database).
-- **Schema:** Tables for `settings` (site configuration, images), `events`, `highlights`, `newsletter_subscriptions`, `users` (admin accounts with bcrypt hashed passwords), and `executiveMembers` (board members with team organization).
-- **Key Design Decisions:** Middleware for request logging, environment-specific configurations, Drizzle ORM with Zod validation.
+- **Schema:** Tables for `settings` (site configuration, images), `events`, `highlights`, `newsletter_subscriptions`, `users` (admin accounts with bcrypt hashed passwords), and `executiveMembers` (board members with team organization and displayOrder for custom sorting).
+- **Key Design Decisions:** Middleware for request logging, environment-specific configurations, Drizzle ORM with Zod validation. Executive member ordering uses displayOrder field exclusively—team order is derived from member order, not alphabetically. Specific routes (like `/reorder`) must be defined before parameterized routes (like `/:id`) in Express routing.
 - **Image Upload System:** Two dedicated upload components:
   - `ImageUploadWithCrop`: For site-wide images (hero sections, etc.) with configurable aspect ratios, uploads via `/api/objects/upload`, normalizes URLs via `/api/chapter-images`.
   - `MemberImageUpload`: For executive member profile pictures with 1:1 circular crop, stores normalized `/objects/xxx` paths directly in database.
@@ -37,6 +38,7 @@ Preferred communication style: Simple, everyday language.
 - **Database:** Neon Database (PostgreSQL-compatible serverless) via `@neondatabase/serverless`.
 - **Object Storage:** Replit Object Storage (Google Cloud Storage backend) via `@google-cloud/storage` for admin-uploaded images.
 - **UI Components:** Radix UI, Shadcn UI, Embla Carousel, React Hook Form, Zod, Lucide React, React Icons.
+- **Drag & Drop:** `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities` for drag-and-drop reordering of executive board teams and members.
 - **Development Tools:** Vite, ESBuild, TypeScript.
 - **Fonts:** Google Fonts (Inter, Poppins).
 - **Session Management:** `connect-pg-simple` (available for PostgreSQL-backed sessions, currently using in-memory).

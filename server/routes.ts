@@ -385,6 +385,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // IMPORTANT: Reorder endpoint must come BEFORE :id routes to avoid Express matching "reorder" as an ID
+  app.put("/api/executive-members/reorder", requireAuth, async (req, res) => {
+    try {
+      console.log("[REORDER] Received request body:", JSON.stringify(req.body, null, 2));
+      
+      // Validate the request body with Zod
+      const reorderSchema = z.object({
+        updates: z.array(
+          z.object({
+            id: z.string(),
+            displayOrder: z.number().int().min(0),
+          })
+        ),
+      });
+
+      const validatedData = reorderSchema.parse(req.body);
+      console.log("[REORDER] Validated data:", JSON.stringify(validatedData, null, 2));
+      console.log("[REORDER] Number of updates:", validatedData.updates.length);
+      
+      await storage.bulkUpdateMemberDisplayOrder(validatedData.updates);
+      console.log("[REORDER] Successfully updated member display order");
+      res.json({ message: "Display order updated successfully" });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        console.error("[REORDER] Validation error:", error);
+        return res.status(400).json({ error: "Invalid request data", details: error });
+      }
+      console.error("[REORDER] Error updating member display order:", error);
+      res.status(500).json({ error: "Failed to update display order" });
+    }
+  });
+
   app.put("/api/executive-members/:id", requireAuth, async (req, res) => {
     try {
       const validatedData = insertExecutiveMemberSchema.partial().parse(req.body);
@@ -412,31 +444,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting executive member:", error);
       res.status(500).json({ error: "Failed to delete member" });
-    }
-  });
-
-  app.put("/api/executive-members/reorder", requireAuth, async (req, res) => {
-    try {
-      // Validate the request body with Zod
-      const reorderSchema = z.object({
-        updates: z.array(
-          z.object({
-            id: z.string(),
-            displayOrder: z.number().int().min(0),
-          })
-        ),
-      });
-
-      const validatedData = reorderSchema.parse(req.body);
-      
-      await storage.bulkUpdateMemberDisplayOrder(validatedData.updates);
-      res.json({ message: "Display order updated successfully" });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Invalid request data", details: error });
-      }
-      console.error("Error updating member display order:", error);
-      res.status(500).json({ error: "Failed to update display order" });
     }
   });
 

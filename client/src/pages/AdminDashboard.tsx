@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { 
@@ -950,6 +950,70 @@ function SortableMemberCard({ member, onEdit, onDelete }: SortableMemberCardProp
   );
 }
 
+// Sortable Team Section Component
+interface SortableTeamSectionProps {
+  team: string;
+  members: ExecutiveMember[];
+  sensors: any;
+  onMemberDragEnd: (event: DragEndEvent) => void;
+  onMemberEdit: (member: ExecutiveMember) => void;
+  onMemberDelete: (id: string) => void;
+}
+
+function SortableTeamSection({ team, members, sensors, onMemberDragEnd, onMemberEdit, onMemberDelete }: SortableTeamSectionProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: team });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.7 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <div className="flex items-center gap-2 mb-4">
+        <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing">
+          <GripVertical className="h-5 w-5 text-muted-foreground" />
+        </div>
+        <h3 className="text-xl font-bold" data-testid={`heading-team-${team.toLowerCase().replace(/\s+/g, '-')}`}>
+          {team}
+        </h3>
+        <span className="text-sm text-muted-foreground">
+          (Drag teams or members to reorder)
+        </span>
+      </div>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={onMemberDragEnd}
+      >
+        <SortableContext
+          items={members.map((m) => m.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {members.map((member) => (
+              <SortableMemberCard
+                key={member.id}
+                member={member}
+                onEdit={onMemberEdit}
+                onDelete={onMemberDelete}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
+    </div>
+  );
+}
+
 function ManageExecutiveMembers() {
   const { toast } = useToast();
   const [isAdding, setIsAdding] = useState(false);
@@ -1161,12 +1225,7 @@ function ManageExecutiveMembers() {
       displayOrder: index,
     }));
 
-    // Optimistically update local state
-    setLocalMembers((prev) => {
-      const otherMembers = prev.filter((m) => m.team !== team);
-      return [...otherMembers, ...reorderedMembers.map((m, i) => ({ ...m, displayOrder: i }))];
-    });
-
+    // Let the query refetch handle UI updates (no optimistic update)
     reorderMutation.mutate(updates);
   };
 
@@ -1179,7 +1238,20 @@ function ManageExecutiveMembers() {
     const newIndex = teamOrder.indexOf(over.id as string);
 
     const newTeamOrder = arrayMove(teamOrder, oldIndex, newIndex);
-    setTeamOrder(newTeamOrder);
+
+    // Build a fresh grouping from current localMembers to ensure we have the latest data
+    const currentGrouped = localMembers.reduce((acc, member) => {
+      if (!acc[member.team]) {
+        acc[member.team] = [];
+      }
+      acc[member.team].push(member);
+      return acc;
+    }, {} as Record<string, ExecutiveMember[]>);
+
+    // Sort members within each team by their current displayOrder
+    Object.keys(currentGrouped).forEach((team) => {
+      currentGrouped[team].sort((a, b) => a.displayOrder - b.displayOrder);
+    });
 
     // Update displayOrder for all members to reflect new team ordering
     // Members from team 0 get displayOrder 0-N, team 1 gets N+1-M, etc.
@@ -1187,40 +1259,40 @@ function ManageExecutiveMembers() {
     let currentOrder = 0;
 
     newTeamOrder.forEach((team) => {
-      const teamMembers = groupedMembers[team];
-      if (teamMembers) {
+      const teamMembers = currentGrouped[team];
+      if (teamMembers && teamMembers.length > 0) {
         teamMembers.forEach((member) => {
           updates.push({
             id: member.id,
-            displayOrder: currentOrder++,
+            displayOrder: currentOrder,
           });
+          currentOrder++;
         });
       }
     });
 
-    // Optimistically update local state
-    setLocalMembers((prev) =>
-      prev.map((member) => {
-        const update = updates.find((u) => u.id === member.id);
-        return update ? { ...member, displayOrder: update.displayOrder } : member;
-      })
-    );
-
+    // Let the query refetch handle UI updates (no optimistic update)
     reorderMutation.mutate(updates);
   };
 
-  const groupedMembers = localMembers.reduce((acc, member) => {
-    if (!acc[member.team]) {
-      acc[member.team] = [];
-    }
-    acc[member.team].push(member);
-    return acc;
-  }, {} as Record<string, ExecutiveMember[]>);
+  // Memoize grouped members to prevent infinite render loops
+  // Group members by team and sort within each team
+  const groupedMembers = useMemo(() => {
+    const grouped = localMembers.reduce((acc, member) => {
+      if (!acc[member.team]) {
+        acc[member.team] = [];
+      }
+      acc[member.team].push(member);
+      return acc;
+    }, {} as Record<string, ExecutiveMember[]>);
 
-  // Sort members within each team by displayOrder
-  Object.keys(groupedMembers).forEach((team) => {
-    groupedMembers[team].sort((a, b) => a.displayOrder - b.displayOrder);
-  });
+    // Sort members within each team by displayOrder (non-mutating approach)
+    Object.keys(grouped).forEach((team) => {
+      grouped[team] = [...grouped[team]].sort((a, b) => a.displayOrder - b.displayOrder);
+    });
+
+    return grouped;
+  }, [localMembers]);
 
   if (isLoading) {
     return <div className="text-center py-12">Loading...</div>;
@@ -1406,37 +1478,15 @@ function ManageExecutiveMembers() {
                 if (!groupedMembers[team]) return null;
                 
                 return (
-                  <div key={team}>
-                    <div className="flex items-center gap-2 mb-4">
-                      <h3 className="text-xl font-bold" data-testid={`heading-team-${team.toLowerCase().replace(/\s+/g, '-')}`}>
-                        {team}
-                      </h3>
-                      <span className="text-sm text-muted-foreground">
-                        (Drag to reorder teams)
-                      </span>
-                    </div>
-                    <DndContext
-                      sensors={sensors}
-                      collisionDetection={closestCenter}
-                      onDragEnd={(event) => handleMemberDragEnd(event, team)}
-                    >
-                      <SortableContext
-                        items={groupedMembers[team].map((m) => m.id)}
-                        strategy={verticalListSortingStrategy}
-                      >
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {groupedMembers[team].map((member) => (
-                            <SortableMemberCard
-                              key={member.id}
-                              member={member}
-                              onEdit={startEdit}
-                              onDelete={(id) => deleteMutation.mutate(id)}
-                            />
-                          ))}
-                        </div>
-                      </SortableContext>
-                    </DndContext>
-                  </div>
+                  <SortableTeamSection
+                    key={team}
+                    team={team}
+                    members={groupedMembers[team]}
+                    sensors={sensors}
+                    onMemberDragEnd={(event) => handleMemberDragEnd(event, team)}
+                    onMemberEdit={startEdit}
+                    onMemberDelete={(id) => deleteMutation.mutate(id)}
+                  />
                 );
               })}
             </div>

@@ -499,7 +499,9 @@ export class DbStorage implements IStorage {
   
   // Executive Members management
   async getAllExecutiveMembers(): Promise<ExecutiveMember[]> {
-    const members = await this.db.select().from(executiveMembers).orderBy(executiveMembers.team, executiveMembers.displayOrder);
+    // Order by displayOrder only - team order is derived from member order
+    // First member of each team determines that team's position
+    const members = await this.db.select().from(executiveMembers).orderBy(executiveMembers.displayOrder);
     return members;
   }
 
@@ -529,6 +531,7 @@ export class DbStorage implements IStorage {
   async bulkUpdateMemberDisplayOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void> {
     // Execute all updates in a transaction for consistency
     for (const update of updates) {
+      console.log(`[STORAGE] Updating member ${update.id} with displayOrder:`, update.displayOrder, `(type: ${typeof update.displayOrder})`);
       await this.db.update(executiveMembers)
         .set({ displayOrder: update.displayOrder })
         .where(eq(executiveMembers.id, update.id));
