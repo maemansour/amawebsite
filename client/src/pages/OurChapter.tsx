@@ -68,7 +68,7 @@ export default function OurChapter() {
                 Our Chapter
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-chapter-description">
-                Learn about our TOP 10 chapter and what we offer.
+                Learn about our TOP 10 chapter and discover what makes AMA SDSU a leader in professional development.
               </p>
             </div>
           </div>
