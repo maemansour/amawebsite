@@ -1,7 +1,13 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Hero } from "@/components/Hero";
 import { HighlightsCarousel } from "@/components/HighlightsCarousel";
+import { OurChapter } from "@/components/OurChapter";
+import { ChapterHistory } from "@/components/ChapterHistory";
+import { PartnersCollaborations } from "@/components/PartnersCollaborations";
+import { WeeklyMeetings } from "@/components/WeeklyMeetings";
+import { Committees } from "@/components/Committees";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
+import { Membership } from "@/components/Membership";
 import { Newsletter } from "@/components/Newsletter";
 import { Footer } from "@/components/Footer";
 import { type Settings, type Highlight, type Event } from "@shared/schema";
@@ -45,8 +51,14 @@ export default function Home() {
         <HighlightsCarousel highlights={highlights} />
       )}
 
+      <OurChapter />
+      <ChapterHistory />
+      <PartnersCollaborations />
+      <WeeklyMeetings settings={settings} />
+      <Committees />
+
       {eventsLoading ? (
-        <section className="py-16 md:py-20">
+        <section className="py-16 md:py-20 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[...Array(4)].map((_, i) => (
@@ -59,6 +71,7 @@ export default function Home() {
         <UpcomingEvents events={events} />
       )}
 
+      <Membership />
       <Newsletter onSubscribe={handleNewsletterSubscribe} />
       <Footer settings={settings} />
     </div>
