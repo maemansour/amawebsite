@@ -15,7 +15,7 @@ Preferred communication style: Simple, everyday language.
 **Framework & Build System**
 - React with TypeScript as the core framework
 - Vite for development server and build tooling
-- React Router (Wouter) for client-side routing with paths: `/`, `/calendar`, `/contact`, `/committees/:id`, `/membership`, `/resources`, `/alumni`, `/admin`, `/admin/dashboard`
+- React Router (Wouter) for client-side routing with paths: `/`, `/calendar`, `/contact`, `/executive-board`, `/our-chapter`, `/sponsors`, `/weekly-meetings`, `/committees`, `/committees/:id`, `/membership`, `/resources`, `/alumni`, `/past-vp-boards`, `/admin`, `/admin/dashboard`
 
 **UI Component System**
 - Shadcn UI (new-york style) as the primary component library using Radix UI primitives
@@ -148,3 +148,38 @@ Preferred communication style: Simple, everyday language.
 - Added Weekly Meetings information
 - Added Committees grid with links to individual committee pages
 - Added comprehensive Membership comparison section
+
+### Complete Navigation Structure (November 2025)
+
+**Navigation Component Architecture**
+- Three-tiered dropdown navigation system matching national AMA standards
+- Mobile-responsive navigation with Sheet component for small screens
+- Wouter Link components for all routing (no anchor links except Join AMA CTA)
+
+**About Us Dropdown** (`/executive-board`, `/our-chapter`, `/sponsors`)
+1. **Executive Board Page** - Leadership team with 6 officers, profile cards, contact info, leadership message
+2. **Our Chapter Page** - TOP 10 chapter status, mission/vision statements, values, achievements grid, chapter history
+3. **Our Sponsors Page** - Partner organizations (Red Bull), partnership benefits, become a sponsor CTA
+
+**Get Involved Dropdown** (`/weekly-meetings`, `/committees`, `/membership`, `/resources`)
+1. **Weekly Meetings Page** - Meeting schedule (day/time/location from settings), agenda, highlights, what to bring
+2. **Committees Landing Page** - Overview of 4 committees (Consulting, Event Planning, Podcast, Adobe Creative) with links to detail pages
+3. **Membership Page** - (Existing) Pricing tiers and benefits
+4. **Official AMA (Resources)** - (Existing) National AMA resources and programs
+
+**Alumni Dropdown** (`/alumni`, `/past-vp-boards`)
+1. **Alumni Relations Page** - (Existing) Stay connected, mentorship, alumni spotlights
+2. **Past VP Executive Boards Page** - Historical board members by year (2023-2024, 2022-2023, 2021-2022, 2020-2021) with achievements
+
+**Top-Level Navigation**
+- Home (`/`)
+- Event Calendar (`/calendar`)
+- Contact (`/contact`)
+
+**Technical Implementation Details**
+- Fixed test ID conflicts by prefixing homepage component test IDs with "home-" (e.g., `data-testid="heading-home-our-chapter"` vs dedicated page `data-testid="heading-our-chapter"`)
+- All navigation dropdowns use shadcn NavigationMenu with NavigationMenuItem components
+- Mobile navigation uses Sheet component with proper Link components
+- All pages follow consistent hero header → content sections → Footer pattern
+- Comprehensive data-testid attributes throughout for e2e testing
+- End-to-end testing verified all navigation paths and page content
