@@ -8,6 +8,9 @@ import Home from "@/pages/Home";
 import EventCalendar from "@/pages/EventCalendar";
 import Contact from "@/pages/Contact";
 import CommitteePage from "@/pages/CommitteePage";
+import Membership from "@/pages/Membership";
+import Resources from "@/pages/Resources";
+import Alumni from "@/pages/Alumni";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import NotFound from "@/pages/not-found";
@@ -33,6 +36,21 @@ function Router() {
       <Route path="/committees/:id">
         <PublicLayout>
           <CommitteePage />
+        </PublicLayout>
+      </Route>
+      <Route path="/membership">
+        <PublicLayout>
+          <Membership />
+        </PublicLayout>
+      </Route>
+      <Route path="/resources">
+        <PublicLayout>
+          <Resources />
+        </PublicLayout>
+      </Route>
+      <Route path="/alumni">
+        <PublicLayout>
+          <Alumni />
         </PublicLayout>
       </Route>
       <Route path="/admin" component={AdminLogin} />

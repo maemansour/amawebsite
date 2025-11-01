@@ -15,7 +15,7 @@ Preferred communication style: Simple, everyday language.
 **Framework & Build System**
 - React with TypeScript as the core framework
 - Vite for development server and build tooling
-- React Router (Wouter) for client-side routing with paths: `/`, `/calendar`, `/contact`, `/admin`, `/admin/dashboard`
+- React Router (Wouter) for client-side routing with paths: `/`, `/calendar`, `/contact`, `/committees/:id`, `/membership`, `/resources`, `/alumni`, `/admin`, `/admin/dashboard`
 
 **UI Component System**
 - Shadcn UI (new-york style) as the primary component library using Radix UI primitives
@@ -99,3 +99,52 @@ Preferred communication style: Simple, everyday language.
 - Social media platforms: Instagram, LinkedIn, TikTok, Spotify (links configurable via settings)
 - Email integration ready (email addresses collected for newsletter)
 - No payment processing or external APIs currently integrated
+
+## Recent Changes (2025-11-01)
+
+### New Pages Added (Completed & Tested)
+1. **Contact Page** (`/contact`) - Tabbed interface with:
+   - Contact form using shadcn Form + react-hook-form with Zod validation
+   - Email Us section
+   - Follow Us section with all social platforms (Instagram, LinkedIn, TikTok, Spotify)
+   - FAQs tab with null-safe meeting info display
+   - Visit Us section with meeting details
+   
+2. **Membership Page** (`/membership`) - Dedicated page showcasing:
+   - Membership tiers with consistent pricing ($49/semester for One Semester, $79/year for Two Semesters)
+   - Chapter vs National benefits comparison
+   - How to Join section
+   - Committee involvement information
+   
+3. **Resources Page** (`/resources`) - Official AMA resources including:
+   - National Website and Student Resources cards
+   - National Programs section (Collegiate Case Competition, Career Center, etc.)
+   - Links to official AMA resources
+   
+4. **Alumni Page** (`/alumni`) - Alumni relations hub with:
+   - Stay Connected options (Mentorship Program, Career Network, Alumni Events)
+   - Alumni Spotlight grid with featured alumni profiles
+   - Alumni Success Stories section
+
+5. **Committee Pages** (`/committees/:id`) - Individual pages for Consulting, Event Planning, Podcast, and Adobe Creative committees with missions, benefits, past work, and join instructions
+
+### Technical Improvements
+- Contact form implements proper validation with shadcn Form component
+- All social links pull from settings with appropriate fallbacks
+- FAQ section gracefully handles missing settings data
+- All pages include comprehensive data-testid attributes for testing
+- Comprehensive e2e testing completed and passing
+
+### Database Migration
+- Successfully migrated from in-memory storage to PostgreSQL database
+- Implemented secure bcrypt password hashing for admin authentication
+- Admin credentials: username "admin", password "admin123"
+- All data now persists across server restarts
+
+### Homepage Enhancements
+- Added Our Chapter section with 4 offering cards
+- Added Chapter History & Impact with achievement statistics
+- Added Partners & Collaborations featuring Red Bull
+- Added Weekly Meetings information
+- Added Committees grid with links to individual committee pages
+- Added comprehensive Membership comparison section
