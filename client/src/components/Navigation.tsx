@@ -55,7 +55,7 @@ export function Navigation() {
                     About Us
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-48 gap-1 p-2">
+                    <ul className="grid grid-cols-2 gap-3 p-4 w-[500px]">
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
@@ -107,7 +107,7 @@ export function Navigation() {
                     Get Involved
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-48 gap-1 p-2">
+                    <ul className="grid grid-cols-2 gap-3 p-4 w-[500px]">
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
@@ -173,7 +173,7 @@ export function Navigation() {
                     Alumni
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-48 gap-1 p-2">
+                    <ul className="grid grid-cols-2 gap-3 p-4 w-[500px]">
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
