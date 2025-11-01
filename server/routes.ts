@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import session from "express-session";
 import { storage } from "./storage";
@@ -8,6 +8,14 @@ import {
   insertHighlightSchema,
   insertNewsletterSubscriptionSchema 
 } from "@shared/schema";
+import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
+
+// Extend session data to include userId
+declare module "express-session" {
+  interface SessionData {
+    userId: string;
+  }
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Session configuration
@@ -246,6 +254,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ authenticated: true, userId: req.session.userId });
     } else {
       res.json({ authenticated: false });
+    }
+  });
+
+  // ===== OBJECT STORAGE ROUTES =====
+  // Referenced from blueprint:javascript_object_storage
+  
+  // Serve public-visibility objects (admin-uploaded images)
+  app.get("/objects/:objectPath(*)", async (req, res) => {
+    const objectStorageService = new ObjectStorageService();
+    try {
+      const objectFile = await objectStorageService.getObjectEntityFile(req.path);
+      objectStorageService.downloadObject(objectFile, res);
+    } catch (error) {
+      console.error("Error serving object:", error);
+      if (error instanceof ObjectNotFoundError) {
+        return res.sendStatus(404);
+      }
+      return res.sendStatus(500);
+    }
+  });
+
+  // Get presigned upload URL (admin only)
+  app.post("/api/objects/upload", requireAuth, async (req, res) => {
+    try {
+      const objectStorageService = new ObjectStorageService();
+      const uploadURL = await objectStorageService.getObjectEntityUploadURL();
+      res.json({ uploadURL });
+    } catch (error) {
+      console.error("Error getting upload URL:", error);
+      res.status(500).json({ error: "Failed to get upload URL" });
+    }
+  });
+
+  // Update Our Chapter page images (admin only)
+  app.put("/api/chapter-images", requireAuth, async (req, res) => {
+    const { imageType, imageURL } = req.body;
+    
+    if (!imageType || !imageURL) {
+      return res.status(400).json({ error: "imageType and imageURL are required" });
+    }
+
+    const userId = req.session.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+      const objectStorageService = new ObjectStorageService();
+      const objectPath = await objectStorageService.trySetObjectEntityAclPolicy(
+        imageURL,
+        {
+          owner: userId,
+          visibility: "public",
+        },
+      );
+
+      // Update settings with the new image path
+      const fieldMap: Record<string, keyof typeof insertSettingsSchema.shape> = {
+        hero: "ourChapterHeroImage",
+        mission: "ourChapterMissionImage",
+        whyChoose: "ourChapterWhyChooseImage",
+        services: "ourChapterServicesImage",
+      };
+
+      const fieldName = fieldMap[imageType];
+      if (!fieldName) {
+        return res.status(400).json({ error: "Invalid imageType" });
+      }
+
+      // Fetch current settings first
+      const currentSettings = await storage.getSettings();
+      if (!currentSettings) {
+        return res.status(500).json({ error: "Settings not found" });
+      }
+
+      // Update with new image
+      const updated = await storage.updateSettings({
+        ...currentSettings,
+        [fieldName]: objectPath,
+      });
+      
+      res.status(200).json({
+        objectPath,
+        settings: updated,
+      });
+    } catch (error) {
+      console.error("Error setting chapter image:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   });
 

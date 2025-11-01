@@ -41,11 +41,14 @@ Preferred communication style: Simple, everyday language.
 - RESTful API design pattern
 
 **API Structure**
-- `/api/settings` - Site configuration (hero text, social links, meeting info)
+- `/api/settings` - Site configuration (hero text, social links, meeting info, Our Chapter page images)
 - `/api/events` - Event management (CRUD operations)
 - `/api/highlights` - Featured content carousel
 - `/api/newsletter/subscribe` - Newsletter subscription handling
 - `/api/admin/*` - Admin authentication and dashboard endpoints
+- `/api/objects/upload` - Generate presigned upload URL for image uploads (admin-only)
+- `/api/chapter-images` - Update Our Chapter page images with uploaded files (admin-only)
+- `/objects/:objectPath(*)` - Serve publicly accessible uploaded images
 
 **Authentication & Authorization**
 - Session-based auth with HTTP-only cookies
@@ -59,11 +62,12 @@ Preferred communication style: Simple, everyday language.
 - Schema-first approach with Zod validation through `drizzle-zod`
 
 **Database Schema**
-- **settings** - Single-row configuration table (hero text, social media links, meeting details)
+- **settings** - Single-row configuration table (hero text, social media links, meeting details, Our Chapter page images)
+  - Image fields: `ourChapterHeroImage`, `ourChapterMissionImage`, `ourChapterWhyChooseImage`, `ourChapterServicesImage`
 - **events** - Event listings with title, description, date, time, location, category
 - **highlights** - Carousel content for featured stories/announcements
 - **newsletter_subscriptions** - Email collection for newsletter
-- **users** - Admin user accounts (implied from storage interface)
+- **users** - Admin user accounts (password hashed with bcrypt)
 
 **Key Design Decisions**
 - Middleware for request logging and JSON response capture
@@ -77,6 +81,11 @@ Preferred communication style: Simple, everyday language.
 - Neon Database (PostgreSQL-compatible serverless database via `@neondatabase/serverless`)
 - Drizzle ORM for database operations and migrations
 - Database URL configured via `DATABASE_URL` environment variable
+- **Replit Object Storage** - Cloud storage for admin-uploaded images
+  - Google Cloud Storage backend via `@google-cloud/storage`
+  - Environment variables: `DEFAULT_OBJECT_STORAGE_BUCKET_ID`, `PRIVATE_OBJECT_DIR`, `PUBLIC_OBJECT_SEARCH_PATHS`
+  - Public visibility for user-uploaded images on Our Chapter page
+  - ACL policy management for access control
 
 **UI Component Libraries**
 - Radix UI primitives for accessible, unstyled components (dialogs, dropdowns, tooltips, etc.)
@@ -101,6 +110,63 @@ Preferred communication style: Simple, everyday language.
 - No payment processing or external APIs currently integrated
 
 ## Recent Changes (2025-11-01)
+
+### Image Upload System with Cropping (November 2025)
+
+**Feature Overview**
+- Professional image upload system for Our Chapter page
+- Built-in image cropping with zoom controls using `react-easy-crop`
+- Secure admin-only upload with session authentication
+- Integration with Replit Object Storage for reliable cloud hosting
+
+**Technical Implementation**
+- **Client Components:**
+  - `ImageUploadWithCrop` - Reusable upload component with cropper dialog
+  - Drag-and-drop support, file validation, and preview
+  - Canvas-based image cropping with adjustable zoom (1x-3x)
+  - Configurable aspect ratios (16:9 for hero/mission, 4:3 for why choose/services)
+  
+- **Server Infrastructure:**
+  - `server/objectStorage.ts` - Object storage service with presigned URL generation
+  - `server/objectAcl.ts` - ACL policy management for public/private access control
+  - Three new API endpoints for upload workflow
+  
+- **Upload Flow:**
+  1. Admin clicks "Upload & Crop" in dashboard
+  2. Selects image file from computer
+  3. Cropper dialog opens with zoom slider
+  4. Admin adjusts crop area and zoom level
+  5. Click "Save Image" triggers:
+     - Client creates cropped image blob via canvas API
+     - Requests presigned upload URL from backend
+     - Uploads cropped image directly to Google Cloud Storage
+     - Backend sets public ACL policy on uploaded file
+     - Settings updated with normalized object path (`/objects/uploads/...`)
+     - React Query cache invalidated and refetched
+  6. Success toast notification
+  7. Preview updates immediately, public page shows new image
+
+- **Security & Performance:**
+  - Admin authentication required for all upload operations
+  - Session-based authorization with `requireAuth` middleware
+  - Presigned URLs with 15-minute expiration for secure uploads
+  - Public visibility set on images for fast public access (no auth required)
+  - Optimized JPEG output at 95% quality
+  - Immediate cache invalidation ensures consistency
+
+- **Admin Dashboard Integration:**
+  - Replaced URL input fields with upload buttons
+  - Live preview of uploaded images (128x80px thumbnails)
+  - Four upload sections: Hero, Mission, Why Choose Us, Services
+  - Test IDs: `button-upload-hero-image`, `button-upload-mission-image`, etc.
+
+**Files Modified/Created:**
+- `client/src/components/ImageUploadWithCrop.tsx` - New component
+- `server/objectStorage.ts` - New service
+- `server/objectAcl.ts` - New ACL management
+- `server/routes.ts` - Added object storage routes
+- `client/src/pages/AdminDashboard.tsx` - Integrated upload component
+- `shared/schema.ts` - Added image URL fields to settings
 
 ### New Pages Added (Completed & Tested)
 1. **Contact Page** (`/contact`) - Tabbed interface with:

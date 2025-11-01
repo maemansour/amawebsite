@@ -19,6 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { type Settings, type Event, type Highlight } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { ImageUploadWithCrop } from "@/components/ImageUploadWithCrop";
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -382,60 +383,40 @@ function GeneralSettings() {
       <Card>
         <CardHeader>
           <CardTitle>Our Chapter Page Images</CardTitle>
-          <CardDescription>Configure images for the Our Chapter page</CardDescription>
+          <CardDescription>Upload and crop images for the Our Chapter page</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="ourChapterHeroImage">Hero Section Image URL</Label>
-            <Input
-              id="ourChapterHeroImage"
-              type="url"
-              value={formData.ourChapterHeroImage || ""}
-              onChange={(e) => handleChange("ourChapterHeroImage", e.target.value)}
-              placeholder="https://images.unsplash.com/..."
-              data-testid="input-our-chapter-hero-image"
-            />
-            <p className="text-xs text-muted-foreground">GBM with Industry Professionals image</p>
-          </div>
+        <CardContent className="space-y-6">
+          <ImageUploadWithCrop
+            label="Hero Section Image"
+            imageType="hero"
+            currentImage={settings?.ourChapterHeroImage}
+            aspectRatio={16 / 9}
+            testId="button-upload-hero-image"
+          />
 
-          <div className="space-y-2">
-            <Label htmlFor="ourChapterMissionImage">Mission Section Image URL</Label>
-            <Input
-              id="ourChapterMissionImage"
-              type="url"
-              value={formData.ourChapterMissionImage || ""}
-              onChange={(e) => handleChange("ourChapterMissionImage", e.target.value)}
-              placeholder="https://images.unsplash.com/..."
-              data-testid="input-our-chapter-mission-image"
-            />
-            <p className="text-xs text-muted-foreground">Team collaboration image</p>
-          </div>
+          <ImageUploadWithCrop
+            label="Mission Section Image"
+            imageType="mission"
+            currentImage={settings?.ourChapterMissionImage}
+            aspectRatio={16 / 9}
+            testId="button-upload-mission-image"
+          />
 
-          <div className="space-y-2">
-            <Label htmlFor="ourChapterWhyChooseImage">Why Choose Us Section Image URL</Label>
-            <Input
-              id="ourChapterWhyChooseImage"
-              type="url"
-              value={formData.ourChapterWhyChooseImage || ""}
-              onChange={(e) => handleChange("ourChapterWhyChooseImage", e.target.value)}
-              placeholder="https://images.unsplash.com/..."
-              data-testid="input-our-chapter-why-choose-image"
-            />
-            <p className="text-xs text-muted-foreground">Students working together image</p>
-          </div>
+          <ImageUploadWithCrop
+            label="Why Choose Us Section Image"
+            imageType="whyChoose"
+            currentImage={settings?.ourChapterWhyChooseImage}
+            aspectRatio={4 / 3}
+            testId="button-upload-why-choose-image"
+          />
 
-          <div className="space-y-2">
-            <Label htmlFor="ourChapterServicesImage">Services Section Image URL</Label>
-            <Input
-              id="ourChapterServicesImage"
-              type="url"
-              value={formData.ourChapterServicesImage || ""}
-              onChange={(e) => handleChange("ourChapterServicesImage", e.target.value)}
-              placeholder="https://images.unsplash.com/..."
-              data-testid="input-our-chapter-services-image"
-            />
-            <p className="text-xs text-muted-foreground">Professional leadership development image</p>
-          </div>
+          <ImageUploadWithCrop
+            label="Services Section Image"
+            imageType="services"
+            currentImage={settings?.ourChapterServicesImage}
+            aspectRatio={4 / 3}
+            testId="button-upload-services-image"
+          />
         </CardContent>
       </Card>
 
