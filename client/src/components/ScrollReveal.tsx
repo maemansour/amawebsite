@@ -20,8 +20,8 @@ export function ScrollReveal({
   const directionOffset = {
     up: { y: 40 },
     down: { y: -40 },
-    left: { x: 40 },
-    right: { x: -40 },
+    left: { x: -40 },
+    right: { x: 40 },
     none: {}
   };
 
