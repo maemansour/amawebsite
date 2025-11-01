@@ -58,7 +58,9 @@ export function Hero({ settings }: HeroProps) {
               <div className="flex flex-col items-center gap-2" data-testid="stat-members">
                 <Users className="w-8 h-8 text-primary-foreground" />
                 <div className="text-center">
-                  <div className="text-3xl font-heading font-bold text-primary-foreground">280</div>
+                  <div className="text-3xl font-heading font-bold text-primary-foreground">
+                    {settings?.memberCount || 280}
+                  </div>
                   <div className="text-sm font-medium text-primary-foreground/80">Members</div>
                 </div>
               </div>
