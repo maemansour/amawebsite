@@ -17,7 +17,7 @@ export function Footer({ settings }: FooterProps) {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-primary-foreground rounded-full flex items-center justify-center">
-                <span className="text-primary font-bold text-lg">AMA</span>
+                <span className="text-primary font-heading font-semibold text-base tracking-tight">AM&gt;</span>
               </div>
               <span className="font-heading font-bold text-lg">AMA SDSU</span>
             </div>
