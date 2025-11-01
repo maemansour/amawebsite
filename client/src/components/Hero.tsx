@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Trophy } from "lucide-react";
 import { type Settings } from "@shared/schema";
 
 interface HeroProps {
@@ -23,9 +24,10 @@ export function Hero({ settings }: HeroProps) {
           {/* Left Content */}
           <div className="space-y-8">
             <Badge 
-              className="bg-gold text-primary-foreground border-none font-semibold text-sm px-4 py-1"
+              className="bg-gold text-primary-foreground border-none font-semibold text-sm px-4 py-1 flex items-center gap-2 w-fit"
               data-testid="badge-top-chapter"
             >
+              <Trophy className="w-4 h-4" />
               TOP 10 Chapter
             </Badge>
 
