@@ -26,7 +26,7 @@ export function Hero({ settings }: HeroProps) {
               className="bg-gold text-primary-foreground border-none font-semibold text-sm px-4 py-1"
               data-testid="badge-top-chapter"
             >
-              #2 TOP 10 Chapter
+              TOP 10 Chapter
             </Badge>
 
             <div className="space-y-4">
