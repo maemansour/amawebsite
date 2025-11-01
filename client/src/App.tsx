@@ -8,9 +8,15 @@ import Home from "@/pages/Home";
 import EventCalendar from "@/pages/EventCalendar";
 import Contact from "@/pages/Contact";
 import CommitteePage from "@/pages/CommitteePage";
+import Committees from "@/pages/Committees";
 import Membership from "@/pages/Membership";
 import Resources from "@/pages/Resources";
 import Alumni from "@/pages/Alumni";
+import ExecutiveBoard from "@/pages/ExecutiveBoard";
+import OurChapter from "@/pages/OurChapter";
+import OurSponsors from "@/pages/OurSponsors";
+import WeeklyMeetings from "@/pages/WeeklyMeetings";
+import PastVPBoards from "@/pages/PastVPBoards";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import NotFound from "@/pages/not-found";
@@ -33,6 +39,31 @@ function Router() {
           <Contact />
         </PublicLayout>
       </Route>
+      <Route path="/executive-board">
+        <PublicLayout>
+          <ExecutiveBoard />
+        </PublicLayout>
+      </Route>
+      <Route path="/our-chapter">
+        <PublicLayout>
+          <OurChapter />
+        </PublicLayout>
+      </Route>
+      <Route path="/sponsors">
+        <PublicLayout>
+          <OurSponsors />
+        </PublicLayout>
+      </Route>
+      <Route path="/weekly-meetings">
+        <PublicLayout>
+          <WeeklyMeetings />
+        </PublicLayout>
+      </Route>
+      <Route path="/committees">
+        <PublicLayout>
+          <Committees />
+        </PublicLayout>
+      </Route>
       <Route path="/committees/:id">
         <PublicLayout>
           <CommitteePage />
@@ -51,6 +82,11 @@ function Router() {
       <Route path="/alumni">
         <PublicLayout>
           <Alumni />
+        </PublicLayout>
+      </Route>
+      <Route path="/past-vp-boards">
+        <PublicLayout>
+          <PastVPBoards />
         </PublicLayout>
       </Route>
       <Route path="/admin" component={AdminLogin} />

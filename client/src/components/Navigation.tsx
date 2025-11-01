@@ -58,30 +58,44 @@ export function Navigation() {
                     <ul className="grid w-48 gap-1 p-2">
                       <li>
                         <NavigationMenuLink asChild>
-                          <a
-                            href="#mission"
-                            className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate"
-                            data-testid="link-mission"
-                          >
-                            <div className="text-sm font-medium leading-none">Mission</div>
-                            <p className="text-sm leading-snug text-muted-foreground mt-1">
-                              Our purpose and goals
-                            </p>
-                          </a>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <a
-                            href="#executive"
+                          <Link
+                            href="/executive-board"
                             className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate"
                             data-testid="link-executive"
                           >
                             <div className="text-sm font-medium leading-none">Executive Board</div>
                             <p className="text-sm leading-snug text-muted-foreground mt-1">
-                              Meet our leaders
+                              Meet our leadership team and executive board members.
                             </p>
-                          </a>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href="/our-chapter"
+                            className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate"
+                            data-testid="link-our-chapter"
+                          >
+                            <div className="text-sm font-medium leading-none">Our Chapter</div>
+                            <p className="text-sm leading-snug text-muted-foreground mt-1">
+                              Learn about our TOP 10 chapter and what we offer.
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href="/sponsors"
+                            className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate"
+                            data-testid="link-sponsors"
+                          >
+                            <div className="text-sm font-medium leading-none">Our Sponsors</div>
+                            <p className="text-sm leading-snug text-muted-foreground mt-1">
+                              Meet the organizations that support our mission.
+                            </p>
+                          </Link>
                         </NavigationMenuLink>
                       </li>
                     </ul>
@@ -96,30 +110,58 @@ export function Navigation() {
                     <ul className="grid w-48 gap-1 p-2">
                       <li>
                         <NavigationMenuLink asChild>
-                          <a
-                            href="#membership"
+                          <Link
+                            href="/weekly-meetings"
+                            className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate"
+                            data-testid="link-weekly-meetings"
+                          >
+                            <div className="text-sm font-medium leading-none">Weekly Meetings</div>
+                            <p className="text-sm leading-snug text-muted-foreground mt-1">
+                              Join us every Thursday at 6:00 PM for professional...
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href="/committees"
+                            className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate"
+                            data-testid="link-committees"
+                          >
+                            <div className="text-sm font-medium leading-none">Committees</div>
+                            <p className="text-sm leading-snug text-muted-foreground mt-1">
+                              Get hands-on experience in marketing, events, and more.
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href="/membership"
                             className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate"
                             data-testid="link-membership"
                           >
                             <div className="text-sm font-medium leading-none">Membership</div>
                             <p className="text-sm leading-snug text-muted-foreground mt-1">
-                              Join our community
+                              Learn about membership benefits and how to join.
                             </p>
-                          </a>
+                          </Link>
                         </NavigationMenuLink>
                       </li>
                       <li>
                         <NavigationMenuLink asChild>
-                          <a
-                            href="#events"
+                          <Link
+                            href="/resources"
                             className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate"
-                            data-testid="link-events"
+                            data-testid="link-official-ama"
                           >
-                            <div className="text-sm font-medium leading-none">Events</div>
+                            <div className="text-sm font-medium leading-none">Official AMA</div>
                             <p className="text-sm leading-snug text-muted-foreground mt-1">
-                              Upcoming activities
+                              Connect with the national American Marketing...
                             </p>
-                          </a>
+                          </Link>
                         </NavigationMenuLink>
                       </li>
                     </ul>
@@ -134,30 +176,30 @@ export function Navigation() {
                     <ul className="grid w-48 gap-1 p-2">
                       <li>
                         <NavigationMenuLink asChild>
-                          <a
-                            href="#alumni-relations"
+                          <Link
+                            href="/alumni"
                             className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate"
                             data-testid="link-alumni-relations"
                           >
                             <div className="text-sm font-medium leading-none">Alumni Relations</div>
                             <p className="text-sm leading-snug text-muted-foreground mt-1">
-                              Stay connected
+                              Stay connected with our alumni network and...
                             </p>
-                          </a>
+                          </Link>
                         </NavigationMenuLink>
                       </li>
                       <li>
                         <NavigationMenuLink asChild>
-                          <a
-                            href="#past-vp"
+                          <Link
+                            href="/past-vp-boards"
                             className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate"
                             data-testid="link-past-vp"
                           >
                             <div className="text-sm font-medium leading-none">Past VP Executive Boards</div>
                             <p className="text-sm leading-snug text-muted-foreground mt-1">
-                              Honor our leaders
+                              Honor the leaders who helped shape our chapter's...
                             </p>
-                          </a>
+                          </Link>
                         </NavigationMenuLink>
                       </li>
                     </ul>
@@ -213,30 +255,39 @@ export function Navigation() {
                 </Link>
                 <div className="flex flex-col gap-2">
                   <span className="text-sm font-semibold text-muted-foreground px-3">About Us</span>
-                  <a href="#mission" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-mission">
-                    Mission
-                  </a>
-                  <a href="#executive" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-executive">
+                  <Link href="/executive-board" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-executive">
                     Executive Board
-                  </a>
+                  </Link>
+                  <Link href="/our-chapter" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-our-chapter">
+                    Our Chapter
+                  </Link>
+                  <Link href="/sponsors" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-sponsors">
+                    Our Sponsors
+                  </Link>
                 </div>
                 <div className="flex flex-col gap-2">
                   <span className="text-sm font-semibold text-muted-foreground px-3">Get Involved</span>
-                  <a href="#membership" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-membership">
+                  <Link href="/weekly-meetings" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-weekly-meetings">
+                    Weekly Meetings
+                  </Link>
+                  <Link href="/committees" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-committees">
+                    Committees
+                  </Link>
+                  <Link href="/membership" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-membership">
                     Membership
-                  </a>
-                  <a href="#events" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-events">
-                    Events
-                  </a>
+                  </Link>
+                  <Link href="/resources" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-official-ama">
+                    Official AMA
+                  </Link>
                 </div>
                 <div className="flex flex-col gap-2">
                   <span className="text-sm font-semibold text-muted-foreground px-3">Alumni</span>
-                  <a href="#alumni-relations" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-alumni-relations">
+                  <Link href="/alumni" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-alumni-relations">
                     Alumni Relations
-                  </a>
-                  <a href="#past-vp" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-past-vp">
+                  </Link>
+                  <Link href="/past-vp-boards" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-past-vp">
                     Past VP Executive Boards
-                  </a>
+                  </Link>
                 </div>
                 <Link 
                   href="/calendar"
