@@ -3,7 +3,6 @@ import { Hero } from "@/components/Hero";
 import { HighlightsCarousel } from "@/components/HighlightsCarousel";
 import { OurChapter } from "@/components/OurChapter";
 import { ChapterHistory } from "@/components/ChapterHistory";
-import { PartnersCollaborations } from "@/components/PartnersCollaborations";
 import { WeeklyMeetings } from "@/components/WeeklyMeetings";
 import { Committees } from "@/components/Committees";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
@@ -53,7 +52,6 @@ export default function Home() {
 
       <OurChapter />
       <ChapterHistory />
-      <PartnersCollaborations />
       <WeeklyMeetings settings={settings} />
       <Committees />
 

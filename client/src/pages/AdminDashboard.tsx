@@ -26,7 +26,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("general");
 
   // Check if user is authenticated
-  const { data: authStatus } = useQuery({
+  const { data: authStatus } = useQuery<{ authenticated: boolean }>({
     queryKey: ["/api/admin/status"],
   });
 
