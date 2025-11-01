@@ -1,0 +1,89 @@
+import { sql } from "drizzle-orm";
+import { pgTable, text, varchar, timestamp, integer } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+
+// Settings table - stores general site configuration
+export const settings = pgTable("settings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  heroDescription: text("hero_description").notNull(),
+  memberCount: integer("member_count").notNull(),
+  meetingDay: text("meeting_day").notNull(),
+  meetingTime: text("meeting_time").notNull(),
+  meetingLocation: text("meeting_location").notNull(),
+  meetingRoom: text("meeting_room").notNull(),
+  meetingSemester: text("meeting_semester").notNull(),
+  joinLink: text("join_link").notNull(),
+  instagramLink: text("instagram_link").notNull(),
+  instagramUsername: text("instagram_username").notNull(),
+  instagramFollowers: text("instagram_followers").notNull(),
+  linkedinLink: text("linkedin_link").notNull(),
+  linkedinUsername: text("linkedin_username").notNull(),
+  tiktokLink: text("tiktok_link").notNull(),
+  tiktokUsername: text("tiktok_username").notNull(),
+  spotifyLink: text("spotify_link").notNull(),
+  email: text("email").notNull(),
+});
+
+export const insertSettingsSchema = createInsertSchema(settings).omit({ id: true });
+export type InsertSettings = z.infer<typeof insertSettingsSchema>;
+export type Settings = typeof settings.$inferSelect;
+
+// Events table - stores all club events
+export const events = pgTable("events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  date: text("date").notNull(), // Format: YYYY-MM-DD
+  time: text("time").notNull(),
+  location: text("location").notNull(),
+  category: text("category").notNull(), // e.g., "Weekly Meeting", "Professional Development"
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertEventSchema = createInsertSchema(events).omit({ id: true, createdAt: true });
+export type InsertEvent = z.infer<typeof insertEventSchema>;
+export type Event = typeof events.$inferSelect;
+
+// Highlights table - stores featured content for the carousel
+export const highlights = pgTable("highlights", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  category: text("category").notNull(), // e.g., "Announcement", "Event"
+  imageUrl: text("image_url").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertHighlightSchema = createInsertSchema(highlights).omit({ id: true, createdAt: true });
+export type InsertHighlight = z.infer<typeof insertHighlightSchema>;
+export type Highlight = typeof highlights.$inferSelect;
+
+// Newsletter subscriptions
+export const newsletterSubscriptions = pgTable("newsletter_subscriptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: text("email").notNull().unique(),
+  subscribedAt: timestamp("subscribed_at").defaultNow().notNull(),
+});
+
+export const insertNewsletterSubscriptionSchema = createInsertSchema(newsletterSubscriptions).omit({ 
+  id: true, 
+  subscribedAt: true 
+});
+export type InsertNewsletterSubscription = z.infer<typeof insertNewsletterSubscriptionSchema>;
+export type NewsletterSubscription = typeof newsletterSubscriptions.$inferSelect;
+
+// Admin users (for password authentication)
+export const users = pgTable("users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  username: text("username").notNull().unique(),
+  password: text("password").notNull(),
+});
+
+export const insertUserSchema = createInsertSchema(users).pick({
+  username: true,
+  password: true,
+});
+
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type User = typeof users.$inferSelect;
