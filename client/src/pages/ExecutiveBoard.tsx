@@ -73,11 +73,6 @@ export default function ExecutiveBoard() {
                 <p className="text-lg md:text-xl text-muted-foreground mb-8" data-testid="text-executive-description">
                   Meet the dedicated leaders driving our chapter's success and maintaining our national recognition.
                 </p>
-                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-6 py-3 rounded-lg border-2 border-primary/30 font-semibold">
-                  <Award className="w-5 h-5" />
-                  <span data-testid="text-leadership-badge">Award-Winning Leadership</span>
-                  <Award className="w-5 h-5" />
-                </div>
               </ScrollReveal>
 
               {/* Right Column */}
