@@ -23,6 +23,11 @@ export const settings = pgTable("settings", {
   tiktokUsername: text("tiktok_username").notNull(),
   spotifyLink: text("spotify_link").notNull(),
   email: text("email").notNull(),
+  // Our Chapter page images
+  ourChapterHeroImage: text("our_chapter_hero_image").notNull().default("https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop"),
+  ourChapterMissionImage: text("our_chapter_mission_image").notNull().default("https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=400&fit=crop"),
+  ourChapterWhyChooseImage: text("our_chapter_why_choose_image").notNull().default("https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop"),
+  ourChapterServicesImage: text("our_chapter_services_image").notNull().default("https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&h=600&fit=crop"),
 });
 
 export const insertSettingsSchema = createInsertSchema(settings).omit({ id: true });

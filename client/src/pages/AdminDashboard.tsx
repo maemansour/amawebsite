@@ -379,6 +379,66 @@ function GeneralSettings() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle>Our Chapter Page Images</CardTitle>
+          <CardDescription>Configure images for the Our Chapter page</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="ourChapterHeroImage">Hero Section Image URL</Label>
+            <Input
+              id="ourChapterHeroImage"
+              type="url"
+              value={formData.ourChapterHeroImage || ""}
+              onChange={(e) => handleChange("ourChapterHeroImage", e.target.value)}
+              placeholder="https://images.unsplash.com/..."
+              data-testid="input-our-chapter-hero-image"
+            />
+            <p className="text-xs text-muted-foreground">GBM with Industry Professionals image</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="ourChapterMissionImage">Mission Section Image URL</Label>
+            <Input
+              id="ourChapterMissionImage"
+              type="url"
+              value={formData.ourChapterMissionImage || ""}
+              onChange={(e) => handleChange("ourChapterMissionImage", e.target.value)}
+              placeholder="https://images.unsplash.com/..."
+              data-testid="input-our-chapter-mission-image"
+            />
+            <p className="text-xs text-muted-foreground">Team collaboration image</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="ourChapterWhyChooseImage">Why Choose Us Section Image URL</Label>
+            <Input
+              id="ourChapterWhyChooseImage"
+              type="url"
+              value={formData.ourChapterWhyChooseImage || ""}
+              onChange={(e) => handleChange("ourChapterWhyChooseImage", e.target.value)}
+              placeholder="https://images.unsplash.com/..."
+              data-testid="input-our-chapter-why-choose-image"
+            />
+            <p className="text-xs text-muted-foreground">Students working together image</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="ourChapterServicesImage">Services Section Image URL</Label>
+            <Input
+              id="ourChapterServicesImage"
+              type="url"
+              value={formData.ourChapterServicesImage || ""}
+              onChange={(e) => handleChange("ourChapterServicesImage", e.target.value)}
+              placeholder="https://images.unsplash.com/..."
+              data-testid="input-our-chapter-services-image"
+            />
+            <p className="text-xs text-muted-foreground">Professional leadership development image</p>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="flex justify-end">
         <Button 
           type="submit" 
