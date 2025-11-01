@@ -29,7 +29,7 @@ export function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 hover-elevate rounded-md px-2 py-1" data-testid="link-home">
             <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">AMA</span>
+              <span className="text-primary-foreground font-bold text-lg">AM&gt;</span>
             </div>
             <span className="font-heading font-bold text-lg text-foreground hidden sm:inline">
               AMA SDSU
