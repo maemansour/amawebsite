@@ -71,11 +71,11 @@ export function Hero({ settings }: HeroProps) {
             <div className="relative w-80 h-80 lg:w-96 lg:h-96">
               <div className="absolute inset-0 bg-accent/20 rounded-full blur-2xl"></div>
               <div className="relative w-full h-full rounded-full bg-primary-foreground/10 backdrop-blur-sm border-4 border-primary-foreground/20 flex items-center justify-center">
-                <div className="text-center space-y-2">
-                  <div className="text-7xl lg:text-8xl font-heading font-bold">
+                <div className="text-center space-y-3">
+                  <div className="text-7xl lg:text-8xl font-heading font-extrabold tracking-tight leading-none">
                     AM&gt;
                   </div>
-                  <div className="text-xl lg:text-2xl font-semibold tracking-wider">
+                  <div className="text-base lg:text-lg font-heading font-semibold tracking-[0.2em] uppercase">
                     SAN DIEGO STATE
                   </div>
                 </div>
