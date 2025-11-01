@@ -1,4 +1,4 @@
-import { Handshake, Users, FileText, TrendingUp, Mail, ChevronLeft, ChevronRight } from "lucide-react";
+import { Handshake, Users, FileText, TrendingUp, Mail } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -152,40 +152,47 @@ export default function OurSponsors() {
 
 function SponsorsCarousel({ sponsors }: { sponsors: Sponsor[] }) {
   const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true },
-    [Autoplay({ delay: 5000, stopOnInteraction: true })]
+    { loop: true, align: 'start' },
+    [Autoplay({ delay: 5000, stopOnInteraction: false })]
   );
 
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
+  const scrollTo = useCallback((index: number) => {
+    if (emblaApi) {
+      emblaApi.scrollTo(index);
+    }
   }, [emblaApi]);
 
-  const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
-  }, [emblaApi]);
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setCanScrollPrev(emblaApi.canScrollPrev());
-    setCanScrollNext(emblaApi.canScrollNext());
-  }, [emblaApi]);
+  const onSelect = useCallback((api: typeof emblaApi) => {
+    if (!api) return;
+    setSelectedIndex(api.selectedScrollSnap());
+  }, []);
 
   useEffect(() => {
     if (!emblaApi) return;
-    onSelect();
-    emblaApi.on("select", onSelect);
-    emblaApi.on("reInit", onSelect);
+    
+    onSelect(emblaApi);
+    emblaApi.on("select", () => onSelect(emblaApi));
+    emblaApi.on("reInit", () => onSelect(emblaApi));
+
+    return () => {
+      emblaApi.off("select", () => onSelect(emblaApi));
+      emblaApi.off("reInit", () => onSelect(emblaApi));
+    };
   }, [emblaApi, onSelect]);
 
   return (
     <div className="relative">
       <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
         <div className="flex">
-          {sponsors.map((sponsor) => (
-            <div key={sponsor.id} className="flex-[0_0_100%] min-w-0">
+          {sponsors.map((sponsor, index) => (
+            <div 
+              key={sponsor.id} 
+              className="flex-[0_0_100%] min-w-0"
+              aria-hidden={index !== selectedIndex}
+              data-active={index === selectedIndex}
+            >
               <div className="relative h-[500px] md:h-[600px]">
                 {/* Background Image */}
                 <div className="absolute inset-0">
@@ -221,26 +228,24 @@ function SponsorsCarousel({ sponsors }: { sponsors: Sponsor[] }) {
         </div>
       </div>
 
-      {/* Navigation Arrows */}
+      {/* Dot Navigation */}
       {sponsors.length > 1 && (
-        <>
-          <button
-            onClick={scrollPrev}
-            disabled={!canScrollPrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm border border-border flex items-center justify-center hover-elevate active-elevate-2 disabled:opacity-50 disabled:cursor-not-allowed z-10"
-            data-testid="button-carousel-prev"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          <button
-            onClick={scrollNext}
-            disabled={!canScrollNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm border border-border flex items-center justify-center hover-elevate active-elevate-2 disabled:opacity-50 disabled:cursor-not-allowed z-10"
-            data-testid="button-carousel-next"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
-        </>
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10" data-testid="carousel-dots">
+          {sponsors.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => scrollTo(index)}
+              className={`w-2.5 h-2.5 rounded-full transition-all hover-elevate active-elevate-2 ${
+                index === selectedIndex 
+                  ? 'bg-primary-foreground w-8' 
+                  : 'bg-primary-foreground/40'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+              aria-current={index === selectedIndex ? 'true' : 'false'}
+              data-testid={`button-carousel-dot-${index}`}
+            />
+          ))}
+        </div>
       )}
     </div>
   );
