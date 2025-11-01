@@ -15,8 +15,8 @@ export function Hero({ settings }: HeroProps) {
     <section className="relative bg-primary text-primary-foreground overflow-hidden">
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-accent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 right-1/3 w-64 h-64 bg-gold rounded-full blur-3xl"></div>
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary-foreground rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 right-1/3 w-64 h-64 bg-primary-foreground/50 rounded-full blur-3xl"></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-20 md:py-28 lg:py-32">
@@ -25,14 +25,14 @@ export function Hero({ settings }: HeroProps) {
           <div className="space-y-8">
             <div className="flex flex-wrap gap-3">
               <Badge 
-                className="bg-gold text-primary-foreground border-none font-semibold text-sm px-4 py-1 flex items-center gap-2 w-fit"
+                className="bg-white dark:bg-card text-primary border-none font-semibold text-sm px-4 py-1 flex items-center gap-2 w-fit"
                 data-testid="badge-top-chapter"
               >
                 <Trophy className="w-4 h-4" />
                 TOP 10 Chapter
               </Badge>
               <Badge 
-                className="bg-gold text-primary-foreground border-none font-semibold text-sm px-4 py-1 flex items-center gap-2 w-fit"
+                className="bg-white dark:bg-card text-primary border-none font-semibold text-sm px-4 py-1 flex items-center gap-2 w-fit"
                 data-testid="badge-rso"
               >
                 <Award className="w-4 h-4" />
@@ -105,7 +105,7 @@ export function Hero({ settings }: HeroProps) {
           {/* Right Content - AMA Logo Visual */}
           <div className="hidden md:flex items-center justify-center">
             <div className="relative w-80 h-80 lg:w-96 lg:h-96">
-              <div className="absolute inset-0 bg-accent/20 rounded-full blur-2xl"></div>
+              <div className="absolute inset-0 bg-primary-foreground/20 rounded-full blur-2xl"></div>
               <div className="relative w-full h-full rounded-full bg-primary-foreground/10 backdrop-blur-sm border-4 border-primary-foreground/20 flex items-center justify-center">
                 <div className="text-center space-y-3">
                   <div className="text-7xl lg:text-8xl font-heading font-bold tracking-tight leading-none">
