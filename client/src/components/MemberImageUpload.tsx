@@ -4,16 +4,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Upload, Crop, Check } from "lucide-react";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { Upload, Check, X } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-interface ImageUploadWithCropProps {
-  label: string;
-  imageType: "hero" | "mission" | "whyChoose" | "services" | "family" | "executiveBoard";
+interface MemberImageUploadProps {
   currentImage?: string;
-  aspectRatio?: number;
-  testId?: string;
+  onImageChange: (imageUrl: string | undefined) => void;
+  memberName?: string;
 }
 
 interface CropArea {
@@ -23,13 +22,11 @@ interface CropArea {
   height: number;
 }
 
-export function ImageUploadWithCrop({
-  label,
-  imageType,
+export function MemberImageUpload({
   currentImage,
-  aspectRatio = 16 / 9,
-  testId,
-}: ImageUploadWithCropProps) {
+  onImageChange,
+  memberName = "Member",
+}: MemberImageUploadProps) {
   const { toast } = useToast();
   const [showDialog, setShowDialog] = useState(false);
   const [originalImage, setOriginalImage] = useState<string | null>(null);
@@ -128,19 +125,12 @@ export function ImageUploadWithCrop({
         throw new Error("Upload failed");
       }
 
-      // Update settings with the permanent object URL
-      await apiRequest("PUT", "/api/chapter-images", {
-        imageType,
-        imageURL: uploadData.objectURL,
-      });
-
-      // Invalidate and refetch settings query to refresh the image
-      await queryClient.invalidateQueries({ queryKey: ["/api/settings"] });
-      await queryClient.refetchQueries({ queryKey: ["/api/settings"] });
+      // Return the permanent object URL to parent component
+      onImageChange(uploadData.objectURL);
 
       toast({
-        title: "Image updated",
-        description: "Your image has been uploaded and saved successfully.",
+        title: "Image uploaded",
+        description: "Profile image has been uploaded successfully.",
       });
 
       setShowDialog(false);
@@ -157,32 +147,47 @@ export function ImageUploadWithCrop({
     }
   };
 
+  const handleRemove = () => {
+    onImageChange(undefined);
+    toast({
+      title: "Image removed",
+      description: "Profile image has been removed.",
+    });
+  };
+
   return (
     <div className="space-y-2">
-      <Label>{label}</Label>
-      <div className="flex gap-3 items-start">
-        {currentImage && (
-          <div className="rounded-md overflow-hidden border border-border w-32 h-20">
-            <img
-              src={currentImage}
-              alt="Current"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
-        <div>
+      <Label>Profile Image</Label>
+      <div className="flex gap-3 items-center">
+        <Avatar className="w-20 h-20">
+          <AvatarImage src={currentImage} alt={memberName} />
+          <AvatarFallback>{memberName.charAt(0)}</AvatarFallback>
+        </Avatar>
+        <div className="flex gap-2">
           <Button
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => document.getElementById(`file-${imageType}`)?.click()}
-            data-testid={testId}
+            onClick={() => document.getElementById("member-profile-image")?.click()}
+            data-testid="button-upload-member-image"
           >
             <Upload className="w-4 h-4 mr-2" />
-            Upload & Crop
+            {currentImage ? "Change" : "Upload"}
           </Button>
+          {currentImage && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleRemove}
+              data-testid="button-remove-member-image"
+            >
+              <X className="w-4 h-4 mr-2" />
+              Remove
+            </Button>
+          )}
           <input
-            id={`file-${imageType}`}
+            id="member-profile-image"
             type="file"
             accept="image/*"
             onChange={handleFileSelect}
@@ -194,9 +199,9 @@ export function ImageUploadWithCrop({
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle>Crop Image</DialogTitle>
+            <DialogTitle>Crop Profile Image</DialogTitle>
             <DialogDescription>
-              Adjust the image to fit perfectly in your site
+              Adjust the image to create a perfect profile picture
             </DialogDescription>
           </DialogHeader>
 
@@ -206,7 +211,7 @@ export function ImageUploadWithCrop({
                 className="relative bg-muted rounded-lg overflow-hidden"
                 style={{
                   width: '100%',
-                  paddingBottom: `${(1 / aspectRatio) * 100}%`,
+                  paddingBottom: '100%',
                   position: 'relative'
                 }}
               >
@@ -215,10 +220,11 @@ export function ImageUploadWithCrop({
                     image={originalImage}
                     crop={crop}
                     zoom={zoom}
-                    aspect={aspectRatio}
+                    aspect={1}
                     onCropChange={setCrop}
                     onZoomChange={setZoom}
                     onCropComplete={onCropComplete}
+                    cropShape="round"
                   />
                 </div>
               </div>

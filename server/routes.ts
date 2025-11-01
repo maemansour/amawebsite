@@ -281,7 +281,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const objectStorageService = new ObjectStorageService();
       const uploadURL = await objectStorageService.getObjectEntityUploadURL();
-      res.json({ uploadURL });
+      
+      // Extract the permanent object URL by removing query parameters
+      const objectURL = uploadURL.split('?')[0];
+      
+      res.json({ uploadURL, objectURL });
     } catch (error) {
       console.error("Error getting upload URL:", error);
       res.status(500).json({ error: "Failed to get upload URL" });

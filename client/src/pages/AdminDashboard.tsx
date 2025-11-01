@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { type Settings, type Event, type Highlight, type ExecutiveMember, type InsertExecutiveMember } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { ImageUploadWithCrop } from "@/components/ImageUploadWithCrop";
+import { MemberImageUpload } from "@/components/MemberImageUpload";
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -1100,7 +1101,7 @@ function ManageExecutiveMembers() {
                 <Label htmlFor="member-bio">Bio</Label>
                 <Textarea
                   id="member-bio"
-                  value={formData.bio}
+                  value={formData.bio ?? ""}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                   rows={3}
                   data-testid="textarea-member-bio"
@@ -1113,7 +1114,7 @@ function ManageExecutiveMembers() {
                   <Input
                     id="member-email"
                     type="email"
-                    value={formData.email}
+                    value={formData.email ?? ""}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     data-testid="input-member-email"
                   />
@@ -1123,7 +1124,7 @@ function ManageExecutiveMembers() {
                   <Input
                     id="member-linkedin"
                     type="url"
-                    value={formData.linkedin}
+                    value={formData.linkedin ?? ""}
                     onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
                     data-testid="input-member-linkedin"
                   />
@@ -1154,17 +1155,11 @@ function ManageExecutiveMembers() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="member-image">Profile Image URL</Label>
-                <Input
-                  id="member-image"
-                  type="url"
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  placeholder="Leave empty for default avatar"
-                  data-testid="input-member-image"
-                />
-              </div>
+              <MemberImageUpload
+                currentImage={formData.image ?? undefined}
+                onImageChange={(imageUrl) => setFormData({ ...formData, image: imageUrl })}
+                memberName={formData.name || "Member"}
+              />
 
               <div className="flex gap-2">
                 <Button
