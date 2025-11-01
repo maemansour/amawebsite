@@ -1,8 +1,13 @@
 import { Award, Target, Users, Heart, TrendingUp, Building2, Lightbulb, Users as UsersIcon, Trophy } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { type Settings } from "@shared/schema";
 
 export default function OurChapter() {
+  const { data: settings } = useQuery<Settings>({
+    queryKey: ["/api/settings"],
+  });
   const offerings = [
     {
       icon: UsersIcon,
@@ -75,7 +80,7 @@ export default function OurChapter() {
               <div className="relative">
                 <div className="rounded-2xl overflow-hidden shadow-2xl">
                   <img 
-                    src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop" 
+                    src={settings?.ourChapterHeroImage || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop"} 
                     alt="GBM with Industry Professionals"
                     className="w-full h-[400px] object-cover"
                     data-testid="img-hero"
@@ -116,7 +121,7 @@ export default function OurChapter() {
               <div className="space-y-4">
                 <div className="rounded-2xl overflow-hidden shadow-lg">
                   <img 
-                    src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=400&fit=crop" 
+                    src={settings?.ourChapterMissionImage || "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=400&fit=crop"} 
                     alt="AMA SDSU Team"
                     className="w-full h-[280px] object-cover"
                     data-testid="img-mission"
@@ -173,7 +178,7 @@ export default function OurChapter() {
               {/* Image */}
               <div className="rounded-2xl overflow-hidden shadow-xl">
                 <img 
-                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop" 
+                  src={settings?.ourChapterWhyChooseImage || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop"} 
                   alt="Students collaborating"
                   className="w-full h-[500px] object-cover"
                   data-testid="img-why-choose-us"
@@ -242,7 +247,7 @@ export default function OurChapter() {
               <div className="relative">
                 <div className="rounded-2xl overflow-hidden shadow-xl">
                   <img 
-                    src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&h=600&fit=crop" 
+                    src={settings?.ourChapterServicesImage || "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&h=600&fit=crop"} 
                     alt="Professional Leadership Development"
                     className="w-full h-[500px] object-cover"
                     data-testid="img-services"
