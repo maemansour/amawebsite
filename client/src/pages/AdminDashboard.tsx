@@ -436,6 +436,22 @@ function GeneralSettings() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle>Executive Board Page Images</CardTitle>
+          <CardDescription>Upload and crop images for the Executive Board page</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <ImageUploadWithCrop
+            label="Hero Section Image"
+            imageType="executiveBoard"
+            currentImage={settings?.executiveBoardHeroImage}
+            aspectRatio={3 / 2}
+            testId="button-upload-executive-hero-image"
+          />
+        </CardContent>
+      </Card>
+
       <div className="flex justify-end">
         <Button 
           type="submit" 

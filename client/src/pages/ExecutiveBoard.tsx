@@ -3,8 +3,13 @@ import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { useQuery } from "@tanstack/react-query";
+import { type Settings } from "@shared/schema";
 
 export default function ExecutiveBoard() {
+  const { data: settings } = useQuery<Settings>({
+    queryKey: ["/api/settings"],
+  });
   const executiveMembers = [
     {
       name: "Sarah Johnson",
@@ -95,7 +100,7 @@ export default function ExecutiveBoard() {
                 <div className="relative">
                   <div className="rounded-2xl overflow-hidden shadow-2xl">
                     <img 
-                      src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop" 
+                      src={settings?.executiveBoardHeroImage || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop"} 
                       alt="Executive Board Team"
                       className="w-full h-[400px] object-cover"
                       data-testid="img-hero"
