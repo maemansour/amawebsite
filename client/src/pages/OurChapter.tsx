@@ -91,7 +91,7 @@ export default function OurChapter() {
                   <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white dark:bg-card px-6 py-3 rounded-lg shadow-lg border-2">
                     <div className="flex items-center gap-2 text-sm font-medium">
                       <Users className="w-4 h-4 text-primary" />
-                      <span data-testid="text-hero-caption">GBM w/ Industry Professionals</span>
+                      <span data-testid="text-hero-caption">GBM with Industry Professionals</span>
                     </div>
                   </div>
                 </div>
