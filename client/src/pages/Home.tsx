@@ -1,7 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Hero } from "@/components/Hero";
 import { HighlightsCarousel } from "@/components/HighlightsCarousel";
-import { WeeklyMeetings } from "@/components/WeeklyMeetings";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
 import { Newsletter } from "@/components/Newsletter";
 import { Footer } from "@/components/Footer";
@@ -45,8 +44,6 @@ export default function Home() {
       ) : (
         <HighlightsCarousel highlights={highlights} />
       )}
-
-      <WeeklyMeetings settings={settings} />
 
       {eventsLoading ? (
         <section className="py-16 md:py-20 bg-muted/30">
