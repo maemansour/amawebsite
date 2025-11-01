@@ -262,17 +262,6 @@ function GeneralSettings() {
               />
             </div>
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="meetingSemester">Meeting Semester</Label>
-            <Input
-              id="meetingSemester"
-              value={formData.meetingSemester || ""}
-              onChange={(e) => handleChange("meetingSemester", e.target.value)}
-              placeholder="Fall & Spring Semesters"
-              data-testid="input-meeting-semester"
-            />
-          </div>
         </CardContent>
       </Card>
 
