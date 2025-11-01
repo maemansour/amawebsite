@@ -8,7 +8,8 @@ import {
   Save,
   Trash2,
   Plus,
-  LogOut
+  LogOut,
+  Users
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { type Settings, type Event, type Highlight } from "@shared/schema";
+import { type Settings, type Event, type Highlight, type ExecutiveMember, type InsertExecutiveMember } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { ImageUploadWithCrop } from "@/components/ImageUploadWithCrop";
 
@@ -89,7 +90,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 max-w-2xl" data-testid="tabs-admin">
+          <TabsList className="grid w-full grid-cols-4 max-w-3xl" data-testid="tabs-admin">
             <TabsTrigger value="general" data-testid="tab-general">
               <SettingsIcon className="h-4 w-4 mr-2" />
               General Settings
@@ -101,6 +102,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="highlights" data-testid="tab-highlights">
               <ImageIcon className="h-4 w-4 mr-2" />
               Highlights
+            </TabsTrigger>
+            <TabsTrigger value="executive-members" data-testid="tab-executive-members">
+              <Users className="h-4 w-4 mr-2" />
+              Executive Board
             </TabsTrigger>
           </TabsList>
 
@@ -114,6 +119,10 @@ export default function AdminDashboard() {
 
           <TabsContent value="highlights">
             <ManageHighlights />
+          </TabsContent>
+
+          <TabsContent value="executive-members">
+            <ManageExecutiveMembers />
           </TabsContent>
         </Tabs>
       </div>
@@ -845,6 +854,413 @@ function ManageHighlights() {
           </Card>
         ))}
       </div>
+    </div>
+  );
+}
+
+function ManageExecutiveMembers() {
+  const { toast } = useToast();
+  const [isAdding, setIsAdding] = useState(false);
+  const [editingMember, setEditingMember] = useState<ExecutiveMember | null>(null);
+  const [formData, setFormData] = useState<Partial<InsertExecutiveMember>>({
+    name: "",
+    title: "",
+    major: "",
+    year: "",
+    bio: "",
+    email: "",
+    linkedin: "",
+    image: "",
+    team: "",
+    displayOrder: 0,
+  });
+
+  const { data: members = [], isLoading } = useQuery<ExecutiveMember[]>({
+    queryKey: ["/api/executive-members"],
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (data: Partial<InsertExecutiveMember>) =>
+      apiRequest("/api/executive-members", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/executive-members"] });
+      toast({
+        title: "Member added",
+        description: "Executive board member has been added successfully.",
+      });
+      setIsAdding(false);
+      setFormData({
+        name: "",
+        title: "",
+        major: "",
+        year: "",
+        bio: "",
+        email: "",
+        linkedin: "",
+        image: "",
+        team: "",
+        displayOrder: 0,
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to add member. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<InsertExecutiveMember> }) =>
+      apiRequest(`/api/executive-members/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/executive-members"] });
+      toast({
+        title: "Member updated",
+        description: "Executive board member has been updated successfully.",
+      });
+      setEditingMember(null);
+      setFormData({
+        name: "",
+        title: "",
+        major: "",
+        year: "",
+        bio: "",
+        email: "",
+        linkedin: "",
+        image: "",
+        team: "",
+        displayOrder: 0,
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update member. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) =>
+      apiRequest(`/api/executive-members/${id}`, {
+        method: "DELETE",
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/executive-members"] });
+      toast({
+        title: "Member deleted",
+        description: "Executive board member has been deleted successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete member. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingMember) {
+      updateMutation.mutate({ id: editingMember.id, data: formData });
+    } else {
+      createMutation.mutate(formData);
+    }
+  };
+
+  const startEdit = (member: ExecutiveMember) => {
+    setEditingMember(member);
+    setFormData({
+      name: member.name,
+      title: member.title,
+      major: member.major,
+      year: member.year,
+      bio: member.bio || "",
+      email: member.email || "",
+      linkedin: member.linkedin || "",
+      image: member.image || "",
+      team: member.team,
+      displayOrder: member.displayOrder,
+    });
+    setIsAdding(false);
+  };
+
+  const cancelEdit = () => {
+    setEditingMember(null);
+    setIsAdding(false);
+    setFormData({
+      name: "",
+      title: "",
+      major: "",
+      year: "",
+      bio: "",
+      email: "",
+      linkedin: "",
+      image: "",
+      team: "",
+      displayOrder: 0,
+    });
+  };
+
+  const groupedMembers = members.reduce((acc, member) => {
+    if (!acc[member.team]) {
+      acc[member.team] = [];
+    }
+    acc[member.team].push(member);
+    return acc;
+  }, {} as Record<string, ExecutiveMember[]>);
+
+  const teams = Object.keys(groupedMembers).sort();
+
+  if (isLoading) {
+    return <div className="text-center py-12">Loading...</div>;
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold" data-testid="heading-manage-executive-members">
+            Executive Board Members
+          </h2>
+          <p className="text-muted-foreground">Manage executive board members by team</p>
+        </div>
+        <Button
+          onClick={() => {
+            setIsAdding(true);
+            setEditingMember(null);
+          }}
+          data-testid="button-add-executive-member"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Add Member
+        </Button>
+      </div>
+
+      {(isAdding || editingMember) && (
+        <Card data-testid="card-executive-member-form">
+          <CardHeader>
+            <CardTitle>{editingMember ? "Edit Member" : "Add New Member"}</CardTitle>
+            <CardDescription>
+              {editingMember ? "Update member information" : "Add a new executive board member"}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="member-name">Name *</Label>
+                  <Input
+                    id="member-name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                    data-testid="input-member-name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="member-title">Title *</Label>
+                  <Input
+                    id="member-title"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    required
+                    data-testid="input-member-title"
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="member-major">Major *</Label>
+                  <Input
+                    id="member-major"
+                    value={formData.major}
+                    onChange={(e) => setFormData({ ...formData, major: e.target.value })}
+                    required
+                    data-testid="input-member-major"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="member-year">Year *</Label>
+                  <Input
+                    id="member-year"
+                    value={formData.year}
+                    onChange={(e) => setFormData({ ...formData, year: e.target.value })}
+                    required
+                    data-testid="input-member-year"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="member-bio">Bio</Label>
+                <Textarea
+                  id="member-bio"
+                  value={formData.bio}
+                  onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                  rows={3}
+                  data-testid="textarea-member-bio"
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="member-email">Email</Label>
+                  <Input
+                    id="member-email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    data-testid="input-member-email"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="member-linkedin">LinkedIn URL</Label>
+                  <Input
+                    id="member-linkedin"
+                    type="url"
+                    value={formData.linkedin}
+                    onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
+                    data-testid="input-member-linkedin"
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="member-team">Team *</Label>
+                  <Input
+                    id="member-team"
+                    value={formData.team}
+                    onChange={(e) => setFormData({ ...formData, team: e.target.value })}
+                    required
+                    placeholder="e.g., Executive Leadership, Marketing Team"
+                    data-testid="input-member-team"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="member-display-order">Display Order</Label>
+                  <Input
+                    id="member-display-order"
+                    type="number"
+                    value={formData.displayOrder}
+                    onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 0 })}
+                    data-testid="input-member-display-order"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="member-image">Profile Image URL</Label>
+                <Input
+                  id="member-image"
+                  type="url"
+                  value={formData.image}
+                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                  placeholder="Leave empty for default avatar"
+                  data-testid="input-member-image"
+                />
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  type="submit"
+                  disabled={createMutation.isPending || updateMutation.isPending}
+                  data-testid="button-save-member"
+                >
+                  {createMutation.isPending || updateMutation.isPending
+                    ? "Saving..."
+                    : editingMember
+                    ? "Update Member"
+                    : "Add Member"}
+                </Button>
+                <Button type="button" variant="outline" onClick={cancelEdit} data-testid="button-cancel-member">
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
+
+      {members.length === 0 ? (
+        <Card>
+          <CardContent className="py-12 text-center">
+            <p className="text-muted-foreground">No executive board members yet. Add your first member above.</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-8">
+          {teams.map((team) => (
+            <div key={team}>
+              <h3 className="text-xl font-bold mb-4" data-testid={`heading-team-${team.toLowerCase().replace(/\s+/g, '-')}`}>
+                {team}
+              </h3>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {groupedMembers[team].map((member) => (
+                  <Card key={member.id} data-testid={`card-admin-member-${member.id}`}>
+                    <CardHeader>
+                      <div className="flex items-start gap-4">
+                        <div className="w-16 h-16 rounded-full overflow-hidden bg-muted flex-shrink-0">
+                          <img
+                            src={member.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${member.name}`}
+                            alt={member.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-lg truncate">{member.name}</CardTitle>
+                          <CardDescription className="truncate">{member.title}</CardDescription>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {member.major} • {member.year}
+                          </p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      {member.bio && (
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{member.bio}</p>
+                      )}
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => startEdit(member)}
+                          data-testid={`button-edit-member-${member.id}`}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => deleteMutation.mutate(member.id)}
+                          data-testid={`button-delete-member-${member.id}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
