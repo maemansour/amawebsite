@@ -97,7 +97,7 @@ export function Hero({ settings }: HeroProps) {
                 asChild
                 data-testid="button-learn-more"
               >
-                <a href="#about">Learn More</a>
+                <a href="/our-chapter">Learn More</a>
               </Button>
             </div>
           </div>
