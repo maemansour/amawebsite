@@ -7,6 +7,7 @@ import { Navigation } from "@/components/Navigation";
 import Home from "@/pages/Home";
 import EventCalendar from "@/pages/EventCalendar";
 import Contact from "@/pages/Contact";
+import CommitteePage from "@/pages/CommitteePage";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import NotFound from "@/pages/not-found";
@@ -27,6 +28,11 @@ function Router() {
       <Route path="/contact">
         <PublicLayout>
           <Contact />
+        </PublicLayout>
+      </Route>
+      <Route path="/committees/:id">
+        <PublicLayout>
+          <CommitteePage />
         </PublicLayout>
       </Route>
       <Route path="/admin" component={AdminLogin} />
