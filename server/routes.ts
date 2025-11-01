@@ -348,6 +348,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Executive Members routes
+  app.get("/api/executive-members", async (_, res) => {
+    const members = await storage.getAllExecutiveMembers();
+    res.json(members);
+  });
+
+  app.get("/api/executive-members/:id", async (req, res) => {
+    const member = await storage.getExecutiveMember(req.params.id);
+    if (!member) {
+      return res.status(404).json({ error: "Member not found" });
+    }
+    res.json(member);
+  });
+
+  app.post("/api/executive-members", requireAuth, async (req, res) => {
+    const newMember = await storage.createExecutiveMember(req.body);
+    res.status(201).json(newMember);
+  });
+
+  app.put("/api/executive-members/:id", requireAuth, async (req, res) => {
+    const updated = await storage.updateExecutiveMember(req.params.id, req.body);
+    if (!updated) {
+      return res.status(404).json({ error: "Member not found" });
+    }
+    res.json(updated);
+  });
+
+  app.delete("/api/executive-members/:id", requireAuth, async (req, res) => {
+    const deleted = await storage.deleteExecutiveMember(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ error: "Member not found" });
+    }
+    res.status(204).send();
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

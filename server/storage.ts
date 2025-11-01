@@ -9,11 +9,14 @@ import {
   type InsertHighlight,
   type NewsletterSubscription,
   type InsertNewsletterSubscription,
+  type ExecutiveMember,
+  type InsertExecutiveMember,
   users,
   settings as settingsTable,
   events,
   highlights,
-  newsletterSubscriptions
+  newsletterSubscriptions,
+  executiveMembers
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { neon } from "@neondatabase/serverless";
@@ -48,6 +51,13 @@ export interface IStorage {
   getAllNewsletterSubscriptions(): Promise<NewsletterSubscription[]>;
   getNewsletterSubscription(email: string): Promise<NewsletterSubscription | undefined>;
   createNewsletterSubscription(subscription: InsertNewsletterSubscription): Promise<NewsletterSubscription>;
+  
+  // Executive Members management
+  getAllExecutiveMembers(): Promise<ExecutiveMember[]>;
+  getExecutiveMember(id: string): Promise<ExecutiveMember | undefined>;
+  createExecutiveMember(member: InsertExecutiveMember): Promise<ExecutiveMember>;
+  updateExecutiveMember(id: string, member: Partial<InsertExecutiveMember>): Promise<ExecutiveMember | undefined>;
+  deleteExecutiveMember(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -484,6 +494,35 @@ export class DbStorage implements IStorage {
   async createNewsletterSubscription(subscription: InsertNewsletterSubscription): Promise<NewsletterSubscription> {
     const result = await this.db.insert(newsletterSubscriptions).values(subscription).returning();
     return result[0];
+  }
+  
+  // Executive Members management
+  async getAllExecutiveMembers(): Promise<ExecutiveMember[]> {
+    const members = await this.db.select().from(executiveMembers).orderBy(executiveMembers.team, executiveMembers.displayOrder);
+    return members;
+  }
+
+  async getExecutiveMember(id: string): Promise<ExecutiveMember | undefined> {
+    const result = await this.db.select().from(executiveMembers).where(eq(executiveMembers.id, id));
+    return result[0];
+  }
+
+  async createExecutiveMember(member: InsertExecutiveMember): Promise<ExecutiveMember> {
+    const result = await this.db.insert(executiveMembers).values(member).returning();
+    return result[0];
+  }
+
+  async updateExecutiveMember(id: string, member: Partial<InsertExecutiveMember>): Promise<ExecutiveMember | undefined> {
+    const result = await this.db.update(executiveMembers)
+      .set(member)
+      .where(eq(executiveMembers.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteExecutiveMember(id: string): Promise<boolean> {
+    const result = await this.db.delete(executiveMembers).where(eq(executiveMembers.id, id)).returning();
+    return result.length > 0;
   }
 }
 

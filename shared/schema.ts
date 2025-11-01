@@ -96,3 +96,26 @@ export const insertUserSchema = createInsertSchema(users).pick({
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+
+// Executive Board Members
+export const executiveMembers = pgTable("executive_members", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  title: text("title").notNull(),
+  team: text("team").notNull(), // e.g., "Executive Board", "Marketing Team", "Events Team"
+  major: text("major").notNull(),
+  year: text("year").notNull(), // e.g., "Senior", "Junior"
+  bio: text("bio").notNull(),
+  email: text("email").notNull(),
+  linkedin: text("linkedin").notNull(),
+  imageUrl: text("image_url").notNull(),
+  displayOrder: integer("display_order").notNull().default(0), // For ordering within team
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertExecutiveMemberSchema = createInsertSchema(executiveMembers).omit({ 
+  id: true, 
+  createdAt: true 
+});
+export type InsertExecutiveMember = z.infer<typeof insertExecutiveMemberSchema>;
+export type ExecutiveMember = typeof executiveMembers.$inferSelect;
