@@ -1,35 +1,8 @@
-import { Award, Target, Users, TrendingUp, Calendar, Heart } from "lucide-react";
+import { Award, Target, Users, Heart, TrendingUp } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 
 export default function OurChapter() {
-  const achievements = [
-    {
-      icon: Award,
-      title: "TOP 10 Chapter",
-      description: "Recognized nationally for excellence in chapter operations and member engagement",
-      year: "2024-2025"
-    },
-    {
-      icon: Users,
-      title: "200+ Active Members",
-      description: "One of the largest and most engaged AMA chapters in the country",
-      stat: "200+"
-    },
-    {
-      icon: Calendar,
-      title: "50+ Annual Events",
-      description: "Professional development workshops, networking events, and social activities",
-      stat: "50+"
-    },
-    {
-      icon: TrendingUp,
-      title: "95% Job Placement",
-      description: "Our members secure internships and full-time positions in top marketing firms",
-      stat: "95%"
-    }
-  ];
-
   const values = [
     {
       icon: Target,
@@ -136,43 +109,8 @@ export default function OurChapter() {
           </div>
         </section>
 
-        {/* Achievements */}
-        <section className="py-16 md:py-20" data-testid="section-achievements">
-          <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12" data-testid="heading-achievements">
-              Chapter Achievements
-            </h2>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {achievements.map((achievement, index) => (
-                <Card key={index} className="p-6 text-center" data-testid={`card-achievement-${index}`}>
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <achievement.icon className="w-8 h-8 text-primary" />
-                  </div>
-                  {achievement.stat && (
-                    <div className="text-4xl font-bold text-primary mb-2" data-testid={`text-stat-${index}`}>
-                      {achievement.stat}
-                    </div>
-                  )}
-                  <h3 className="text-lg font-bold mb-2" data-testid={`text-achievement-title-${index}`}>
-                    {achievement.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground" data-testid={`text-achievement-desc-${index}`}>
-                    {achievement.description}
-                  </p>
-                  {achievement.year && (
-                    <p className="text-xs text-muted-foreground mt-2" data-testid={`text-year-${index}`}>
-                      {achievement.year}
-                    </p>
-                  )}
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Our Values */}
-        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-values">
+        <section className="py-16 md:py-20" data-testid="section-values">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12" data-testid="heading-values">
               Our Values
@@ -201,7 +139,7 @@ export default function OurChapter() {
         </section>
 
         {/* Chapter History */}
-        <section className="py-16 md:py-20" data-testid="section-history">
+        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-history">
           <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12" data-testid="heading-history">
               Chapter History
