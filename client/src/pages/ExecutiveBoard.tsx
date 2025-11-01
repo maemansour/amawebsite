@@ -15,6 +15,7 @@ export default function ExecutiveBoard() {
     queryKey: ["/api/executive-members"],
   });
 
+  // Group members by team
   const groupedMembers = members.reduce((acc, member) => {
     if (!acc[member.team]) {
       acc[member.team] = [];
@@ -23,7 +24,25 @@ export default function ExecutiveBoard() {
     return acc;
   }, {} as Record<string, ExecutiveMember[]>);
 
-  const teams = Object.keys(groupedMembers).sort();
+  // Sort members within each team by displayOrder
+  Object.keys(groupedMembers).forEach((team) => {
+    groupedMembers[team].sort((a, b) => a.displayOrder - b.displayOrder);
+  });
+
+  // Derive team order from the order members appear in (not alphabetically)
+  // This ensures the public page matches the admin panel's drag-and-drop order
+  const seenTeams = new Set<string>();
+  const teams: string[] = [];
+  
+  // Sort all members by displayOrder first
+  const sortedMembers = [...members].sort((a, b) => a.displayOrder - b.displayOrder);
+  
+  sortedMembers.forEach((member) => {
+    if (!seenTeams.has(member.team)) {
+      seenTeams.add(member.team);
+      teams.push(member.team);
+    }
+  });
 
   const getGridCols = (count: number) => {
     if (count === 1) return "lg:grid-cols-1 max-w-md mx-auto";

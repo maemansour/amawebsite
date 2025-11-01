@@ -29,7 +29,7 @@ Preferred communication style: Simple, everyday language.
 - **Authentication:** Session-based authentication using `express-session` with HTTP-only cookies; `requireAuth` middleware for admin routes.
 - **Database:** Drizzle ORM with PostgreSQL dialect (configured for Neon Database).
 - **Schema:** Tables for `settings` (site configuration, images), `events`, `highlights`, `newsletter_subscriptions`, `users` (admin accounts with bcrypt hashed passwords), and `executiveMembers` (board members with team organization and displayOrder for custom sorting).
-- **Key Design Decisions:** Middleware for request logging, environment-specific configurations, Drizzle ORM with Zod validation. Executive member ordering uses displayOrder field exclusively—team order is derived from member order, not alphabetically. Specific routes (like `/reorder`) must be defined before parameterized routes (like `/:id`) in Express routing.
+- **Key Design Decisions:** Middleware for request logging, environment-specific configurations, Drizzle ORM with Zod validation. Executive member ordering uses displayOrder field exclusively—team order is derived from member order, not alphabetically, ensuring consistency between admin panel and public website. Specific routes (like `/reorder`) must be defined before parameterized routes (like `/:id`) in Express routing.
 - **Image Upload System:** Two dedicated upload components:
   - `ImageUploadWithCrop`: For site-wide images (hero sections, etc.) with configurable aspect ratios, uploads via `/api/objects/upload`, normalizes URLs via `/api/chapter-images`.
   - `MemberImageUpload`: For executive member profile pictures with 1:1 circular crop, stores normalized `/objects/xxx` paths directly in database.
