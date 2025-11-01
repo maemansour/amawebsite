@@ -124,3 +124,21 @@ export const insertExecutiveMemberSchema = createInsertSchema(executiveMembers).
 });
 export type InsertExecutiveMember = z.infer<typeof insertExecutiveMemberSchema>;
 export type ExecutiveMember = typeof executiveMembers.$inferSelect;
+
+// Sponsors table - stores sponsor/partner information for the carousel
+export const sponsors = pgTable("sponsors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(), // e.g., "Redbull"
+  category: text("category").notNull(), // e.g., "GBM Sponsor", "Event Partner"
+  description: text("description").notNull(), // e.g., "Collaboration with AMA SDSU"
+  image: text("image"), // Sponsor logo/image
+  displayOrder: integer("display_order").notNull().default(0), // For carousel ordering
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertSponsorSchema = createInsertSchema(sponsors).omit({ 
+  id: true, 
+  createdAt: true 
+});
+export type InsertSponsor = z.infer<typeof insertSponsorSchema>;
+export type Sponsor = typeof sponsors.$inferSelect;

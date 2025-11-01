@@ -11,12 +11,15 @@ import {
   type InsertNewsletterSubscription,
   type ExecutiveMember,
   type InsertExecutiveMember,
+  type Sponsor,
+  type InsertSponsor,
   users,
   settings as settingsTable,
   events,
   highlights,
   newsletterSubscriptions,
-  executiveMembers
+  executiveMembers,
+  sponsors
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { neon } from "@neondatabase/serverless";
@@ -59,6 +62,14 @@ export interface IStorage {
   updateExecutiveMember(id: string, member: Partial<InsertExecutiveMember>): Promise<ExecutiveMember | undefined>;
   deleteExecutiveMember(id: string): Promise<boolean>;
   bulkUpdateMemberDisplayOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void>;
+  
+  // Sponsors management
+  getAllSponsors(): Promise<Sponsor[]>;
+  getSponsor(id: string): Promise<Sponsor | undefined>;
+  createSponsor(sponsor: InsertSponsor): Promise<Sponsor>;
+  updateSponsor(id: string, sponsor: Partial<InsertSponsor>): Promise<Sponsor | undefined>;
+  deleteSponsor(id: string): Promise<boolean>;
+  bulkUpdateSponsorDisplayOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -535,6 +546,43 @@ export class DbStorage implements IStorage {
       await this.db.update(executiveMembers)
         .set({ displayOrder: update.displayOrder })
         .where(eq(executiveMembers.id, update.id));
+    }
+  }
+  
+  // Sponsors management
+  async getAllSponsors(): Promise<Sponsor[]> {
+    const sponsorList = await this.db.select().from(sponsors).orderBy(sponsors.displayOrder);
+    return sponsorList;
+  }
+
+  async getSponsor(id: string): Promise<Sponsor | undefined> {
+    const result = await this.db.select().from(sponsors).where(eq(sponsors.id, id));
+    return result[0];
+  }
+
+  async createSponsor(sponsor: InsertSponsor): Promise<Sponsor> {
+    const result = await this.db.insert(sponsors).values(sponsor).returning();
+    return result[0];
+  }
+
+  async updateSponsor(id: string, sponsor: Partial<InsertSponsor>): Promise<Sponsor | undefined> {
+    const result = await this.db.update(sponsors)
+      .set(sponsor)
+      .where(eq(sponsors.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteSponsor(id: string): Promise<boolean> {
+    const result = await this.db.delete(sponsors).where(eq(sponsors.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async bulkUpdateSponsorDisplayOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void> {
+    for (const update of updates) {
+      await this.db.update(sponsors)
+        .set({ displayOrder: update.displayOrder })
+        .where(eq(sponsors.id, update.id));
     }
   }
 }
