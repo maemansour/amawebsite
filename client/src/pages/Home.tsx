@@ -4,7 +4,6 @@ import { HighlightsCarousel } from "@/components/HighlightsCarousel";
 import { OurChapter } from "@/components/OurChapter";
 import { ChapterHistory } from "@/components/ChapterHistory";
 import { WeeklyMeetings } from "@/components/WeeklyMeetings";
-import { Committees } from "@/components/Committees";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
 import { Membership } from "@/components/Membership";
 import { Newsletter } from "@/components/Newsletter";
@@ -53,7 +52,6 @@ export default function Home() {
       <OurChapter />
       <ChapterHistory />
       <WeeklyMeetings settings={settings} />
-      <Committees />
 
       {eventsLoading ? (
         <section className="py-16 md:py-20 bg-muted/30">
