@@ -1,14 +1,21 @@
-import { Handshake, Users, FileText, TrendingUp, Mail } from "lucide-react";
+import { Handshake, Users, FileText, TrendingUp, Mail, ChevronLeft, ChevronRight } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { useQuery } from "@tanstack/react-query";
-import { type Settings } from "@shared/schema";
+import { type Settings, type Sponsor } from "@shared/schema";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
+import { useCallback, useEffect, useState } from "react";
 
 export default function OurSponsors() {
   const { data: settings } = useQuery<Settings>({
     queryKey: ["/api/settings"],
+  });
+
+  const { data: sponsors = [] } = useQuery<Sponsor[]>({
+    queryKey: ["/api/sponsors"],
   });
 
   const partnershipBenefits = [
@@ -63,48 +70,25 @@ export default function OurSponsors() {
           </div>
         </section>
 
-        {/* Partner Images Section */}
-        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-partners">
+        {/* Sponsor Carousel Section */}
+        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-sponsors-carousel">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <div className="grid md:grid-cols-2 gap-8">
-              <ScrollReveal direction="left">
-                <Card className="overflow-hidden">
-                  <img 
-                    src={settings?.sponsorsPartnerImage1 || "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=800&h=600&fit=crop"} 
-                    alt="Partner Collaboration"
-                    className="w-full h-[300px] object-cover"
-                    data-testid="img-partner-1"
-                  />
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold mb-2" data-testid="text-partner-1-title">
-                      Industry Collaboration
-                    </h3>
-                    <p className="text-muted-foreground" data-testid="text-partner-1-desc">
-                      Collaborating with AMA SDSU to bring exceptional experiences to our members
-                    </p>
-                  </div>
-                </Card>
-              </ScrollReveal>
+            <ScrollReveal direction="up">
+              <h2 className="text-3xl md:text-4xl font-bold text-center mb-4" data-testid="heading-sponsors">
+                Our Sponsors
+              </h2>
+              <p className="text-lg text-muted-foreground text-center mb-12 max-w-3xl mx-auto" data-testid="text-sponsors-intro">
+                Thank you to our incredible sponsors who make our events and initiatives possible
+              </p>
+            </ScrollReveal>
 
-              <ScrollReveal direction="right" delay={0.1}>
-                <Card className="overflow-hidden">
-                  <img 
-                    src={settings?.sponsorsPartnerImage2 || "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=600&fit=crop"} 
-                    alt="Event Partnership"
-                    className="w-full h-[300px] object-cover"
-                    data-testid="img-partner-2"
-                  />
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold mb-2" data-testid="text-partner-2-title">
-                      Event Partnerships
-                    </h3>
-                    <p className="text-muted-foreground" data-testid="text-partner-2-desc">
-                      Supporting our events and creating memorable experiences for students
-                    </p>
-                  </div>
-                </Card>
-              </ScrollReveal>
-            </div>
+            {sponsors.length > 0 ? (
+              <SponsorsCarousel sponsors={sponsors} />
+            ) : (
+              <Card className="py-12 text-center">
+                <p className="text-muted-foreground">No sponsors to display at this time.</p>
+              </Card>
+            )}
           </div>
         </section>
 
@@ -162,6 +146,102 @@ export default function OurSponsors() {
       </div>
       
       <Footer />
+    </div>
+  );
+}
+
+function SponsorsCarousel({ sponsors }: { sponsors: Sponsor[] }) {
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true },
+    [Autoplay({ delay: 5000, stopOnInteraction: true })]
+  );
+
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setCanScrollPrev(emblaApi.canScrollPrev());
+    setCanScrollNext(emblaApi.canScrollNext());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+  }, [emblaApi, onSelect]);
+
+  return (
+    <div className="relative">
+      <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
+        <div className="flex">
+          {sponsors.map((sponsor) => (
+            <div key={sponsor.id} className="flex-[0_0_100%] min-w-0">
+              <div className="relative h-[500px] md:h-[600px]">
+                {/* Background Image */}
+                <div className="absolute inset-0">
+                  <img
+                    src={sponsor.image || "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=1200&h=600&fit=crop"}
+                    alt={sponsor.name}
+                    className="w-full h-full object-cover"
+                    data-testid={`img-sponsor-slide-${sponsor.id}`}
+                  />
+                  {/* Dark overlay for better text readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
+                </div>
+
+                {/* Content Overlay */}
+                <div className="relative h-full flex items-end">
+                  <div className="w-full p-8 md:p-12 lg:p-16">
+                    <div className="max-w-4xl">
+                      <p className="text-primary-foreground/90 text-sm md:text-base mb-2 font-medium" data-testid={`text-sponsor-category-${sponsor.id}`}>
+                        {sponsor.category}
+                      </p>
+                      <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground mb-4" data-testid={`text-sponsor-name-${sponsor.id}`}>
+                        {sponsor.name}
+                      </h3>
+                      <p className="text-lg md:text-xl text-primary-foreground/90 max-w-2xl" data-testid={`text-sponsor-description-${sponsor.id}`}>
+                        {sponsor.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Navigation Arrows */}
+      {sponsors.length > 1 && (
+        <>
+          <button
+            onClick={scrollPrev}
+            disabled={!canScrollPrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm border border-border flex items-center justify-center hover-elevate active-elevate-2 disabled:opacity-50 disabled:cursor-not-allowed z-10"
+            data-testid="button-carousel-prev"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button
+            onClick={scrollNext}
+            disabled={!canScrollNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm border border-border flex items-center justify-center hover-elevate active-elevate-2 disabled:opacity-50 disabled:cursor-not-allowed z-10"
+            data-testid="button-carousel-next"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </>
+      )}
     </div>
   );
 }
