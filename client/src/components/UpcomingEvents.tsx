@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { type Event } from "@shared/schema";
+import { ScrollReveal } from "@/components/ScrollReveal";
 
 interface UpcomingEventsProps {
   events: Event[];
@@ -32,14 +33,16 @@ export function UpcomingEvents({ events }: UpcomingEventsProps) {
   return (
     <section className="pt-16 md:pt-20 pb-8 md:pb-12" id="events">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-        <div className="text-center space-y-4 mb-12">
-          <h2 className="font-heading font-bold text-3xl md:text-4xl" data-testid="text-upcoming-events-title">
-            Upcoming Events
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Don't miss out on these exciting opportunities to learn, network, and grow.
-          </p>
-        </div>
+        <ScrollReveal direction="up">
+          <div className="text-center space-y-4 mb-12">
+            <h2 className="font-heading font-bold text-3xl md:text-4xl" data-testid="text-upcoming-events-title">
+              Upcoming Events
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Don't miss out on these exciting opportunities to learn, network, and grow.
+            </p>
+          </div>
+        </ScrollReveal>
 
         {upcomingEvents.length === 0 ? (
           <div className="text-center py-12">
@@ -50,8 +53,9 @@ export function UpcomingEvents({ events }: UpcomingEventsProps) {
         ) : (
           <>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              {upcomingEvents.map((event) => (
-                <Card key={event.id} className="flex flex-col hover-elevate transition-all" data-testid={`card-event-${event.id}`}>
+              {upcomingEvents.map((event, index) => (
+                <ScrollReveal key={event.id} delay={index * 0.1}>
+                  <Card className="flex flex-col hover-elevate transition-all" data-testid={`card-event-${event.id}`}>
                   <CardHeader className="space-y-3 pb-4">
                     <Badge 
                       variant={getCategoryVariant(event.category)}
@@ -93,10 +97,12 @@ export function UpcomingEvents({ events }: UpcomingEventsProps) {
                     </Button>
                   </CardFooter>
                 </Card>
+                </ScrollReveal>
               ))}
             </div>
 
-            <div className="text-center">
+            <ScrollReveal direction="up" delay={0.4}>
+              <div className="text-center">
               <Button 
                 variant="default" 
                 size="lg"
@@ -108,7 +114,8 @@ export function UpcomingEvents({ events }: UpcomingEventsProps) {
                   <span className="ml-2">→</span>
                 </a>
               </Button>
-            </div>
+              </div>
+            </ScrollReveal>
           </>
         )}
       </div>

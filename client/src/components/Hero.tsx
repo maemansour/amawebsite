@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Users, Calendar, Award } from "lucide-react";
 import { type Settings } from "@shared/schema";
+import { ScrollReveal } from "@/components/ScrollReveal";
 
 interface HeroProps {
   settings?: Settings;
@@ -22,23 +23,24 @@ export function Hero({ settings }: HeroProps) {
       <div className="relative max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-20 md:py-28 lg:py-32">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
-          <div className="space-y-8">
-            <div className="flex flex-wrap gap-3">
-              <Badge 
-                className="bg-white dark:bg-card text-primary border-none font-semibold text-sm px-4 py-1 flex items-center gap-2 w-fit"
-                data-testid="badge-top-chapter"
-              >
-                <Trophy className="w-4 h-4" />
-                TOP 10 Chapter
-              </Badge>
-              <Badge 
-                className="bg-white dark:bg-card text-primary border-none font-semibold text-sm px-4 py-1 flex items-center gap-2 w-fit"
-                data-testid="badge-rso"
-              >
-                <Award className="w-4 h-4" />
-                #1 RSO
-              </Badge>
-            </div>
+          <ScrollReveal direction="left">
+            <div className="space-y-8">
+              <div className="flex flex-wrap gap-3">
+                <Badge 
+                  className="bg-white dark:bg-card text-primary border-none font-semibold text-sm px-4 py-1 flex items-center gap-2 w-fit"
+                  data-testid="badge-top-chapter"
+                >
+                  <Trophy className="w-4 h-4" />
+                  TOP 10 Chapter
+                </Badge>
+                <Badge 
+                  className="bg-white dark:bg-card text-primary border-none font-semibold text-sm px-4 py-1 flex items-center gap-2 w-fit"
+                  data-testid="badge-rso"
+                >
+                  <Award className="w-4 h-4" />
+                  #1 RSO
+                </Badge>
+              </div>
 
             <div className="space-y-4">
               <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl leading-tight" data-testid="text-hero-title">
@@ -100,10 +102,12 @@ export function Hero({ settings }: HeroProps) {
                 <a href="/our-chapter">Learn More</a>
               </Button>
             </div>
-          </div>
+            </div>
+          </ScrollReveal>
 
           {/* Right Content - AMA Logo Visual */}
-          <div className="hidden md:flex items-center justify-center">
+          <ScrollReveal direction="right" delay={0.2}>
+            <div className="hidden md:flex items-center justify-center">
             <div className="relative w-80 h-80 lg:w-96 lg:h-96">
               <div className="absolute inset-0 bg-primary-foreground/20 rounded-full blur-2xl"></div>
               <div className="relative w-full h-full rounded-full bg-primary-foreground/10 backdrop-blur-sm border-4 border-primary-foreground/20 flex items-center justify-center">
@@ -117,7 +121,8 @@ export function Hero({ settings }: HeroProps) {
                 </div>
               </div>
             </div>
-          </div>
+            </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>
