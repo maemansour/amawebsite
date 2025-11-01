@@ -59,12 +59,12 @@ export default function OurChapter() {
               {/* Left Column */}
               <div>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6" data-testid="heading-our-chapter">
-                  Our <span className="text-accent">Chapter</span> <Building2 className="inline-block w-10 h-10 md:w-12 md:h-12" />
+                  Our <span className="text-primary">Chapter</span> <Building2 className="inline-block w-10 h-10 md:w-12 md:h-12 text-primary" />
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground mb-8" data-testid="text-chapter-description">
                   Discover what makes AMA SDSU a <span className="font-bold text-foreground">TOP 10</span> chapter and leader in professional development.
                 </p>
-                <div className="inline-flex items-center gap-2 bg-accent/20 text-accent-foreground px-6 py-3 rounded-lg border-2 border-accent/30 font-semibold">
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-6 py-3 rounded-lg border-2 border-primary/30 font-semibold">
                   <Trophy className="w-5 h-5" />
                   <span data-testid="text-top-ten-badge">TOP 10 Chapter Recognition</span>
                   <Trophy className="w-5 h-5" />
@@ -122,8 +122,8 @@ export default function OurChapter() {
                     data-testid="img-mission"
                   />
                 </div>
-                <Card className="bg-accent/20 border-accent/30 p-4">
-                  <p className="font-bold text-lg text-foreground" data-testid="text-community-first">Community First</p>
+                <Card className="bg-primary/5 border-primary/20 p-4">
+                  <p className="font-bold text-lg text-primary" data-testid="text-community-first">Community First</p>
                   <p className="text-sm text-muted-foreground">Building lasting connections and friendships</p>
                 </Card>
               </div>
@@ -146,8 +146,8 @@ export default function OurChapter() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {offerings.map((offering, index) => (
                 <Card key={index} className="p-6 text-center hover-elevate transition-all" data-testid={`card-offering-${index}`}>
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-accent/10 flex items-center justify-center">
-                    <offering.icon className="w-8 h-8 text-accent" />
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <offering.icon className="w-8 h-8 text-primary" />
                   </div>
                   <h3 className="text-xl font-bold mb-4 text-primary" data-testid={`text-offering-title-${index}`}>
                     {offering.title}
@@ -155,7 +155,7 @@ export default function OurChapter() {
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     {offering.items.map((item, itemIndex) => (
                       <li key={itemIndex} className="flex items-center gap-2" data-testid={`offering-item-${index}-${itemIndex}`}>
-                        <span className="text-accent">•</span>
+                        <span className="text-primary">•</span>
                         {item}
                       </li>
                     ))}
@@ -188,8 +188,8 @@ export default function OurChapter() {
                 <div className="space-y-6">
                   {whyChooseUs.map((item, index) => (
                     <div key={index} className="flex items-start gap-4" data-testid={`why-choose-${index}`}>
-                      <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
-                        <item.icon className="w-5 h-5 text-accent" />
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <item.icon className="w-5 h-5 text-primary" />
                       </div>
                       <div>
                         <h3 className="text-lg font-bold mb-1 text-primary" data-testid={`text-why-title-${index}`}>
@@ -217,19 +217,19 @@ export default function OurChapter() {
                   For Other Orgs: Our Services
                 </h2>
                 <div className="space-y-6">
-                  <div className="border-l-4 border-accent pl-6" data-testid="service-0">
+                  <div className="border-l-4 border-primary pl-6" data-testid="service-0">
                     <h3 className="text-xl font-bold mb-2 text-primary">Social Media Management</h3>
                     <p className="text-muted-foreground">
                       Elevate your online presence through engaging content that pulls your audience in and drives sales.
                     </p>
                   </div>
-                  <div className="border-l-4 border-accent pl-6" data-testid="service-1">
+                  <div className="border-l-4 border-primary pl-6" data-testid="service-1">
                     <h3 className="text-xl font-bold mb-2 text-primary">Content Creation</h3>
                     <p className="text-muted-foreground">
                       Our skilled creators craft compelling videos and content tailored to your audience.
                     </p>
                   </div>
-                  <div className="border-l-4 border-accent pl-6" data-testid="service-2">
+                  <div className="border-l-4 border-primary pl-6" data-testid="service-2">
                     <h3 className="text-xl font-bold mb-2 text-primary">Digital Advertising</h3>
                     <p className="text-muted-foreground">
                       Captivating ads designed to ensure your investment yields maximum returns.
