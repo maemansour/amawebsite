@@ -105,10 +105,10 @@ export const executiveMembers = pgTable("executive_members", {
   team: text("team").notNull(), // e.g., "Executive Board", "Marketing Team", "Events Team"
   major: text("major").notNull(),
   year: text("year").notNull(), // e.g., "Senior", "Junior"
-  bio: text("bio").notNull(),
-  email: text("email").notNull(),
-  linkedin: text("linkedin").notNull(),
-  imageUrl: text("image_url").notNull(),
+  bio: text("bio"),
+  email: text("email"),
+  linkedin: text("linkedin"),
+  image: text("image"),
   displayOrder: integer("display_order").notNull().default(0), // For ordering within team
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

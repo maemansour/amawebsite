@@ -6,7 +6,8 @@ import {
   insertSettingsSchema, 
   insertEventSchema, 
   insertHighlightSchema,
-  insertNewsletterSubscriptionSchema 
+  insertNewsletterSubscriptionSchema,
+  insertExecutiveMemberSchema
 } from "@shared/schema";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 
@@ -363,24 +364,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.post("/api/executive-members", requireAuth, async (req, res) => {
-    const newMember = await storage.createExecutiveMember(req.body);
-    res.status(201).json(newMember);
+    try {
+      const validatedData = insertExecutiveMemberSchema.parse(req.body);
+      const newMember = await storage.createExecutiveMember(validatedData);
+      res.status(201).json(newMember);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid member data", details: error });
+      }
+      console.error("Error creating executive member:", error);
+      res.status(500).json({ error: "Failed to create member" });
+    }
   });
 
   app.put("/api/executive-members/:id", requireAuth, async (req, res) => {
-    const updated = await storage.updateExecutiveMember(req.params.id, req.body);
-    if (!updated) {
-      return res.status(404).json({ error: "Member not found" });
+    try {
+      const validatedData = insertExecutiveMemberSchema.partial().parse(req.body);
+      const updated = await storage.updateExecutiveMember(req.params.id, validatedData);
+      if (!updated) {
+        return res.status(404).json({ error: "Member not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid member data", details: error });
+      }
+      console.error("Error updating executive member:", error);
+      res.status(500).json({ error: "Failed to update member" });
     }
-    res.json(updated);
   });
 
   app.delete("/api/executive-members/:id", requireAuth, async (req, res) => {
-    const deleted = await storage.deleteExecutiveMember(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ error: "Member not found" });
+    try {
+      const deleted = await storage.deleteExecutiveMember(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Member not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting executive member:", error);
+      res.status(500).json({ error: "Failed to delete member" });
     }
-    res.status(204).send();
   });
 
   const httpServer = createServer(app);

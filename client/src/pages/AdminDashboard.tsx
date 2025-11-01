@@ -881,11 +881,7 @@ function ManageExecutiveMembers() {
 
   const createMutation = useMutation({
     mutationFn: async (data: Partial<InsertExecutiveMember>) =>
-      apiRequest("/api/executive-members", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      }),
+      apiRequest("POST", "/api/executive-members", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/executive-members"] });
       toast({
@@ -917,11 +913,7 @@ function ManageExecutiveMembers() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: Partial<InsertExecutiveMember> }) =>
-      apiRequest(`/api/executive-members/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      }),
+      apiRequest("PUT", `/api/executive-members/${id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/executive-members"] });
       toast({
@@ -953,9 +945,7 @@ function ManageExecutiveMembers() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) =>
-      apiRequest(`/api/executive-members/${id}`, {
-        method: "DELETE",
-      }),
+      apiRequest("DELETE", `/api/executive-members/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/executive-members"] });
       toast({
