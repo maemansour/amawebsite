@@ -1,4 +1,4 @@
-import { Users, Mail, Linkedin } from "lucide-react";
+import { Users, Mail, Linkedin, Trophy, Target, Award } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -71,39 +71,45 @@ export default function ExecutiveBoard() {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-1">
-        {/* Header */}
-        <section className="py-16 md:py-20 bg-gradient-to-br from-primary/10 to-primary/5" data-testid="section-executive-header">
+        {/* Hero Section */}
+        <section className="py-12 md:py-16" data-testid="section-executive-header">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <ScrollReveal direction="up">
-              <div className="text-center">
-                <div className="inline-block mb-4">
-                  <Users className="w-16 h-16 text-primary mx-auto" />
-                </div>
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4" data-testid="heading-executive-board">
-                  Executive Board
+            <div className="grid lg:grid-cols-2 gap-12 items-start">
+              {/* Left Column */}
+              <ScrollReveal direction="left">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6" data-testid="heading-executive-board">
+                  Executive <span className="text-primary">Board</span> <Users className="inline-block w-10 h-10 md:w-12 md:h-12 text-primary" />
                 </h1>
-                <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-executive-description">
-                  Meet our leadership team and executive board members.
+                <p className="text-lg md:text-xl text-muted-foreground mb-8" data-testid="text-executive-description">
+                  Meet the dedicated leaders driving our chapter's success and maintaining our <span className="font-bold text-foreground">TOP 10</span> national recognition.
                 </p>
-              </div>
-            </ScrollReveal>
-          </div>
-        </section>
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-6 py-3 rounded-lg border-2 border-primary/30 font-semibold">
+                  <Award className="w-5 h-5" />
+                  <span data-testid="text-leadership-badge">Award-Winning Leadership</span>
+                  <Award className="w-5 h-5" />
+                </div>
+              </ScrollReveal>
 
-        {/* Leadership Message */}
-        <section className="py-16 md:py-20" data-testid="section-leadership-message">
-          <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
-            <ScrollReveal direction="up">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6" data-testid="heading-leadership-message">
-                Leading with Purpose
-              </h2>
-              <p className="text-lg text-muted-foreground mb-4" data-testid="text-leadership-intro">
-                Our executive board is dedicated to maintaining AMA SDSU's status as a <span className="font-bold text-primary">#2 TOP 10 Chapter</span> while creating meaningful opportunities for professional growth and development.
-              </p>
-              <p className="text-lg text-muted-foreground" data-testid="text-leadership-commitment">
-                We are committed to fostering a vibrant community where students can build their marketing careers, develop leadership skills, and create lasting connections.
-              </p>
-            </ScrollReveal>
+              {/* Right Column */}
+              <ScrollReveal direction="right" delay={0.2}>
+                <div className="relative">
+                  <div className="rounded-2xl overflow-hidden shadow-2xl">
+                    <img 
+                      src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop" 
+                      alt="Executive Board Team"
+                      className="w-full h-[400px] object-cover"
+                      data-testid="img-hero"
+                    />
+                  </div>
+                  <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white dark:bg-card px-6 py-3 rounded-lg shadow-lg border-2">
+                    <div className="flex items-center gap-2 text-sm font-medium">
+                      <Trophy className="w-4 h-4 text-primary" />
+                      <span data-testid="text-hero-caption">2024-2025 Leadership Team</span>
+                    </div>
+                  </div>
+                </div>
+              </ScrollReveal>
+            </div>
           </div>
         </section>
 
