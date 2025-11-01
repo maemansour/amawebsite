@@ -382,6 +382,22 @@ function GeneralSettings() {
 
       <Card>
         <CardHeader>
+          <CardTitle>Home Page Images</CardTitle>
+          <CardDescription>Upload and crop images for the Home page</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <ImageUploadWithCrop
+            label="Meet Our fAMAily Section Image"
+            imageType="family"
+            currentImage={settings?.familyImage}
+            aspectRatio={16 / 9}
+            testId="button-upload-family-image"
+          />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>Our Chapter Page Images</CardTitle>
           <CardDescription>Upload and crop images for the Our Chapter page</CardDescription>
         </CardHeader>

@@ -4,6 +4,7 @@ import { HighlightsCarousel } from "@/components/HighlightsCarousel";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
 import { Newsletter } from "@/components/Newsletter";
 import { Footer } from "@/components/Footer";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { type Settings, type Highlight, type Event } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
 import { apiRequest } from "@/lib/queryClient";
@@ -44,6 +45,27 @@ export default function Home() {
       ) : (
         <HighlightsCarousel highlights={highlights} />
       )}
+
+      {/* Meet Our fAMAily */}
+      <section className="py-16 md:py-20" data-testid="section-family">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+          <ScrollReveal direction="up">
+            <h2 className="font-heading font-bold text-3xl md:text-4xl text-center mb-8 md:mb-12" data-testid="heading-family">
+              Meet Our fAMAily
+            </h2>
+          </ScrollReveal>
+          <ScrollReveal direction="up" delay={0.2}>
+            <div className="rounded-2xl overflow-hidden shadow-xl">
+              <img 
+                src={settings?.familyImage || "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&h=800&fit=crop"} 
+                alt="Meet Our fAMAily - AMA SDSU Board Members"
+                className="w-full h-[400px] md:h-[600px] object-cover"
+                data-testid="img-family"
+              />
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
 
       {eventsLoading ? (
         <section className="py-16 md:py-20 bg-muted/30">
