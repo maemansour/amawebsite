@@ -128,7 +128,7 @@ export default function OurSponsors() {
         </section>
       </div>
       
-      <Footer />
+      <Footer settings={settings} />
     </div>
   );
 }
