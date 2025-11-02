@@ -4,8 +4,13 @@ import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { useQuery } from "@tanstack/react-query";
+import type { Settings } from "@shared/schema";
 
 export default function Committees() {
+  const { data: settings } = useQuery<Settings>({
+    queryKey: ["/api/settings"],
+  });
   const committees = [
     {
       id: "consulting",
@@ -157,8 +162,8 @@ export default function Committees() {
               </div>
             </ScrollReveal>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              {committees.map((committee, index) => (
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              {committees.slice(0, 6).map((committee, index) => (
                 <ScrollReveal key={committee.id} delay={index * 0.1}>
                   <Card className="p-6 h-full flex flex-col" data-testid={`card-committee-${index}`}>
                     <div className="mb-4">
@@ -193,6 +198,53 @@ export default function Committees() {
                   </Card>
                 </ScrollReveal>
               ))}
+            </div>
+
+            {/* Multimedia Committee with Image */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <ScrollReveal delay={0.6}>
+                <Card className="p-6 h-full flex flex-col" data-testid="card-committee-6">
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 rounded-full bg-primary" />
+                      <h3 className="text-xl font-bold" data-testid="text-committee-name-6">
+                        {committees[6].name}
+                      </h3>
+                    </div>
+                    <p className="text-muted-foreground mb-4" data-testid="text-committee-desc-6">
+                      {committees[6].description}
+                    </p>
+                  </div>
+
+                  <div className="mt-auto">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 rounded-full bg-primary" />
+                      <h4 className="font-semibold text-primary">Why Join:</h4>
+                    </div>
+                    <ul className="space-y-2 mb-6">
+                      {committees[6].whyJoin.map((item, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground" data-testid={`committee-benefit-6-${i}`}>
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button className="w-full" variant="default" data-testid="button-learn-more-6">
+                      Learn More
+                    </Button>
+                  </div>
+                </Card>
+              </ScrollReveal>
+
+              <ScrollReveal delay={0.7}>
+                <div className="rounded-lg overflow-hidden shadow-lg h-full" data-testid="img-committees">
+                  <img 
+                    src={settings?.committeesImage || "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop"} 
+                    alt="Committee Activities"
+                    className="w-full h-full object-cover min-h-[400px]"
+                  />
+                </div>
+              </ScrollReveal>
             </div>
           </div>
         </section>

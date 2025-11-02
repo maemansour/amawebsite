@@ -537,6 +537,22 @@ function GeneralSettings() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle>Committees Page Images</CardTitle>
+          <CardDescription>Upload and crop image for the Committees page</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <ImageUploadWithCrop
+            label="Committees Section Image"
+            imageType="committees"
+            currentImage={settings?.committeesImage}
+            aspectRatio={4 / 3}
+            testId="button-upload-committees-image"
+          />
+        </CardContent>
+      </Card>
+
       <div className="flex justify-end">
         <Button 
           type="submit" 

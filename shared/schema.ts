@@ -37,6 +37,8 @@ export const settings = pgTable("settings", {
   sponsorsHeroImage: text("sponsors_hero_image").notNull().default("https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop"),
   sponsorsPartnerImage1: text("sponsors_partner_image_1").notNull().default("https://images.unsplash.com/photo-1556761175-4b46a572b786?w=800&h=600&fit=crop"),
   sponsorsPartnerImage2: text("sponsors_partner_image_2").notNull().default("https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=600&fit=crop"),
+  // Committees page images
+  committeesImage: text("committees_image").notNull().default("https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop"),
 });
 
 export const insertSettingsSchema = createInsertSchema(settings).omit({ id: true });
