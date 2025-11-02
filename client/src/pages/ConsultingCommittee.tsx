@@ -91,11 +91,9 @@ export default function ConsultingCommittee() {
     <div className="min-h-screen bg-background">
       {/* Back Button */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6">
-        <Link href="/committees">
-          <a className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors" data-testid="link-back-committees">
-            <ArrowLeft className="w-4 h-4" />
-            <span className="font-medium">Back to Committees</span>
-          </a>
+        <Link href="/committees" className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors" data-testid="link-back-committees">
+          <ArrowLeft className="w-4 h-4" />
+          <span className="font-medium">Back to Committees</span>
         </Link>
       </div>
 
