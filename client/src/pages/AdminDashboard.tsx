@@ -124,17 +124,13 @@ export default function AdminDashboard() {
               <ImageIcon className="h-4 w-4 mr-2" />
               Highlights
             </TabsTrigger>
-            <TabsTrigger value="newsletter" data-testid="tab-newsletter">
+            <TabsTrigger value="slideshows" data-testid="tab-slideshows">
               <ImageIcon className="h-4 w-4 mr-2" />
-              Newsletter
+              Slideshows
             </TabsTrigger>
             <TabsTrigger value="executive-members" data-testid="tab-executive-members">
               <Users className="h-4 w-4 mr-2" />
               Executive Board
-            </TabsTrigger>
-            <TabsTrigger value="slideshows" data-testid="tab-slideshows">
-              <ImageIcon className="h-4 w-4 mr-2" />
-              Slideshows
             </TabsTrigger>
           </TabsList>
 
@@ -150,12 +146,12 @@ export default function AdminDashboard() {
             <ManageHighlights />
           </TabsContent>
 
-          <TabsContent value="executive-members">
-            <ManageExecutiveMembers />
-          </TabsContent>
-
           <TabsContent value="slideshows">
             <ManageSlideshows />
+          </TabsContent>
+
+          <TabsContent value="executive-members">
+            <ManageExecutiveMembers />
           </TabsContent>
         </Tabs>
       </div>
