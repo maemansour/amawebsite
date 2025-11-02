@@ -37,7 +37,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { type Settings, type Event, type Highlight, type ExecutiveMember, type InsertExecutiveMember, type Slideshow, type InsertSlideshow, type SlideshowSlide, type InsertSlideshowSlide } from "@shared/schema";
+import { type Settings, type Event, type Highlight, type ExecutiveMember, type InsertExecutiveMember, type Slideshow, type InsertSlideshow, type SlideshowSlide, type InsertSlideshowSlide, type PortfolioClient, type InsertPortfolioClient } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { ImageUploadWithCrop } from "@/components/ImageUploadWithCrop";
 import { MemberImageUpload } from "@/components/MemberImageUpload";
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 max-w-5xl" data-testid="tabs-admin">
+          <TabsList className="grid w-full grid-cols-6 max-w-6xl" data-testid="tabs-admin">
             <TabsTrigger value="general" data-testid="tab-general">
               <SettingsIcon className="h-4 w-4 mr-2" />
               General Settings
@@ -131,6 +131,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="executive-members" data-testid="tab-executive-members">
               <Users className="h-4 w-4 mr-2" />
               Executive Board
+            </TabsTrigger>
+            <TabsTrigger value="portfolio" data-testid="tab-portfolio">
+              <ImageIcon className="h-4 w-4 mr-2" />
+              Portfolio
             </TabsTrigger>
           </TabsList>
 
@@ -152,6 +156,10 @@ export default function AdminDashboard() {
 
           <TabsContent value="executive-members">
             <ManageExecutiveMembers />
+          </TabsContent>
+
+          <TabsContent value="portfolio">
+            <ManagePortfolio />
           </TabsContent>
         </Tabs>
       </div>
@@ -2166,6 +2174,277 @@ function SortableSlideItem({
           </Button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ManagePortfolio() {
+  const { toast } = useToast();
+  const [isAdding, setIsAdding] = useState(false);
+  const [editingClient, setEditingClient] = useState<PortfolioClient | null>(null);
+  const [formData, setFormData] = useState<Partial<InsertPortfolioClient>>({
+    semester: "",
+    clientName: "",
+    clientUrl: "",
+    displayOrder: 0,
+  });
+
+  const { data: clients = [], isLoading } = useQuery<PortfolioClient[]>({
+    queryKey: ["/api/portfolio-clients"],
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (data: Partial<InsertPortfolioClient>) =>
+      apiRequest("POST", "/api/portfolio-clients", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/portfolio-clients"] });
+      toast({
+        title: "Client added",
+        description: "Portfolio client has been added successfully.",
+      });
+      resetForm();
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to add portfolio client. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<InsertPortfolioClient> }) =>
+      apiRequest("PUT", `/api/portfolio-clients/${id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/portfolio-clients"] });
+      toast({
+        title: "Client updated",
+        description: "Portfolio client has been updated successfully.",
+      });
+      resetForm();
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update portfolio client. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => apiRequest("DELETE", `/api/portfolio-clients/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/portfolio-clients"] });
+      toast({
+        title: "Client deleted",
+        description: "Portfolio client has been deleted successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete portfolio client. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const resetForm = () => {
+    setFormData({
+      semester: "",
+      clientName: "",
+      clientUrl: "",
+      displayOrder: 0,
+    });
+    setIsAdding(false);
+    setEditingClient(null);
+  };
+
+  const startEdit = (client: PortfolioClient) => {
+    setEditingClient(client);
+    setFormData({
+      semester: client.semester,
+      clientName: client.clientName,
+      clientUrl: client.clientUrl,
+      displayOrder: client.displayOrder,
+    });
+    setIsAdding(true);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingClient) {
+      updateMutation.mutate({ id: editingClient.id, data: formData });
+    } else {
+      const maxOrder = clients.length > 0 
+        ? Math.max(...clients.map(c => c.displayOrder || 0))
+        : -1;
+      createMutation.mutate({ ...formData, displayOrder: maxOrder + 1 });
+    }
+  };
+
+  const groupedBySemester = useMemo(() => {
+    const grouped = clients.reduce((acc, client) => {
+      if (!acc[client.semester]) {
+        acc[client.semester] = [];
+      }
+      acc[client.semester].push(client);
+      return acc;
+    }, {} as Record<string, PortfolioClient[]>);
+
+    return Object.entries(grouped).sort(([a], [b]) => {
+      const semesterOrder = ["Spring", "Fall"];
+      const [aSeason, aYear] = a.split(" ");
+      const [bSeason, bYear] = b.split(" ");
+      
+      if (aYear !== bYear) {
+        return parseInt(bYear) - parseInt(aYear);
+      }
+      return semesterOrder.indexOf(bSeason) - semesterOrder.indexOf(aSeason);
+    });
+  }, [clients]);
+
+  if (isLoading) {
+    return <div className="text-center py-8">Loading portfolio clients...</div>;
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Manage Consulting Committee Portfolio</CardTitle>
+          <CardDescription>
+            Add and manage client portfolio entries for the Consulting Committee page. Entries are organized by semester.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {!isAdding && (
+            <Button onClick={() => setIsAdding(true)} className="w-full" data-testid="button-add-portfolio-client">
+              <Plus className="h-4 w-4 mr-2" />
+              Add New Client
+            </Button>
+          )}
+
+          {isAdding && (
+            <form onSubmit={handleSubmit} className="space-y-4 p-4 border border-border rounded-md">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="semester">Semester</Label>
+                  <Input
+                    id="semester"
+                    value={formData.semester || ""}
+                    onChange={(e) => setFormData({ ...formData, semester: e.target.value })}
+                    placeholder="e.g., Spring 2025"
+                    required
+                    data-testid="input-semester"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="clientName">Client Name</Label>
+                  <Input
+                    id="clientName"
+                    value={formData.clientName || ""}
+                    onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+                    placeholder="e.g., FindGood.Tech"
+                    required
+                    data-testid="input-client-name"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="clientUrl">Client Website URL</Label>
+                <Input
+                  id="clientUrl"
+                  type="url"
+                  value={formData.clientUrl || ""}
+                  onChange={(e) => setFormData({ ...formData, clientUrl: e.target.value })}
+                  placeholder="https://example.com"
+                  required
+                  data-testid="input-client-url"
+                />
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  type="submit"
+                  disabled={createMutation.isPending || updateMutation.isPending}
+                  data-testid="button-save-portfolio-client"
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  {editingClient ? "Update Client" : "Add Client"}
+                </Button>
+                <Button type="button" variant="outline" onClick={resetForm} data-testid="button-cancel-portfolio-client">
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          )}
+        </CardContent>
+      </Card>
+
+      {groupedBySemester.length === 0 && !isAdding && (
+        <Card>
+          <CardContent className="py-8 text-center text-muted-foreground">
+            No portfolio clients yet. Click "Add New Client" to create one.
+          </CardContent>
+        </Card>
+      )}
+
+      {groupedBySemester.map(([semester, semesterClients]) => (
+        <Card key={semester}>
+          <CardHeader>
+            <CardTitle className="text-lg">{semester}</CardTitle>
+            <CardDescription>{semesterClients.length} client{semesterClients.length !== 1 ? 's' : ''}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {semesterClients.map((client) => (
+                <div
+                  key={client.id}
+                  className="flex items-center justify-between p-3 border border-border rounded-md hover-elevate"
+                  data-testid={`portfolio-client-${client.id}`}
+                >
+                  <div className="flex-1">
+                    <div className="font-medium">{client.clientName}</div>
+                    <a
+                      href={client.clientUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-primary hover:underline"
+                      data-testid={`link-client-url-${client.id}`}
+                    >
+                      {client.clientUrl}
+                    </a>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => startEdit(client)}
+                      data-testid={`button-edit-portfolio-client-${client.id}`}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => deleteMutation.mutate(client.id)}
+                      disabled={deleteMutation.isPending}
+                      data-testid={`button-delete-portfolio-client-${client.id}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 }
