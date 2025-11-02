@@ -106,22 +106,31 @@ export function SlideImageUpload({
     try {
       const croppedImageBlob = await createCroppedImage();
       
-      const formData = new FormData();
-      formData.append("image", croppedImageBlob, "slide.jpg");
+      // Get presigned upload URL
+      const uploadResponse = await apiRequest("POST", "/api/objects/upload", {});
+      const uploadData = await uploadResponse.json() as { uploadURL: string; objectPath: string };
 
-      const result = await apiRequest("POST", "/api/objects/upload", formData);
+      // Upload to object storage using the presigned URL
+      const putResponse = await fetch(uploadData.uploadURL, {
+        method: "PUT",
+        body: croppedImageBlob,
+        headers: {
+          "Content-Type": "image/jpeg",
+        },
+      });
 
-      if (result && result.url) {
-        onImageChange(result.url);
-        toast({
-          title: "Success",
-          description: "Image uploaded successfully",
-        });
-        setShowDialog(false);
-        setOriginalImage(null);
-      } else {
-        throw new Error("No URL returned");
+      if (!putResponse.ok) {
+        throw new Error("Upload failed");
       }
+
+      // Use the normalized object path
+      onImageChange(uploadData.objectPath);
+      toast({
+        title: "Success",
+        description: "Image uploaded successfully",
+      });
+      setShowDialog(false);
+      setOriginalImage(null);
     } catch (error) {
       console.error("Upload error:", error);
       toast({
