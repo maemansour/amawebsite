@@ -130,6 +130,11 @@ export default function Committees() {
                 <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8" data-testid="text-subtitle">
                   Get hands-on experience and develop leadership skills by joining one of our dynamic committees.
                 </p>
+                <Button size="lg" variant="default" asChild data-testid="button-learn-more-hero">
+                  <Link href="/our-chapter">
+                    Learn More
+                  </Link>
+                </Button>
               </div>
             </ScrollReveal>
 
@@ -332,10 +337,8 @@ export default function Committees() {
                 <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90" data-testid="button-apply-now">
                   Apply Now
                 </Button>
-                <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10" asChild data-testid="button-learn-more-cta">
-                  <Link href="/our-chapter">
-                    Learn More
-                  </Link>
+                <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10" data-testid="button-learn-more-cta">
+                  Learn More
                 </Button>
               </div>
             </ScrollReveal>
