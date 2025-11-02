@@ -604,6 +604,85 @@ function GeneralSettings() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle>Membership Page Settings</CardTitle>
+          <CardDescription>Configure images, pricing, and links for the Membership page</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <ImageUploadWithCrop
+            label="Hero Section Image (Finance Team)"
+            imageType="membershipHero"
+            currentImage={settings?.membershipHeroImage}
+            aspectRatio={4 / 3}
+            testId="button-upload-membership-hero-image"
+          />
+
+          <ImageUploadWithCrop
+            label="Get Engaged & Network Section Image"
+            imageType="membershipEngagement"
+            currentImage={settings?.membershipEngagementImage}
+            aspectRatio={4 / 3}
+            testId="button-upload-membership-engagement-image"
+          />
+
+          <div className="pt-6 border-t">
+            <h3 className="text-lg font-semibold mb-4">Membership Pricing</h3>
+            
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="semesterPrice">One Semester Price ($)</Label>
+                <Input
+                  id="semesterPrice"
+                  type="text"
+                  value={formData.semesterPrice || ""}
+                  onChange={(e) => handleChange("semesterPrice", e.target.value)}
+                  placeholder="49"
+                  data-testid="input-semester-price"
+                />
+                <p className="text-sm text-muted-foreground">
+                  Price for one semester membership (popular tier)
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="yearPrice">Year Price ($)</Label>
+                <Input
+                  id="yearPrice"
+                  type="text"
+                  value={formData.yearPrice || ""}
+                  onChange={(e) => handleChange("yearPrice", e.target.value)}
+                  placeholder="49"
+                  data-testid="input-year-price"
+                />
+                <p className="text-sm text-muted-foreground">
+                  Price for annual membership
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-6 border-t">
+            <h3 className="text-lg font-semibold mb-4">Call to Action Links</h3>
+            
+            <div className="space-y-2">
+              <Label htmlFor="joinNowLink">Join Now Button Link</Label>
+              <Input
+                id="joinNowLink"
+                type="url"
+                value={formData.joinNowLink || ""}
+                onChange={(e) => handleChange("joinNowLink", e.target.value)}
+                placeholder="https://forms.gle/..."
+                data-testid="input-join-now-link"
+              />
+              <p className="text-sm text-muted-foreground">
+                Link for the "Join Now" button in the Ready to Join section
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="flex justify-end">
         <Button 
           type="submit" 
