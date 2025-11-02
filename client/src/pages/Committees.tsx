@@ -46,6 +46,36 @@ export default function Committees() {
         "Gain proficiency in Adobe applications",
         "Open to everyone at any skill level"
       ]
+    },
+    {
+      id: "sales",
+      name: "Sales Committee",
+      description: "Drive chapter revenue through sponsorship acquisition and partnership development. Build professional sales and negotiation skills while connecting with local businesses.",
+      whyJoin: [
+        "Develop sales and negotiation skills",
+        "Build relationships with local businesses and sponsors",
+        "Learn about partnership development and B2B sales"
+      ]
+    },
+    {
+      id: "competitions",
+      name: "Competitions Committee",
+      description: "Represent AMA SDSU at regional and national marketing competitions. Collaborate with teammates to develop strategic marketing solutions and compete against other chapters.",
+      whyJoin: [
+        "Compete in regional and national AMA competitions",
+        "Apply classroom knowledge to real-world case studies",
+        "Build teamwork and strategic thinking skills"
+      ]
+    },
+    {
+      id: "multimedia",
+      name: "Multimedia Committee",
+      description: "Create engaging visual content for chapter social media, events, and marketing materials. Develop skills in photography, videography, graphic design, and content creation.",
+      whyJoin: [
+        "Photography and videography experience",
+        "Content creation for social media platforms",
+        "Build a creative portfolio with real projects"
+      ]
     }
   ];
 

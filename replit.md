@@ -24,7 +24,7 @@ Preferred communication style: Simple, everyday language.
     - Homepage enhancements including "Our Chapter" section, "Chapter History & Impact," "Partners & Collaborations," "Weekly Meetings," and "Committees" grid.
     - Sponsors page with professional hero section, multiple brand-specific slideshow carousels with auto-rotation, benefits section, and partnership CTA.
     - Slideshow system: Multiple brand-specific carousels on sponsors page, each with its own title and image-only slides. Full CRUD management via admin dashboard with drag-and-drop ordering for both slideshows and slides. Features Embla Carousel with auto-rotation (5-second intervals), manual dot navigation, 16:9 aspect ratio slides, and gradient overlays.
-    - Committees page: Professional layout featuring hero section with portfolio banner, committee cards grid (Consulting, Event Planning, Podcast, Adobe) with detailed descriptions and "Why Join" sections, benefits section with icons, commitment card, and CTA section. All sections enhanced with ScrollReveal animations matching About Us page design pattern.
+    - Committees page: Professional layout featuring hero section with portfolio banner, committee cards grid (Consulting, Event Planning, Podcast, Adobe, Sales, Competitions, Multimedia) with detailed descriptions and "Why Join" sections, benefits section with icons, commitment card, and CTA section. All sections enhanced with ScrollReveal animations matching About Us page design pattern.
 
 ### Backend
 - **Framework:** Express.js with TypeScript on Node.js.
