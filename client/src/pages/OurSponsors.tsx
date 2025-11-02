@@ -63,7 +63,7 @@ export default function OurSponsors() {
         </section>
 
         {/* Sponsor Carousel Section */}
-        <section className="pt-8 pb-16 md:pt-10 md:pb-20 bg-muted/30" data-testid="section-sponsors-carousel">
+        <section className="pt-4 pb-16 md:pt-6 md:pb-20 bg-muted/30" data-testid="section-sponsors-carousel">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <ScrollReveal direction="up">
               <h2 className="text-3xl md:text-4xl font-bold text-center mb-4" data-testid="heading-sponsors">
