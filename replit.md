@@ -18,12 +18,13 @@ Preferred communication style: Simple, everyday language.
     - Professional image upload system with built-in cropping (`react-easy-crop`) and secure admin-only access for both site images and member profiles.
     - Executive Board member management with full CRUD operations, team-based organization, profile image uploads with circular cropping, dynamic public display, and drag-and-drop reordering.
     - Drag-and-drop functionality using `@dnd-kit` libraries for reordering both executive board teams and members within teams, with persistent storage via bulk update API endpoint.
-    - Scroll-triggered animations using `framer-motion` for enhanced user experience.
+    - Scroll-triggered reveal animations using `framer-motion` via `ScrollReveal` component for enhanced user experience across multiple pages (About Us, Committees).
     - Comprehensive navigation structure with a three-tiered dropdown system, mobile-responsive, covering "About Us," "Get Involved," and "Alumni" sections.
-    - Dedicated pages for Contact (with form, social links, FAQs), Membership (tiers, benefits, how to join), Resources (national AMA links), Alumni (spotlight, mentorship), Executive Board (team-organized member display), Sponsors (partner collaborations and partnerships), and individual Committee pages.
+    - Dedicated pages for Contact (with form, social links, FAQs), Membership (tiers, benefits, how to join), Resources (national AMA links), Alumni (spotlight, mentorship), Executive Board (team-organized member display), Sponsors (partner collaborations and partnerships), and Committees (with detailed committee information and scroll-triggered reveals).
     - Homepage enhancements including "Our Chapter" section, "Chapter History & Impact," "Partners & Collaborations," "Weekly Meetings," and "Committees" grid.
     - Sponsors page with professional hero section, multiple brand-specific slideshow carousels with auto-rotation, benefits section, and partnership CTA.
     - Slideshow system: Multiple brand-specific carousels on sponsors page, each with its own title and image-only slides. Full CRUD management via admin dashboard with drag-and-drop ordering for both slideshows and slides. Features Embla Carousel with auto-rotation (5-second intervals), manual dot navigation, 16:9 aspect ratio slides, and gradient overlays.
+    - Committees page: Professional layout featuring hero section with portfolio banner, committee cards grid (Consulting, Event Planning, Podcast, Adobe) with detailed descriptions and "Why Join" sections, benefits section with icons, commitment card, and CTA section. All sections enhanced with ScrollReveal animations matching About Us page design pattern.
 
 ### Backend
 - **Framework:** Express.js with TypeScript on Node.js.
