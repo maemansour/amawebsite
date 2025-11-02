@@ -1,15 +1,21 @@
 import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { ArrowLeft, Target, Users, TrendingUp, Lightbulb, Heart, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Footer } from "@/components/Footer";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import type { Settings } from "@shared/schema";
 
 export default function ConsultingCommittee() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const { data: settings } = useQuery<Settings>({
+    queryKey: ["/api/settings"],
+  });
 
   const benefits = [
     {
@@ -157,7 +163,7 @@ export default function ConsultingCommittee() {
                 <div className="relative">
                   <div className="rounded-lg overflow-hidden shadow-xl">
                     <img 
-                      src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop" 
+                      src={settings?.consultingTeamImage || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop"} 
                       alt="Consulting Committee Team"
                       className="w-full h-auto"
                       data-testid="img-team"
@@ -208,7 +214,7 @@ export default function ConsultingCommittee() {
                 <div className="relative">
                   <div className="rounded-lg overflow-hidden shadow-lg">
                     <img 
-                      src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop" 
+                      src={settings?.consultingMissionImage || "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop"} 
                       alt="Collaborative Learning"
                       className="w-full h-auto"
                       data-testid="img-mission"

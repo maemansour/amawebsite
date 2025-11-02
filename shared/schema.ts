@@ -40,6 +40,9 @@ export const settings = pgTable("settings", {
   // Committees page images
   committeesImage: text("committees_image").notNull().default("https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop"),
   committeesWhyJoinImage: text("committees_why_join_image").notNull().default("https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop"),
+  // Consulting Committee page images
+  consultingTeamImage: text("consulting_team_image").notNull().default("https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop"),
+  consultingMissionImage: text("consulting_mission_image").notNull().default("https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop"),
 });
 
 export const insertSettingsSchema = createInsertSchema(settings).omit({ id: true });

@@ -558,6 +558,26 @@ function GeneralSettings() {
             aspectRatio={4 / 3}
             testId="button-upload-committees-why-join-image"
           />
+
+          <div className="pt-6 border-t">
+            <h3 className="text-lg font-semibold mb-4">Consulting Committee Page Images</h3>
+            
+            <ImageUploadWithCrop
+              label="Team Photo (Consulting Directors)"
+              imageType="consultingTeam"
+              currentImage={settings?.consultingTeamImage}
+              aspectRatio={4 / 3}
+              testId="button-upload-consulting-team-image"
+            />
+
+            <ImageUploadWithCrop
+              label="Mission Section Image (Collaborative Learning)"
+              imageType="consultingMission"
+              currentImage={settings?.consultingMissionImage}
+              aspectRatio={4 / 3}
+              testId="button-upload-consulting-mission-image"
+            />
+          </div>
         </CardContent>
       </Card>
 
