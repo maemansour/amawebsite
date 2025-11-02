@@ -540,15 +540,23 @@ function GeneralSettings() {
       <Card>
         <CardHeader>
           <CardTitle>Committees Page Images</CardTitle>
-          <CardDescription>Upload and crop image for the Committees page</CardDescription>
+          <CardDescription>Upload and crop images for the Committees page</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <ImageUploadWithCrop
-            label="Committees Section Image"
+            label="Committees Section Image (next to Multimedia Committee)"
             imageType="committees"
             currentImage={settings?.committeesImage}
             aspectRatio={4 / 3}
             testId="button-upload-committees-image"
+          />
+
+          <ImageUploadWithCrop
+            label="Why Join Section Image (next to Benefits)"
+            imageType="committeesWhyJoin"
+            currentImage={settings?.committeesWhyJoinImage}
+            aspectRatio={4 / 3}
+            testId="button-upload-committees-why-join-image"
           />
         </CardContent>
       </Card>

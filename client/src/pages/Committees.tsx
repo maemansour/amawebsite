@@ -252,7 +252,7 @@ export default function Committees() {
         {/* Why Join a Committee Section */}
         <section className="py-16 md:py-20 bg-background" data-testid="section-benefits">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="grid lg:grid-cols-2 gap-12 items-center mb-12">
               {/* Left - Benefits */}
               <ScrollReveal direction="left">
                 <div>
@@ -279,23 +279,34 @@ export default function Committees() {
                 </div>
               </ScrollReveal>
 
-              {/* Right - Commitment Card */}
+              {/* Right - Image */}
               <ScrollReveal direction="right" delay={0.2}>
-                <Card className="bg-primary text-primary-foreground p-8">
-                  <h3 className="text-2xl md:text-3xl font-bold mb-6 text-primary-foreground" data-testid="heading-commitment">
-                    Your Commitment
-                  </h3>
-                  <ul className="space-y-3">
-                    {commitments.map((commitment, index) => (
-                      <li key={index} className="flex items-start gap-3 text-primary-foreground/90" data-testid={`commitment-${index}`}>
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground mt-2 flex-shrink-0" />
-                        <span>{commitment}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </Card>
+                <div className="rounded-lg overflow-hidden shadow-lg h-full" data-testid="img-why-join">
+                  <img 
+                    src={settings?.committeesWhyJoinImage || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop"} 
+                    alt="Committee Members"
+                    className="w-full h-full object-cover min-h-[400px]"
+                  />
+                </div>
               </ScrollReveal>
             </div>
+
+            {/* Commitment Card - Full Width */}
+            <ScrollReveal direction="up" delay={0.3}>
+              <Card className="bg-primary text-primary-foreground p-8 max-w-4xl mx-auto">
+                <h3 className="text-2xl md:text-3xl font-bold mb-6 text-center text-primary-foreground" data-testid="heading-commitment">
+                  Your Commitment
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {commitments.map((commitment, index) => (
+                    <div key={index} className="flex items-start gap-3 text-primary-foreground/90" data-testid={`commitment-${index}`}>
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground mt-2 flex-shrink-0" />
+                      <span>{commitment}</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </ScrollReveal>
           </div>
         </section>
 

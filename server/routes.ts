@@ -332,6 +332,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sponsorsPartner1: "sponsorsPartnerImage1",
         sponsorsPartner2: "sponsorsPartnerImage2",
         committees: "committeesImage",
+        committeesWhyJoin: "committeesWhyJoinImage",
       };
 
       const fieldName = fieldMap[imageType];
