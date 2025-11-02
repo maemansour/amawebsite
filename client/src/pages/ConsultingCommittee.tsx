@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "wouter";
 import { ArrowLeft, Target, Users, TrendingUp, Lightbulb, Heart, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,10 @@ import { Footer } from "@/components/Footer";
 import { ScrollReveal } from "@/components/ScrollReveal";
 
 export default function ConsultingCommittee() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const benefits = [
     {
       title: "Networking",
