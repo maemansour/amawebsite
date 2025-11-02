@@ -191,9 +191,17 @@ export default function Committees() {
                           </li>
                         ))}
                       </ul>
-                      <Button className="w-full" variant="default" data-testid={`button-learn-more-${index}`}>
-                        Learn More
-                      </Button>
+                      {committee.id === "consulting" ? (
+                        <Link href="/committees/consulting">
+                          <Button className="w-full" variant="default" data-testid={`button-learn-more-${index}`}>
+                            Learn More
+                          </Button>
+                        </Link>
+                      ) : (
+                        <Button className="w-full" variant="default" data-testid={`button-learn-more-${index}`}>
+                          Learn More
+                        </Button>
+                      )}
                     </div>
                   </Card>
                 </ScrollReveal>

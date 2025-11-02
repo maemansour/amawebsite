@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { useQuery } from "@tanstack/react-query";
 import { type Settings } from "@shared/schema";
 import { type LucideIcon } from "lucide-react";
+import ConsultingCommittee from "@/pages/ConsultingCommittee";
 
 interface CommitteeData {
   id: string;
@@ -210,6 +211,12 @@ const committeesData: Record<string, CommitteeData> = {
 export default function CommitteePage() {
   const [match, params] = useRoute("/committees/:id");
   const committeeId = params?.id || "";
+  
+  // Use custom ConsultingCommittee page for consulting committee
+  if (committeeId === "consulting") {
+    return <ConsultingCommittee />;
+  }
+  
   const committee = committeesData[committeeId];
 
   const { data: settings } = useQuery<Settings>({
