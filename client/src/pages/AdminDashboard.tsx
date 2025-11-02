@@ -11,7 +11,6 @@ import {
   LogOut,
   Users,
   GripVertical,
-  Handshake,
   Pencil
 } from "lucide-react";
 import {
@@ -38,7 +37,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { type Settings, type Event, type Highlight, type ExecutiveMember, type InsertExecutiveMember, type Sponsor, type InsertSponsor, type Slideshow, type InsertSlideshow, type SlideshowSlide, type InsertSlideshowSlide } from "@shared/schema";
+import { type Settings, type Event, type Highlight, type ExecutiveMember, type InsertExecutiveMember, type Slideshow, type InsertSlideshow, type SlideshowSlide, type InsertSlideshowSlide } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { ImageUploadWithCrop } from "@/components/ImageUploadWithCrop";
 import { MemberImageUpload } from "@/components/MemberImageUpload";
@@ -112,26 +111,26 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 max-w-5xl" data-testid="tabs-admin">
+          <TabsList className="grid w-full grid-cols-5 max-w-5xl" data-testid="tabs-admin">
             <TabsTrigger value="general" data-testid="tab-general">
               <SettingsIcon className="h-4 w-4 mr-2" />
               General Settings
             </TabsTrigger>
             <TabsTrigger value="events" data-testid="tab-events">
               <Calendar className="h-4 w-4 mr-2" />
-              Manage Events
+              Events
             </TabsTrigger>
             <TabsTrigger value="highlights" data-testid="tab-highlights">
               <ImageIcon className="h-4 w-4 mr-2" />
               Highlights
             </TabsTrigger>
+            <TabsTrigger value="newsletter" data-testid="tab-newsletter">
+              <ImageIcon className="h-4 w-4 mr-2" />
+              Newsletter
+            </TabsTrigger>
             <TabsTrigger value="executive-members" data-testid="tab-executive-members">
               <Users className="h-4 w-4 mr-2" />
               Executive Board
-            </TabsTrigger>
-            <TabsTrigger value="sponsors" data-testid="tab-sponsors">
-              <Handshake className="h-4 w-4 mr-2" />
-              Sponsors
             </TabsTrigger>
             <TabsTrigger value="slideshows" data-testid="tab-slideshows">
               <ImageIcon className="h-4 w-4 mr-2" />
@@ -153,10 +152,6 @@ export default function AdminDashboard() {
 
           <TabsContent value="executive-members">
             <ManageExecutiveMembers />
-          </TabsContent>
-
-          <TabsContent value="sponsors">
-            <ManageSponsors />
           </TabsContent>
 
           <TabsContent value="slideshows">
@@ -1560,355 +1555,6 @@ function ManageExecutiveMembers() {
         </DndContext>
       )}
     </div>
-  );
-}
-
-function ManageSponsors() {
-  const { toast } = useToast();
-  const [isAdding, setIsAdding] = useState(false);
-  const [editingSponsor, setEditingSponsor] = useState<Sponsor | null>(null);
-  const [formData, setFormData] = useState<Partial<InsertSponsor>>({
-    name: "",
-    category: "",
-    description: "",
-    image: "",
-    displayOrder: 0,
-  });
-  const [localSponsors, setLocalSponsors] = useState<Sponsor[]>([]);
-
-  const { data: sponsors = [], isLoading } = useQuery<Sponsor[]>({
-    queryKey: ["/api/sponsors"],
-  });
-
-  // Update local state when sponsors data changes
-  useEffect(() => {
-    setLocalSponsors(sponsors);
-  }, [sponsors]);
-
-  const createMutation = useMutation({
-    mutationFn: async (data: Partial<InsertSponsor>) =>
-      apiRequest("POST", "/api/sponsors", data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/sponsors"] });
-      toast({
-        title: "Sponsor added",
-        description: "Sponsor has been added successfully.",
-      });
-      setIsAdding(false);
-      resetForm();
-    },
-    onError: () => {
-      toast({
-        title: "Failed to add sponsor",
-        description: "Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<InsertSponsor> }) =>
-      apiRequest("PUT", `/api/sponsors/${id}`, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/sponsors"] });
-      toast({
-        title: "Sponsor updated",
-        description: "Sponsor has been updated successfully.",
-      });
-      setEditingSponsor(null);
-      resetForm();
-    },
-    onError: () => {
-      toast({
-        title: "Failed to update sponsor",
-        description: "Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) =>
-      apiRequest("DELETE", `/api/sponsors/${id}`, {}),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/sponsors"] });
-      toast({
-        title: "Sponsor deleted",
-        description: "Sponsor has been removed successfully.",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Failed to delete sponsor",
-        description: "Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const reorderMutation = useMutation({
-    mutationFn: async (updates: Array<{ id: string; displayOrder: number }>) => {
-      return await apiRequest("PUT", "/api/sponsors/reorder", { updates });
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["/api/sponsors"] });
-      await queryClient.refetchQueries({ queryKey: ["/api/sponsors"] });
-    },
-    onError: (error) => {
-      console.error("Reorder error:", error);
-      toast({
-        title: "Failed to reorder sponsors",
-        description: "Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      category: "",
-      description: "",
-      image: "",
-      displayOrder: 0,
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editingSponsor) {
-      updateMutation.mutate({ id: editingSponsor.id, data: formData });
-    } else {
-      const maxOrder = localSponsors.length > 0 
-        ? Math.max(...localSponsors.map(s => s.displayOrder || 0))
-        : -1;
-      createMutation.mutate({ ...formData, displayOrder: maxOrder + 1 });
-    }
-  };
-
-  const startEdit = (sponsor: Sponsor) => {
-    setEditingSponsor(sponsor);
-    setFormData(sponsor);
-    setIsAdding(false);
-  };
-
-  const cancelEdit = () => {
-    setEditingSponsor(null);
-    setIsAdding(false);
-    resetForm();
-  };
-
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-      const oldIndex = localSponsors.findIndex((s) => s.id === active.id);
-      const newIndex = localSponsors.findIndex((s) => s.id === over.id);
-
-      const reorderedSponsors = arrayMove(localSponsors, oldIndex, newIndex);
-      setLocalSponsors(reorderedSponsors);
-
-      const updates = reorderedSponsors.map((sponsor, index) => ({
-        id: sponsor.id,
-        displayOrder: index,
-      }));
-
-      reorderMutation.mutate(updates);
-    }
-  };
-
-  if (isLoading) {
-    return <div>Loading sponsors...</div>;
-  }
-
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold">Manage Sponsors</h2>
-          <p className="text-muted-foreground">Add and organize sponsors for the carousel slideshow</p>
-        </div>
-        <Button onClick={() => setIsAdding(true)} data-testid="button-add-sponsor">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Sponsor
-        </Button>
-      </div>
-
-      {(isAdding || editingSponsor) && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{editingSponsor ? "Edit Sponsor" : "Add New Sponsor"}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="sponsor-name">Sponsor Name *</Label>
-                <Input
-                  id="sponsor-name"
-                  value={formData.name || ""}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g., Redbull"
-                  required
-                  data-testid="input-sponsor-name"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="sponsor-category">Category *</Label>
-                <Input
-                  id="sponsor-category"
-                  value={formData.category || ""}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  placeholder="e.g., GBM Sponsor, Event Partner"
-                  required
-                  data-testid="input-sponsor-category"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="sponsor-description">Description *</Label>
-                <Textarea
-                  id="sponsor-description"
-                  value={formData.description || ""}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="e.g., Collaboration with AMA SDSU"
-                  required
-                  data-testid="input-sponsor-description"
-                />
-              </div>
-
-              <MemberImageUpload
-                label="Sponsor Image/Logo"
-                currentImage={formData.image || undefined}
-                onImageChange={(imageUrl) => setFormData({ ...formData, image: imageUrl || "" })}
-                testId="button-upload-sponsor-image"
-              />
-
-              <div className="flex gap-2">
-                <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-save-sponsor">
-                  {editingSponsor ? "Update Sponsor" : "Add Sponsor"}
-                </Button>
-                <Button type="button" variant="outline" onClick={cancelEdit} data-testid="button-cancel-sponsor">
-                  Cancel
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      )}
-
-      {localSponsors.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">No sponsors yet. Add your first sponsor above.</p>
-          </CardContent>
-        </Card>
-      ) : (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext items={localSponsors.map(s => s.id)} strategy={verticalListSortingStrategy}>
-            <div className="space-y-4">
-              {localSponsors.map((sponsor) => (
-                <SortableSponsorCard
-                  key={sponsor.id}
-                  sponsor={sponsor}
-                  onEdit={startEdit}
-                  onDelete={(id) => deleteMutation.mutate(id)}
-                />
-              ))}
-            </div>
-          </SortableContext>
-        </DndContext>
-      )}
-    </div>
-  );
-}
-
-function SortableSponsorCard({
-  sponsor,
-  onEdit,
-  onDelete,
-}: {
-  sponsor: Sponsor;
-  onEdit: (sponsor: Sponsor) => void;
-  onDelete: (id: string) => void;
-}) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: sponsor.id,
-  });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
-  return (
-    <Card ref={setNodeRef} style={style} className="overflow-hidden">
-      <CardContent className="p-6">
-        <div className="flex gap-4 items-start">
-          <button
-            className="mt-1 cursor-grab active:cursor-grabbing"
-            {...attributes}
-            {...listeners}
-            data-testid={`button-drag-sponsor-${sponsor.id}`}
-          >
-            <GripVertical className="h-5 w-5 text-muted-foreground" />
-          </button>
-
-          {sponsor.image && (
-            <div className="w-24 h-24 rounded-md overflow-hidden border border-border flex-shrink-0">
-              <img
-                src={sponsor.image}
-                alt={sponsor.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
-
-          <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-lg" data-testid={`text-sponsor-name-${sponsor.id}`}>
-              {sponsor.name}
-            </h3>
-            <p className="text-sm text-muted-foreground" data-testid={`text-sponsor-category-${sponsor.id}`}>
-              {sponsor.category}
-            </p>
-            <p className="text-sm mt-2" data-testid={`text-sponsor-description-${sponsor.id}`}>
-              {sponsor.description}
-            </p>
-          </div>
-
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => onEdit(sponsor)}
-              data-testid={`button-edit-sponsor-${sponsor.id}`}
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => onDelete(sponsor.id)}
-              data-testid={`button-delete-sponsor-${sponsor.id}`}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
   );
 }
 
