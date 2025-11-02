@@ -179,3 +179,20 @@ export const insertSlideshowSlideSchema = createInsertSchema(slideshowSlides).om
 });
 export type InsertSlideshowSlide = z.infer<typeof insertSlideshowSlideSchema>;
 export type SlideshowSlide = typeof slideshowSlides.$inferSelect;
+
+// Portfolio Clients table - stores consulting committee client portfolio entries
+export const portfolioClients = pgTable("portfolio_clients", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  semester: text("semester").notNull(), // e.g., "Spring 2025", "Fall 2024"
+  clientName: text("client_name").notNull(), // e.g., "FindGood.Tech"
+  clientUrl: text("client_url").notNull(), // Client website URL
+  displayOrder: integer("display_order").notNull().default(0), // For ordering clients
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertPortfolioClientSchema = createInsertSchema(portfolioClients).omit({ 
+  id: true, 
+  createdAt: true 
+});
+export type InsertPortfolioClient = z.infer<typeof insertPortfolioClientSchema>;
+export type PortfolioClient = typeof portfolioClients.$inferSelect;

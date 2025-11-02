@@ -17,6 +17,8 @@ import {
   type InsertSlideshow,
   type SlideshowSlide,
   type InsertSlideshowSlide,
+  type PortfolioClient,
+  type InsertPortfolioClient,
   users,
   settings as settingsTable,
   events,
@@ -25,7 +27,8 @@ import {
   executiveMembers,
   sponsors,
   slideshows,
-  slideshowSlides
+  slideshowSlides,
+  portfolioClients
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { neon } from "@neondatabase/serverless";
@@ -92,6 +95,12 @@ export interface IStorage {
   updateSlide(id: string, slide: Partial<InsertSlideshowSlide>): Promise<SlideshowSlide | undefined>;
   deleteSlide(id: string): Promise<boolean>;
   bulkUpdateSlideDisplayOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void>;
+  
+  // Portfolio Clients management
+  getAllPortfolioClients(): Promise<PortfolioClient[]>;
+  createPortfolioClient(client: InsertPortfolioClient): Promise<PortfolioClient>;
+  updatePortfolioClient(id: string, client: Partial<InsertPortfolioClient>): Promise<PortfolioClient | undefined>;
+  deletePortfolioClient(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -682,6 +691,30 @@ export class DbStorage implements IStorage {
         .set({ displayOrder: update.displayOrder })
         .where(eq(slideshowSlides.id, update.id));
     }
+  }
+  
+  // Portfolio Clients management
+  async getAllPortfolioClients(): Promise<PortfolioClient[]> {
+    const clients = await this.db.select().from(portfolioClients).orderBy(portfolioClients.displayOrder);
+    return clients;
+  }
+
+  async createPortfolioClient(client: InsertPortfolioClient): Promise<PortfolioClient> {
+    const result = await this.db.insert(portfolioClients).values(client).returning();
+    return result[0];
+  }
+
+  async updatePortfolioClient(id: string, client: Partial<InsertPortfolioClient>): Promise<PortfolioClient | undefined> {
+    const result = await this.db.update(portfolioClients)
+      .set(client)
+      .where(eq(portfolioClients.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deletePortfolioClient(id: string): Promise<boolean> {
+    const result = await this.db.delete(portfolioClients).where(eq(portfolioClients.id, id)).returning();
+    return result.length > 0;
   }
 }
 

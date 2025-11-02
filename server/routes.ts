@@ -706,6 +706,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Portfolio Clients routes
+  app.get("/api/portfolio-clients", async (_, res) => {
+    const clients = await storage.getAllPortfolioClients();
+    res.json(clients);
+  });
+
+  app.post("/api/portfolio-clients", requireAuth, async (req, res) => {
+    try {
+      const { insertPortfolioClientSchema } = await import("@shared/schema");
+      const validatedData = insertPortfolioClientSchema.parse(req.body);
+      const newClient = await storage.createPortfolioClient(validatedData);
+      res.status(201).json(newClient);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid portfolio client data", details: error });
+      }
+      console.error("Error creating portfolio client:", error);
+      res.status(500).json({ error: "Failed to create portfolio client" });
+    }
+  });
+
+  app.put("/api/portfolio-clients/:id", requireAuth, async (req, res) => {
+    try {
+      const { insertPortfolioClientSchema } = await import("@shared/schema");
+      const validatedData = insertPortfolioClientSchema.partial().parse(req.body);
+      const updated = await storage.updatePortfolioClient(req.params.id, validatedData);
+      if (!updated) {
+        return res.status(404).json({ error: "Portfolio client not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid portfolio client data", details: error });
+      }
+      console.error("Error updating portfolio client:", error);
+      res.status(500).json({ error: "Failed to update portfolio client" });
+    }
+  });
+
+  app.delete("/api/portfolio-clients/:id", requireAuth, async (req, res) => {
+    try {
+      const deleted = await storage.deletePortfolioClient(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Portfolio client not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting portfolio client:", error);
+      res.status(500).json({ error: "Failed to delete portfolio client" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
