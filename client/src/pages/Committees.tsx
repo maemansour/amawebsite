@@ -332,8 +332,10 @@ export default function Committees() {
                 <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90" data-testid="button-apply-now">
                   Apply Now
                 </Button>
-                <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10" data-testid="button-learn-more-cta">
-                  Learn More
+                <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10" asChild data-testid="button-learn-more-cta">
+                  <Link href="/our-chapter">
+                    Learn More
+                  </Link>
                 </Button>
               </div>
             </ScrollReveal>
