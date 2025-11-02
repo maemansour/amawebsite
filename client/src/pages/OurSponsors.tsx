@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { useQuery } from "@tanstack/react-query";
-import { type Settings, type Sponsor } from "@shared/schema";
+import { type Settings, type Slideshow, type SlideshowSlide } from "@shared/schema";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { useCallback, useEffect, useState } from "react";
@@ -14,8 +14,8 @@ export default function OurSponsors() {
     queryKey: ["/api/settings"],
   });
 
-  const { data: sponsors = [] } = useQuery<Sponsor[]>({
-    queryKey: ["/api/sponsors"],
+  const { data: slideshows = [] } = useQuery<Slideshow[]>({
+    queryKey: ["/api/slideshows"],
   });
 
   const partnershipBenefits = [
@@ -62,14 +62,20 @@ export default function OurSponsors() {
           </div>
         </section>
 
-        {/* Sponsor Carousel Section */}
-        <section className="pt-4 pb-16 md:pt-6 md:pb-20 bg-muted/30" data-testid="section-sponsors-carousel">
+        {/* Slideshow Carousels Section */}
+        <section className="pt-4 pb-16 md:pt-6 md:pb-20 bg-muted/30" data-testid="section-slideshows">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            {sponsors.length > 0 ? (
-              <SponsorsCarousel sponsors={sponsors} />
+            {slideshows.length > 0 ? (
+              <div className="space-y-16">
+                {slideshows.map((slideshow, index) => (
+                  <ScrollReveal key={slideshow.id} delay={index * 0.1}>
+                    <SlideshowCarousel slideshow={slideshow} />
+                  </ScrollReveal>
+                ))}
+              </div>
             ) : (
               <Card className="py-12 text-center">
-                <p className="text-muted-foreground">No sponsors to display at this time.</p>
+                <p className="text-muted-foreground">No slideshows to display at this time.</p>
               </Card>
             )}
           </div>
@@ -133,7 +139,16 @@ export default function OurSponsors() {
   );
 }
 
-function SponsorsCarousel({ sponsors }: { sponsors: Sponsor[] }) {
+function SlideshowCarousel({ slideshow }: { slideshow: Slideshow }) {
+  const { data: slides = [] } = useQuery<SlideshowSlide[]>({
+    queryKey: ["/api/slideshows", slideshow.id, "slides"],
+    queryFn: async () => {
+      const response = await fetch(`/api/slideshows/${slideshow.id}/slides`);
+      if (!response.ok) throw new Error("Failed to fetch slides");
+      return response.json();
+    },
+  });
+
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true, align: 'start' },
     [Autoplay({ delay: 5000, stopOnInteraction: false })]
@@ -165,71 +180,62 @@ function SponsorsCarousel({ sponsors }: { sponsors: Sponsor[] }) {
     };
   }, [emblaApi, onSelect]);
 
-  return (
-    <div className="relative">
-      <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
-        <div className="flex">
-          {sponsors.map((sponsor, index) => (
-            <div 
-              key={sponsor.id} 
-              className="flex-[0_0_100%] min-w-0"
-              aria-hidden={index !== selectedIndex}
-              data-active={index === selectedIndex}
-            >
-              <div className="relative h-[500px] md:h-[600px]">
-                {/* Background Image */}
-                <div className="absolute inset-0">
-                  <img
-                    src={sponsor.image || "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=1200&h=600&fit=crop"}
-                    alt={sponsor.name}
-                    className="w-full h-full object-cover"
-                    data-testid={`img-sponsor-slide-${sponsor.id}`}
-                  />
-                  {/* Dark overlay for better text readability */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
-                </div>
+  if (slides.length === 0) {
+    return null;
+  }
 
-                {/* Content Overlay */}
-                <div className="relative h-full flex items-end">
-                  <div className="w-full p-8 md:p-12 lg:p-16">
-                    <div className="max-w-4xl">
-                      <p className="text-primary-foreground/90 text-sm md:text-base mb-2 font-medium" data-testid={`text-sponsor-category-${sponsor.id}`}>
-                        {sponsor.category}
-                      </p>
-                      <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground mb-4" data-testid={`text-sponsor-name-${sponsor.id}`}>
-                        {sponsor.name}
-                      </h3>
-                      <p className="text-lg md:text-xl text-primary-foreground/90 max-w-2xl" data-testid={`text-sponsor-description-${sponsor.id}`}>
-                        {sponsor.description}
-                      </p>
-                    </div>
-                  </div>
+  return (
+    <div className="space-y-6">
+      {/* Slideshow Title */}
+      <h3 className="text-2xl md:text-3xl font-bold text-center" data-testid={`heading-slideshow-${slideshow.id}`}>
+        {slideshow.title}
+      </h3>
+
+      {/* Carousel */}
+      <div className="relative">
+        <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
+          <div className="flex">
+            {slides.map((slide, index) => (
+              <div 
+                key={slide.id} 
+                className="flex-[0_0_100%] min-w-0"
+                aria-hidden={index !== selectedIndex}
+                data-active={index === selectedIndex}
+              >
+                <div className="relative h-[400px] md:h-[500px] lg:h-[600px]">
+                  <img
+                    src={slide.image || "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=1200&h=600&fit=crop"}
+                    alt={`${slideshow.title} - Slide ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    data-testid={`img-slide-${slide.id}`}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Dot Navigation */}
-      {sponsors.length > 1 && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10" data-testid="carousel-dots">
-          {sponsors.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => scrollTo(index)}
-              className={`w-2.5 h-2.5 rounded-full transition-all hover-elevate active-elevate-2 ${
-                index === selectedIndex 
-                  ? 'bg-primary-foreground w-8' 
-                  : 'bg-primary-foreground/40'
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-              aria-current={index === selectedIndex ? 'true' : 'false'}
-              data-testid={`button-carousel-dot-${index}`}
-            />
-          ))}
-        </div>
-      )}
+        {/* Dot Navigation */}
+        {slides.length > 1 && (
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10" data-testid={`carousel-dots-${slideshow.id}`}>
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => scrollTo(index)}
+                className={`w-2.5 h-2.5 rounded-full transition-all hover-elevate active-elevate-2 ${
+                  index === selectedIndex 
+                    ? 'bg-primary-foreground w-8' 
+                    : 'bg-primary-foreground/40'
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+                aria-current={index === selectedIndex ? 'true' : 'false'}
+                data-testid={`button-carousel-dot-${slideshow.id}-${index}`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

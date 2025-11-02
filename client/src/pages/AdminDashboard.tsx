@@ -38,10 +38,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { type Settings, type Event, type Highlight, type ExecutiveMember, type InsertExecutiveMember, type Sponsor, type InsertSponsor } from "@shared/schema";
+import { type Settings, type Event, type Highlight, type ExecutiveMember, type InsertExecutiveMember, type Sponsor, type InsertSponsor, type Slideshow, type InsertSlideshow, type SlideshowSlide, type InsertSlideshowSlide } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { ImageUploadWithCrop } from "@/components/ImageUploadWithCrop";
 import { MemberImageUpload } from "@/components/MemberImageUpload";
+import { SlideImageUpload } from "@/components/SlideImageUpload";
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -111,7 +112,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 max-w-4xl" data-testid="tabs-admin">
+          <TabsList className="grid w-full grid-cols-6 max-w-5xl" data-testid="tabs-admin">
             <TabsTrigger value="general" data-testid="tab-general">
               <SettingsIcon className="h-4 w-4 mr-2" />
               General Settings
@@ -131,6 +132,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="sponsors" data-testid="tab-sponsors">
               <Handshake className="h-4 w-4 mr-2" />
               Sponsors
+            </TabsTrigger>
+            <TabsTrigger value="slideshows" data-testid="tab-slideshows">
+              <ImageIcon className="h-4 w-4 mr-2" />
+              Slideshows
             </TabsTrigger>
           </TabsList>
 
@@ -152,6 +157,10 @@ export default function AdminDashboard() {
 
           <TabsContent value="sponsors">
             <ManageSponsors />
+          </TabsContent>
+
+          <TabsContent value="slideshows">
+            <ManageSlideshows />
           </TabsContent>
         </Tabs>
       </div>
@@ -1777,8 +1786,8 @@ function ManageSponsors() {
 
               <MemberImageUpload
                 label="Sponsor Image/Logo"
-                currentImage={formData.image}
-                onImageChange={(imageUrl) => setFormData({ ...formData, image: imageUrl })}
+                currentImage={formData.image || undefined}
+                onImageChange={(imageUrl) => setFormData({ ...formData, image: imageUrl || "" })}
                 testId="button-upload-sponsor-image"
               />
 
@@ -1900,5 +1909,577 @@ function SortableSponsorCard({
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+function ManageSlideshows() {
+  const { toast } = useToast();
+  const [isAdding, setIsAdding] = useState(false);
+  const [editingSlideshow, setEditingSlideshow] = useState<Slideshow | null>(null);
+  const [expandedSlideshow, setExpandedSlideshow] = useState<string | null>(null);
+  const [formData, setFormData] = useState<Partial<InsertSlideshow>>({
+    title: "",
+    displayOrder: 0,
+  });
+  const [localSlideshows, setLocalSlideshows] = useState<Slideshow[]>([]);
+
+  const { data: slideshows = [], isLoading } = useQuery<Slideshow[]>({
+    queryKey: ["/api/slideshows"],
+  });
+
+  useEffect(() => {
+    setLocalSlideshows(slideshows);
+  }, [slideshows]);
+
+  const createMutation = useMutation({
+    mutationFn: async (data: Partial<InsertSlideshow>) =>
+      apiRequest("POST", "/api/slideshows", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/slideshows"] });
+      toast({
+        title: "Slideshow added",
+        description: "Slideshow has been added successfully.",
+      });
+      setIsAdding(false);
+      resetForm();
+    },
+    onError: () => {
+      toast({
+        title: "Failed to add slideshow",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<InsertSlideshow> }) =>
+      apiRequest("PUT", `/api/slideshows/${id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/slideshows"] });
+      toast({
+        title: "Slideshow updated",
+        description: "Slideshow has been updated successfully.",
+      });
+      setEditingSlideshow(null);
+      resetForm();
+    },
+    onError: () => {
+      toast({
+        title: "Failed to update slideshow",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) =>
+      apiRequest("DELETE", `/api/slideshows/${id}`, {}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/slideshows"] });
+      toast({
+        title: "Slideshow deleted",
+        description: "Slideshow and all its slides have been removed successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Failed to delete slideshow",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const reorderMutation = useMutation({
+    mutationFn: async (updates: Array<{ id: string; displayOrder: number }>) => {
+      return await apiRequest("PUT", "/api/slideshows/reorder", { updates });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["/api/slideshows"] });
+      await queryClient.refetchQueries({ queryKey: ["/api/slideshows"] });
+    },
+    onError: (error) => {
+      console.error("Reorder error:", error);
+      toast({
+        title: "Failed to reorder slideshows",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      displayOrder: 0,
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingSlideshow) {
+      updateMutation.mutate({ id: editingSlideshow.id, data: formData });
+    } else {
+      const maxOrder = localSlideshows.length > 0 
+        ? Math.max(...localSlideshows.map(s => s.displayOrder || 0))
+        : -1;
+      createMutation.mutate({ ...formData, displayOrder: maxOrder + 1 });
+    }
+  };
+
+  const startEdit = (slideshow: Slideshow) => {
+    setEditingSlideshow(slideshow);
+    setFormData(slideshow);
+    setIsAdding(false);
+  };
+
+  const cancelEdit = () => {
+    setEditingSlideshow(null);
+    setIsAdding(false);
+    resetForm();
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = localSlideshows.findIndex((s) => s.id === active.id);
+      const newIndex = localSlideshows.findIndex((s) => s.id === over.id);
+
+      const reorderedSlideshows = arrayMove(localSlideshows, oldIndex, newIndex);
+      setLocalSlideshows(reorderedSlideshows);
+
+      const updates = reorderedSlideshows.map((s, index) => ({
+        id: s.id,
+        displayOrder: index,
+      }));
+
+      reorderMutation.mutate(updates);
+    }
+  };
+
+  const toggleSlideshow = (slideshowId: string) => {
+    setExpandedSlideshow(expandedSlideshow === slideshowId ? null : slideshowId);
+  };
+
+  if (isLoading) {
+    return <div className="text-center py-8">Loading slideshows...</div>;
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Manage Slideshows</CardTitle>
+          <CardDescription>
+            Create and manage brand-specific slideshows. Each slideshow will display as a separate carousel on the sponsors page.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {!isAdding && !editingSlideshow && (
+            <Button onClick={() => setIsAdding(true)} data-testid="button-add-slideshow">
+              <Plus className="h-4 w-4 mr-2" />
+              Add New Slideshow
+            </Button>
+          )}
+
+          {(isAdding || editingSlideshow) && (
+            <form onSubmit={handleSubmit} className="space-y-4 border border-border rounded-md p-4">
+              <div className="space-y-2">
+                <Label htmlFor="slideshow-title">Slideshow Title</Label>
+                <Input
+                  id="slideshow-title"
+                  value={formData.title || ""}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  placeholder="e.g., Platinum Sponsors, Gold Sponsors, etc."
+                  required
+                  data-testid="input-slideshow-title"
+                />
+              </div>
+
+              <div className="flex gap-2">
+                <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-save-slideshow">
+                  <Save className="h-4 w-4 mr-2" />
+                  {editingSlideshow ? "Update" : "Create"} Slideshow
+                </Button>
+                <Button type="button" variant="outline" onClick={cancelEdit} data-testid="button-cancel-slideshow">
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          )}
+        </CardContent>
+      </Card>
+
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={localSlideshows.map((s) => s.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="space-y-3">
+            {localSlideshows.map((slideshow) => (
+              <SortableSlideshowItem
+                key={slideshow.id}
+                slideshow={slideshow}
+                onEdit={startEdit}
+                onDelete={(id) => deleteMutation.mutate(id)}
+                isExpanded={expandedSlideshow === slideshow.id}
+                onToggle={() => toggleSlideshow(slideshow.id)}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
+
+      {localSlideshows.length === 0 && !isAdding && (
+        <Card>
+          <CardContent className="py-8 text-center text-muted-foreground">
+            No slideshows yet. Click "Add New Slideshow" to create one.
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function SortableSlideshowItem({
+  slideshow,
+  onEdit,
+  onDelete,
+  isExpanded,
+  onToggle,
+}: {
+  slideshow: Slideshow;
+  onEdit: (slideshow: Slideshow) => void;
+  onDelete: (id: string) => void;
+  isExpanded: boolean;
+  onToggle: () => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: slideshow.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <Card ref={setNodeRef} style={style}>
+      <CardContent className="pt-6">
+        <div className="flex items-start gap-4">
+          <button
+            className="cursor-grab active:cursor-grabbing mt-1"
+            {...attributes}
+            {...listeners}
+            data-testid={`button-drag-slideshow-${slideshow.id}`}
+          >
+            <GripVertical className="h-5 w-5 text-muted-foreground" />
+          </button>
+
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bold text-lg" data-testid={`text-slideshow-title-${slideshow.id}`}>
+              {slideshow.title}
+            </h3>
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onToggle}
+              data-testid={`button-toggle-slides-${slideshow.id}`}
+            >
+              {isExpanded ? "Hide" : "Manage"} Slides
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => onEdit(slideshow)}
+              data-testid={`button-edit-slideshow-${slideshow.id}`}
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => onDelete(slideshow.id)}
+              data-testid={`button-delete-slideshow-${slideshow.id}`}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        {isExpanded && <ManageSlides slideshowId={slideshow.id} />}
+      </CardContent>
+    </Card>
+  );
+}
+
+function ManageSlides({ slideshowId }: { slideshowId: string }) {
+  const { toast } = useToast();
+  const [isAdding, setIsAdding] = useState(false);
+  const [formData, setFormData] = useState<Partial<InsertSlideshowSlide>>({
+    slideshowId,
+    image: "",
+    displayOrder: 0,
+  });
+  const [localSlides, setLocalSlides] = useState<SlideshowSlide[]>([]);
+
+  const { data: slides = [], isLoading } = useQuery<SlideshowSlide[]>({
+    queryKey: ["/api/slideshows", slideshowId, "slides"],
+    queryFn: async () => {
+      const response = await fetch(`/api/slideshows/${slideshowId}/slides`);
+      if (!response.ok) throw new Error("Failed to fetch slides");
+      return response.json();
+    },
+  });
+
+  useEffect(() => {
+    setLocalSlides(slides);
+  }, [slides]);
+
+  const createMutation = useMutation({
+    mutationFn: async (data: Partial<InsertSlideshowSlide>) =>
+      apiRequest("POST", "/api/slides", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/slideshows", slideshowId, "slides"] });
+      toast({
+        title: "Slide added",
+        description: "Slide has been added successfully.",
+      });
+      setIsAdding(false);
+      resetForm();
+    },
+    onError: () => {
+      toast({
+        title: "Failed to add slide",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) =>
+      apiRequest("DELETE", `/api/slides/${id}`, {}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/slideshows", slideshowId, "slides"] });
+      toast({
+        title: "Slide deleted",
+        description: "Slide has been removed successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Failed to delete slide",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const reorderMutation = useMutation({
+    mutationFn: async (updates: Array<{ id: string; displayOrder: number }>) => {
+      return await apiRequest("PUT", "/api/slides/reorder", { updates });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["/api/slideshows", slideshowId, "slides"] });
+      await queryClient.refetchQueries({ queryKey: ["/api/slideshows", slideshowId, "slides"] });
+    },
+    onError: (error) => {
+      console.error("Reorder error:", error);
+      toast({
+        title: "Failed to reorder slides",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const resetForm = () => {
+    setFormData({
+      slideshowId,
+      image: "",
+      displayOrder: 0,
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const maxOrder = localSlides.length > 0 
+      ? Math.max(...localSlides.map(s => s.displayOrder || 0))
+      : -1;
+    createMutation.mutate({ ...formData, slideshowId, displayOrder: maxOrder + 1 });
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = localSlides.findIndex((s) => s.id === active.id);
+      const newIndex = localSlides.findIndex((s) => s.id === over.id);
+
+      const reorderedSlides = arrayMove(localSlides, oldIndex, newIndex);
+      setLocalSlides(reorderedSlides);
+
+      const updates = reorderedSlides.map((s, index) => ({
+        id: s.id,
+        displayOrder: index,
+      }));
+
+      reorderMutation.mutate(updates);
+    }
+  };
+
+  if (isLoading) {
+    return <div className="mt-4 text-center py-4 text-sm text-muted-foreground">Loading slides...</div>;
+  }
+
+  return (
+    <div className="mt-6 pt-6 border-t border-border space-y-4">
+      <div className="flex items-center justify-between">
+        <h4 className="font-semibold">Slides</h4>
+        {!isAdding && (
+          <Button size="sm" onClick={() => setIsAdding(true)} data-testid={`button-add-slide-${slideshowId}`}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Slide
+          </Button>
+        )}
+      </div>
+
+      {isAdding && (
+        <form onSubmit={handleSubmit} className="space-y-4 border border-border rounded-md p-4 bg-muted/30">
+          <div className="space-y-2">
+            <Label htmlFor={`slide-image-${slideshowId}`}>Slide Image</Label>
+            <SlideImageUpload
+              currentImage={formData.image || undefined}
+              onImageChange={(url) => setFormData({ ...formData, image: url || "" })}
+              label="Upload Slide Image"
+            />
+          </div>
+
+          <div className="flex gap-2">
+            <Button type="submit" size="sm" disabled={createMutation.isPending || !formData.image} data-testid={`button-save-slide-${slideshowId}`}>
+              <Save className="h-4 w-4 mr-2" />
+              Add Slide
+            </Button>
+            <Button type="button" size="sm" variant="outline" onClick={() => { setIsAdding(false); resetForm(); }} data-testid={`button-cancel-slide-${slideshowId}`}>
+              Cancel
+            </Button>
+          </div>
+        </form>
+      )}
+
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={localSlides.map((s) => s.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {localSlides.map((slide) => (
+              <SortableSlideItem
+                key={slide.id}
+                slide={slide}
+                onDelete={(id) => deleteMutation.mutate(id)}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
+
+      {localSlides.length === 0 && !isAdding && (
+        <div className="text-center py-6 text-sm text-muted-foreground border border-dashed border-border rounded-md">
+          No slides yet. Click "Add Slide" to create one.
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SortableSlideItem({
+  slide,
+  onDelete,
+}: {
+  slide: SlideshowSlide;
+  onDelete: (id: string) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: slide.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="relative group">
+      <div className="border border-border rounded-md overflow-hidden bg-card">
+        <div className="aspect-video relative">
+          {slide.image && (
+            <img
+              src={slide.image}
+              alt="Slide"
+              className="w-full h-full object-cover"
+            />
+          )}
+          <button
+            className="absolute top-2 left-2 cursor-grab active:cursor-grabbing bg-background/80 p-1.5 rounded"
+            {...attributes}
+            {...listeners}
+            data-testid={`button-drag-slide-${slide.id}`}
+          >
+            <GripVertical className="h-4 w-4" />
+          </button>
+          <Button
+            variant="destructive"
+            size="icon"
+            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={() => onDelete(slide.id)}
+            data-testid={`button-delete-slide-${slide.id}`}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
