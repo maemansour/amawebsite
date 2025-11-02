@@ -11,10 +11,10 @@ export function Footer({ settings }: FooterProps) {
 
   return (
     <footer className="bg-primary text-primary-foreground">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-10">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {/* AMA SDSU Logo & Description */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-primary-foreground rounded-full flex items-center justify-center">
                 <span className="text-primary font-heading font-semibold text-base tracking-tight">AM&gt;</span>
@@ -79,7 +79,7 @@ export function Footer({ settings }: FooterProps) {
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             <h3 className="font-heading font-semibold text-base" data-testid="text-footer-quick-links">
               Quick Links
             </h3>
@@ -108,7 +108,7 @@ export function Footer({ settings }: FooterProps) {
           </div>
 
           {/* Get Involved */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             <h3 className="font-heading font-semibold text-base" data-testid="text-footer-get-involved">
               Get Involved
             </h3>
@@ -137,7 +137,7 @@ export function Footer({ settings }: FooterProps) {
           </div>
 
           {/* Contact Info */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             <h3 className="font-heading font-semibold text-base" data-testid="text-footer-contact-info">
               Contact Info
             </h3>
@@ -177,7 +177,7 @@ export function Footer({ settings }: FooterProps) {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-primary-foreground/20 text-center text-sm text-primary-foreground/70">
+        <div className="mt-8 pt-6 border-t border-primary-foreground/20 text-center text-sm text-primary-foreground/70">
           <p data-testid="text-footer-copyright">
             © {currentYear} American Marketing Association - San Diego State University. All rights reserved.
           </p>
