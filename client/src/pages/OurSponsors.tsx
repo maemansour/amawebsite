@@ -40,7 +40,7 @@ export default function OurSponsors() {
     <div className="min-h-screen flex flex-col">
       <div className="flex-1">
         {/* Hero Section */}
-        <section className="py-12 md:py-16" data-testid="section-sponsors-hero">
+        <section className="pt-12 pb-4 md:pt-16 md:pb-6" data-testid="section-sponsors-hero">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-12 items-start">
               {/* Left Column */}
