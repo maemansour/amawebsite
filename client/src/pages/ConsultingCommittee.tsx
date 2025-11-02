@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { ArrowLeft, Target, Users, TrendingUp, Lightbulb, Heart, Building2 } from "lucide-react";
@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Footer } from "@/components/Footer";
 import { ScrollReveal } from "@/components/ScrollReveal";
-import type { Settings } from "@shared/schema";
+import type { Settings, PortfolioClient } from "@shared/schema";
 
 export default function ConsultingCommittee() {
   useEffect(() => {
@@ -15,6 +15,10 @@ export default function ConsultingCommittee() {
 
   const { data: settings } = useQuery<Settings>({
     queryKey: ["/api/settings"],
+  });
+
+  const { data: portfolioClients = [] } = useQuery<PortfolioClient[]>({
+    queryKey: ["/api/portfolio-clients"],
   });
 
   const benefits = [
@@ -48,58 +52,34 @@ export default function ConsultingCommittee() {
     }
   ];
 
-  const portfolio = [
-    {
-      semester: "Spring 2025",
-      clients: [
-        { name: "FindGood.Tech", url: "#" },
-        { name: "Romulus Media", url: "#" },
-        { name: "SD360", url: "#" },
-        { name: "Vervor shop", url: "#" },
-        { name: "Cram", url: "#" }
-      ]
-    },
-    {
-      semester: "Fall 2024",
-      clients: [
-        { name: "FindGood.Tech", url: "#" },
-        { name: "Romulus Media", url: "#" },
-        { name: "SD360", url: "#" },
-        { name: "Vervor shop", url: "#" }
-      ]
-    },
-    {
-      semester: "Spring 2024",
-      clients: [
-        { name: "FindGood.Tech", url: "#" },
-        { name: "AKA", url: "#" },
-        { name: "SD360", url: "#" }
-      ]
-    },
-    {
-      semester: "Fall 2023",
-      clients: [
-        { name: "619 Spirits North Park", url: "#" },
-        { name: "619 IT", url: "#" },
-        { name: "Unincorporated", url: "#" },
-        { name: "Advestor", url: "#" }
-      ]
-    },
-    {
-      semester: "Spring 2023",
-      clients: [
-        { name: "Cloutr", url: "#" },
-        { name: "The San Diego Dream Team", url: "#" }
-      ]
-    },
-    {
-      semester: "Fall 2022",
-      clients: [
-        { name: "Coach Heidi Wilson", url: "#" },
-        { name: "Coach Mark Caplitte", url: "#" }
-      ]
-    }
-  ];
+  const portfolio = useMemo(() => {
+    const grouped = portfolioClients.reduce((acc, client) => {
+      if (!acc[client.semester]) {
+        acc[client.semester] = [];
+      }
+      acc[client.semester].push({
+        name: client.clientName,
+        url: client.clientUrl
+      });
+      return acc;
+    }, {} as Record<string, Array<{ name: string; url: string }>>);
+
+    return Object.entries(grouped)
+      .sort(([a], [b]) => {
+        const semesterOrder = ["Spring", "Fall"];
+        const [aSeason, aYear] = a.split(" ");
+        const [bSeason, bYear] = b.split(" ");
+        
+        if (aYear !== bYear) {
+          return parseInt(bYear) - parseInt(aYear);
+        }
+        return semesterOrder.indexOf(bSeason) - semesterOrder.indexOf(aSeason);
+      })
+      .map(([semester, clients]) => ({
+        semester,
+        clients
+      }));
+  }, [portfolioClients]);
 
   const howToJoinSteps = [
     "Attend AMA General Body meetings at the beginning of the semester and become a member.",
@@ -333,6 +313,8 @@ export default function ConsultingCommittee() {
                             <li key={clientIndex}>
                               <a 
                                 href={client.url} 
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="text-[#D4A574] dark:text-[#E5C4A0] hover:underline"
                                 data-testid={`link-client-${index}-${clientIndex}`}
                               >
