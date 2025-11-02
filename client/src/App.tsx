@@ -9,6 +9,8 @@ import EventCalendar from "@/pages/EventCalendar";
 import Contact from "@/pages/Contact";
 import CommitteePage from "@/pages/CommitteePage";
 import Committees from "@/pages/Committees";
+import ConsultingCommittee from "@/pages/ConsultingCommittee";
+import EventPlanningCommittee from "@/pages/EventPlanningCommittee";
 import Membership from "@/pages/Membership";
 import Resources from "@/pages/Resources";
 import Alumni from "@/pages/Alumni";
@@ -56,6 +58,16 @@ function Router() {
       <Route path="/committees">
         <PublicLayout>
           <Committees />
+        </PublicLayout>
+      </Route>
+      <Route path="/committees/consulting">
+        <PublicLayout>
+          <ConsultingCommittee />
+        </PublicLayout>
+      </Route>
+      <Route path="/committees/event-planning">
+        <PublicLayout>
+          <EventPlanningCommittee />
         </PublicLayout>
       </Route>
       <Route path="/committees/:id">
