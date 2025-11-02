@@ -15,7 +15,6 @@ import Alumni from "@/pages/Alumni";
 import ExecutiveBoard from "@/pages/ExecutiveBoard";
 import OurChapter from "@/pages/OurChapter";
 import OurSponsors from "@/pages/OurSponsors";
-import WeeklyMeetings from "@/pages/WeeklyMeetings";
 import PastVPBoards from "@/pages/PastVPBoards";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
@@ -52,11 +51,6 @@ function Router() {
       <Route path="/sponsors">
         <PublicLayout>
           <OurSponsors />
-        </PublicLayout>
-      </Route>
-      <Route path="/weekly-meetings">
-        <PublicLayout>
-          <WeeklyMeetings />
         </PublicLayout>
       </Route>
       <Route path="/committees">

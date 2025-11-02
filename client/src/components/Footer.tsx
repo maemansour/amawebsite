@@ -114,11 +114,6 @@ export function Footer({ settings }: FooterProps) {
             </h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="/weekly-meetings" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors hover-elevate rounded px-2 py-1 inline-block" data-testid="link-footer-weekly-meetings">
-                  Weekly Meetings
-                </a>
-              </li>
-              <li>
                 <a href="/committees" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors hover-elevate rounded px-2 py-1 inline-block" data-testid="link-footer-committees">
                   Committees
                 </a>

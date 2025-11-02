@@ -111,20 +111,6 @@ export function Navigation() {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            href="/weekly-meetings"
-                            className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate"
-                            data-testid="link-weekly-meetings"
-                          >
-                            <div className="text-sm font-medium leading-none">Weekly Meetings</div>
-                            <p className="text-sm leading-snug text-muted-foreground mt-1">
-                              Join us every Thursday at 6:00 PM for professional...
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
                             href="/committees"
                             className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate"
                             data-testid="link-committees"
@@ -267,9 +253,6 @@ export function Navigation() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <span className="text-sm font-semibold text-muted-foreground px-3">Get Involved</span>
-                  <Link href="/weekly-meetings" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-weekly-meetings">
-                    Weekly Meetings
-                  </Link>
                   <Link href="/committees" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-committees">
                     Committees
                   </Link>
