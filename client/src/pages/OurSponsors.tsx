@@ -49,7 +49,7 @@ export default function OurSponsors() {
                   <Handshake className="inline-block w-10 h-10 md:w-12 md:h-12 text-primary mb-2" /> Our Partners & <span className="text-primary">Collaborations</span>
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground mb-8" data-testid="text-sponsors-description">
-                  We're proud to collaborate with these industry-leading organizations who help provide real-world experience and opportunities for our members.
+                  We're proud to collaborate with these industry-leading organizations who help provide real-world experience and opportunities for our members. Thank you to our incredible sponsors who make our events and initiatives possible.
                 </p>
               </ScrollReveal>
 
@@ -65,15 +65,6 @@ export default function OurSponsors() {
         {/* Sponsor Carousel Section */}
         <section className="pt-4 pb-16 md:pt-6 md:pb-20 bg-muted/30" data-testid="section-sponsors-carousel">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <ScrollReveal direction="up">
-              <h2 className="text-3xl md:text-4xl font-bold text-center mb-4" data-testid="heading-sponsors">
-                Our Sponsors
-              </h2>
-              <p className="text-lg text-muted-foreground text-center mb-12 max-w-3xl mx-auto" data-testid="text-sponsors-intro">
-                Thank you to our incredible sponsors who make our events and initiatives possible
-              </p>
-            </ScrollReveal>
-
             {sponsors.length > 0 ? (
               <SponsorsCarousel sponsors={sponsors} />
             ) : (
