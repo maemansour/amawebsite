@@ -56,14 +56,6 @@ export default function OurSponsors() {
               {/* Right Column */}
               <ScrollReveal direction="right" delay={0.2}>
                 <div className="relative">
-                  <div className="rounded-2xl overflow-hidden shadow-2xl">
-                    <img 
-                      src={settings?.sponsorsHeroImage || "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop"} 
-                      alt="Our Partners and Sponsors"
-                      className="w-full h-[400px] object-cover"
-                      data-testid="img-hero"
-                    />
-                  </div>
                 </div>
               </ScrollReveal>
             </div>
