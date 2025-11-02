@@ -389,9 +389,17 @@ export default function ConsultingCommittee() {
                 <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto" data-testid="text-cta-description">
                   Get hands-on consulting experience while helping local businesses grow their marketing efforts.
                 </p>
-                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90" data-testid="button-apply">
-                  Apply to Consulting Committee
-                </Button>
+                {settings?.consultingApplyLink ? (
+                  <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90" asChild data-testid="button-apply">
+                    <a href={settings.consultingApplyLink} target="_blank" rel="noopener noreferrer">
+                      Apply to Consulting Committee
+                    </a>
+                  </Button>
+                ) : (
+                  <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90" disabled data-testid="button-apply">
+                    Apply to Consulting Committee
+                  </Button>
+                )}
               </div>
             </ScrollReveal>
           </div>
