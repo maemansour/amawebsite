@@ -2,7 +2,6 @@ import { Link } from "wouter";
 import { ArrowLeft, Target, Users, TrendingUp, Lightbulb, Heart, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { ScrollReveal } from "@/components/ScrollReveal";
 
@@ -99,21 +98,18 @@ export default function ConsultingCommittee() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
+      {/* Back Button */}
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6">
+        <Link href="/committees">
+          <a className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors" data-testid="link-back-committees">
+            <ArrowLeft className="w-4 h-4" />
+            <span className="font-medium">Back to Committees</span>
+          </a>
+        </Link>
+      </div>
 
-      <div className="pt-20">
-        {/* Back Button */}
-        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6">
-          <Link href="/committees">
-            <a className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors" data-testid="link-back-committees">
-              <ArrowLeft className="w-4 h-4" />
-              <span className="font-medium">Back to Committees</span>
-            </a>
-          </Link>
-        </div>
-
-        {/* Hero Section */}
-        <section className="py-12 md:py-16 bg-background" data-testid="section-hero">
+      {/* Hero Section */}
+      <section className="py-12 md:py-16 bg-background" data-testid="section-hero">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Left - Content */}
@@ -172,10 +168,10 @@ export default function ConsultingCommittee() {
               </ScrollReveal>
             </div>
           </div>
-        </section>
+      </section>
 
-        {/* Our Mission Section */}
-        <section className="py-16 md:py-20 bg-background" data-testid="section-mission">
+      {/* Our Mission Section */}
+      <section className="py-16 md:py-20 bg-background" data-testid="section-mission">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Left - Mission Card */}
@@ -221,10 +217,10 @@ export default function ConsultingCommittee() {
               </ScrollReveal>
             </div>
           </div>
-        </section>
+      </section>
 
-        {/* Why Join Section */}
-        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-why-join">
+      {/* Why Join Section */}
+      <section className="py-16 md:py-20 bg-muted/30" data-testid="section-why-join">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <ScrollReveal direction="up">
               <div className="text-center mb-12">
@@ -295,10 +291,10 @@ export default function ConsultingCommittee() {
               ))}
             </div>
           </div>
-        </section>
+      </section>
 
-        {/* Client Portfolio Section */}
-        <section className="py-16 md:py-20 bg-background" data-testid="section-portfolio">
+      {/* Client Portfolio Section */}
+      <section className="py-16 md:py-20 bg-background" data-testid="section-portfolio">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <ScrollReveal direction="up">
               <div className="text-center mb-12">
@@ -341,10 +337,10 @@ export default function ConsultingCommittee() {
               </CardContent>
             </Card>
           </div>
-        </section>
+      </section>
 
-        {/* How to Join & For Businesses Section */}
-        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-join">
+      {/* How to Join & For Businesses Section */}
+      <section className="py-16 md:py-20 bg-muted/30" data-testid="section-join">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-8 mb-12">
               {/* How to Join */}
@@ -406,8 +402,7 @@ export default function ConsultingCommittee() {
               </div>
             </ScrollReveal>
           </div>
-        </section>
-      </div>
+      </section>
 
       <Footer />
     </div>
