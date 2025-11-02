@@ -585,6 +585,21 @@ function GeneralSettings() {
               aspectRatio={4 / 3}
               testId="button-upload-consulting-mission-image"
             />
+
+            <div className="space-y-2 mt-6">
+              <Label htmlFor="consultingApplyLink">Apply Button Link</Label>
+              <Input
+                id="consultingApplyLink"
+                type="url"
+                value={formData.consultingApplyLink || ""}
+                onChange={(e) => handleChange("consultingApplyLink", e.target.value)}
+                placeholder="https://forms.gle/..."
+                data-testid="input-consulting-apply-link"
+              />
+              <p className="text-sm text-muted-foreground">
+                Link for the "Apply to Consulting Committee" button
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>
