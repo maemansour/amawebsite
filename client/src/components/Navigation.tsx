@@ -107,7 +107,7 @@ export function Navigation() {
                     Get Involved
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid grid-cols-2 gap-3 p-4 w-[500px]">
+                    <ul className="grid grid-cols-1 gap-3 p-4 w-[280px]">
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
