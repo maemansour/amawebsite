@@ -534,6 +534,174 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Slideshows routes
+  app.get("/api/slideshows", async (_, res) => {
+    const slideshowsList = await storage.getAllSlideshows();
+    res.json(slideshowsList);
+  });
+
+  app.get("/api/slideshows/:id", async (req, res) => {
+    const slideshow = await storage.getSlideshow(req.params.id);
+    if (!slideshow) {
+      return res.status(404).json({ error: "Slideshow not found" });
+    }
+    res.json(slideshow);
+  });
+
+  app.post("/api/slideshows", requireAuth, async (req, res) => {
+    try {
+      const { insertSlideshowSchema } = await import("@shared/schema");
+      const validatedData = insertSlideshowSchema.parse(req.body);
+      const newSlideshow = await storage.createSlideshow(validatedData);
+      res.status(201).json(newSlideshow);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid slideshow data", details: error });
+      }
+      console.error("Error creating slideshow:", error);
+      res.status(500).json({ error: "Failed to create slideshow" });
+    }
+  });
+
+  // IMPORTANT: Reorder endpoint must come BEFORE :id routes
+  app.put("/api/slideshows/reorder", requireAuth, async (req, res) => {
+    try {
+      const reorderSchema = z.object({
+        updates: z.array(
+          z.object({
+            id: z.string(),
+            displayOrder: z.number().int().min(0),
+          })
+        ),
+      });
+
+      const validatedData = reorderSchema.parse(req.body);
+      await storage.bulkUpdateSlideshowDisplayOrder(validatedData.updates);
+      res.json({ message: "Slideshow display order updated successfully" });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid request data", details: error });
+      }
+      console.error("Error updating slideshow display order:", error);
+      res.status(500).json({ error: "Failed to update display order" });
+    }
+  });
+
+  app.put("/api/slideshows/:id", requireAuth, async (req, res) => {
+    try {
+      const { insertSlideshowSchema } = await import("@shared/schema");
+      const validatedData = insertSlideshowSchema.partial().parse(req.body);
+      const updated = await storage.updateSlideshow(req.params.id, validatedData);
+      if (!updated) {
+        return res.status(404).json({ error: "Slideshow not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid slideshow data", details: error });
+      }
+      console.error("Error updating slideshow:", error);
+      res.status(500).json({ error: "Failed to update slideshow" });
+    }
+  });
+
+  app.delete("/api/slideshows/:id", requireAuth, async (req, res) => {
+    try {
+      const deleted = await storage.deleteSlideshow(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Slideshow not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting slideshow:", error);
+      res.status(500).json({ error: "Failed to delete slideshow" });
+    }
+  });
+
+  // Slideshow Slides routes
+  app.get("/api/slideshows/:slideshowId/slides", async (req, res) => {
+    const slidesList = await storage.getAllSlides(req.params.slideshowId);
+    res.json(slidesList);
+  });
+
+  app.get("/api/slides/:id", async (req, res) => {
+    const slide = await storage.getSlide(req.params.id);
+    if (!slide) {
+      return res.status(404).json({ error: "Slide not found" });
+    }
+    res.json(slide);
+  });
+
+  app.post("/api/slides", requireAuth, async (req, res) => {
+    try {
+      const { insertSlideshowSlideSchema } = await import("@shared/schema");
+      const validatedData = insertSlideshowSlideSchema.parse(req.body);
+      const newSlide = await storage.createSlide(validatedData);
+      res.status(201).json(newSlide);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid slide data", details: error });
+      }
+      console.error("Error creating slide:", error);
+      res.status(500).json({ error: "Failed to create slide" });
+    }
+  });
+
+  // IMPORTANT: Reorder endpoint must come BEFORE :id routes
+  app.put("/api/slides/reorder", requireAuth, async (req, res) => {
+    try {
+      const reorderSchema = z.object({
+        updates: z.array(
+          z.object({
+            id: z.string(),
+            displayOrder: z.number().int().min(0),
+          })
+        ),
+      });
+
+      const validatedData = reorderSchema.parse(req.body);
+      await storage.bulkUpdateSlideDisplayOrder(validatedData.updates);
+      res.json({ message: "Slide display order updated successfully" });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid request data", details: error });
+      }
+      console.error("Error updating slide display order:", error);
+      res.status(500).json({ error: "Failed to update display order" });
+    }
+  });
+
+  app.put("/api/slides/:id", requireAuth, async (req, res) => {
+    try {
+      const { insertSlideshowSlideSchema } = await import("@shared/schema");
+      const validatedData = insertSlideshowSlideSchema.partial().parse(req.body);
+      const updated = await storage.updateSlide(req.params.id, validatedData);
+      if (!updated) {
+        return res.status(404).json({ error: "Slide not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid slide data", details: error });
+      }
+      console.error("Error updating slide:", error);
+      res.status(500).json({ error: "Failed to update slide" });
+    }
+  });
+
+  app.delete("/api/slides/:id", requireAuth, async (req, res) => {
+    try {
+      const deleted = await storage.deleteSlide(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Slide not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting slide:", error);
+      res.status(500).json({ error: "Failed to delete slide" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

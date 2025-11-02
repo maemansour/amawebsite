@@ -13,13 +13,19 @@ import {
   type InsertExecutiveMember,
   type Sponsor,
   type InsertSponsor,
+  type Slideshow,
+  type InsertSlideshow,
+  type SlideshowSlide,
+  type InsertSlideshowSlide,
   users,
   settings as settingsTable,
   events,
   highlights,
   newsletterSubscriptions,
   executiveMembers,
-  sponsors
+  sponsors,
+  slideshows,
+  slideshowSlides
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { neon } from "@neondatabase/serverless";
@@ -70,6 +76,22 @@ export interface IStorage {
   updateSponsor(id: string, sponsor: Partial<InsertSponsor>): Promise<Sponsor | undefined>;
   deleteSponsor(id: string): Promise<boolean>;
   bulkUpdateSponsorDisplayOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void>;
+  
+  // Slideshows management
+  getAllSlideshows(): Promise<Slideshow[]>;
+  getSlideshow(id: string): Promise<Slideshow | undefined>;
+  createSlideshow(slideshow: InsertSlideshow): Promise<Slideshow>;
+  updateSlideshow(id: string, slideshow: Partial<InsertSlideshow>): Promise<Slideshow | undefined>;
+  deleteSlideshow(id: string): Promise<boolean>;
+  bulkUpdateSlideshowDisplayOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void>;
+  
+  // Slideshow Slides management
+  getAllSlides(slideshowId: string): Promise<SlideshowSlide[]>;
+  getSlide(id: string): Promise<SlideshowSlide | undefined>;
+  createSlide(slide: InsertSlideshowSlide): Promise<SlideshowSlide>;
+  updateSlide(id: string, slide: Partial<InsertSlideshowSlide>): Promise<SlideshowSlide | undefined>;
+  deleteSlide(id: string): Promise<boolean>;
+  bulkUpdateSlideDisplayOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -583,6 +605,82 @@ export class DbStorage implements IStorage {
       await this.db.update(sponsors)
         .set({ displayOrder: update.displayOrder })
         .where(eq(sponsors.id, update.id));
+    }
+  }
+  
+  // Slideshows management
+  async getAllSlideshows(): Promise<Slideshow[]> {
+    const slideshowList = await this.db.select().from(slideshows).orderBy(slideshows.displayOrder);
+    return slideshowList;
+  }
+
+  async getSlideshow(id: string): Promise<Slideshow | undefined> {
+    const result = await this.db.select().from(slideshows).where(eq(slideshows.id, id));
+    return result[0];
+  }
+
+  async createSlideshow(slideshow: InsertSlideshow): Promise<Slideshow> {
+    const result = await this.db.insert(slideshows).values(slideshow).returning();
+    return result[0];
+  }
+
+  async updateSlideshow(id: string, slideshow: Partial<InsertSlideshow>): Promise<Slideshow | undefined> {
+    const result = await this.db.update(slideshows)
+      .set(slideshow)
+      .where(eq(slideshows.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteSlideshow(id: string): Promise<boolean> {
+    const result = await this.db.delete(slideshows).where(eq(slideshows.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async bulkUpdateSlideshowDisplayOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void> {
+    for (const update of updates) {
+      await this.db.update(slideshows)
+        .set({ displayOrder: update.displayOrder })
+        .where(eq(slideshows.id, update.id));
+    }
+  }
+  
+  // Slideshow Slides management
+  async getAllSlides(slideshowId: string): Promise<SlideshowSlide[]> {
+    const slideList = await this.db.select().from(slideshowSlides)
+      .where(eq(slideshowSlides.slideshowId, slideshowId))
+      .orderBy(slideshowSlides.displayOrder);
+    return slideList;
+  }
+
+  async getSlide(id: string): Promise<SlideshowSlide | undefined> {
+    const result = await this.db.select().from(slideshowSlides).where(eq(slideshowSlides.id, id));
+    return result[0];
+  }
+
+  async createSlide(slide: InsertSlideshowSlide): Promise<SlideshowSlide> {
+    const result = await this.db.insert(slideshowSlides).values(slide).returning();
+    return result[0];
+  }
+
+  async updateSlide(id: string, slide: Partial<InsertSlideshowSlide>): Promise<SlideshowSlide | undefined> {
+    const result = await this.db.update(slideshowSlides)
+      .set(slide)
+      .where(eq(slideshowSlides.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteSlide(id: string): Promise<boolean> {
+    const result = await this.db.delete(slideshowSlides).where(eq(slideshowSlides.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async bulkUpdateSlideDisplayOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void> {
+    for (const update of updates) {
+      await this.db.update(slideshowSlides)
+        .set({ displayOrder: update.displayOrder })
+        .where(eq(slideshowSlides.id, update.id));
     }
   }
 }

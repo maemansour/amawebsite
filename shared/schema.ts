@@ -142,3 +142,34 @@ export const insertSponsorSchema = createInsertSchema(sponsors).omit({
 });
 export type InsertSponsor = z.infer<typeof insertSponsorSchema>;
 export type Sponsor = typeof sponsors.$inferSelect;
+
+// Slideshows table - stores slideshow collections for sponsors/brands
+export const slideshows = pgTable("slideshows", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(), // e.g., "Celsius", "LinkedIn"
+  displayOrder: integer("display_order").notNull().default(0), // For ordering slideshows
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertSlideshowSchema = createInsertSchema(slideshows).omit({ 
+  id: true, 
+  createdAt: true 
+});
+export type InsertSlideshow = z.infer<typeof insertSlideshowSchema>;
+export type Slideshow = typeof slideshows.$inferSelect;
+
+// Slideshow Slides table - stores individual slides within a slideshow
+export const slideshowSlides = pgTable("slideshow_slides", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  slideshowId: varchar("slideshow_id").notNull().references(() => slideshows.id, { onDelete: 'cascade' }),
+  image: text("image").notNull(), // Slide image URL
+  displayOrder: integer("display_order").notNull().default(0), // For ordering slides within slideshow
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertSlideshowSlideSchema = createInsertSchema(slideshowSlides).omit({ 
+  id: true, 
+  createdAt: true 
+});
+export type InsertSlideshowSlide = z.infer<typeof insertSlideshowSlideSchema>;
+export type SlideshowSlide = typeof slideshowSlides.$inferSelect;
