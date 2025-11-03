@@ -318,7 +318,7 @@ export default function Contact() {
                           >
                             <FaSpotify className="w-5 h-5 text-primary" />
                             <div>
-                              <p className="font-medium">{settings.spotifyUsername || "@sdsuama"}</p>
+                              <p className="font-medium">AMA SDSU Podcast</p>
                               <p className="text-sm text-muted-foreground">Listen to our podcast</p>
                             </div>
                           </a>
