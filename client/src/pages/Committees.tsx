@@ -131,9 +131,9 @@ export default function Committees() {
                   Get hands-on experience and develop leadership skills by joining one of our dynamic committees.
                 </p>
                 <Button size="lg" variant="default" asChild data-testid="button-learn-more-hero">
-                  <Link href="/our-chapter">
+                  <a href="#choose-your-path">
                     Learn More
-                  </Link>
+                  </a>
                 </Button>
               </div>
             </ScrollReveal>
@@ -154,7 +154,7 @@ export default function Committees() {
         </section>
 
         {/* Choose Your Path Section */}
-        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-committees">
+        <section id="choose-your-path" className="py-16 md:py-20 bg-muted/30" data-testid="section-committees">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <ScrollReveal direction="up">
               <div className="text-center mb-12">
