@@ -48,8 +48,8 @@ export default function Resources() {
         {/* Resource Cards Grid */}
         <section className="py-16 md:py-20" data-testid="section-resource-cards">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* National Website */}
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* National Website - Left Column */}
               <Card className="bg-primary text-primary-foreground" data-testid="card-national-website">
                 <CardContent className="p-8">
                   <div className="mb-4">
@@ -93,44 +93,47 @@ export default function Resources() {
                 </CardContent>
               </Card>
 
-              {/* Knowledge Hub */}
-              <Card className="bg-yellow-50 dark:bg-yellow-950/20" data-testid="card-knowledge-hub">
-                <CardContent className="p-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <BookOpen className="w-6 h-6 text-[#D4A574] dark:text-[#E5C4A0]" />
-                    <h3 className="text-2xl font-bold text-foreground">Knowledge Hub</h3>
-                  </div>
-                  <p className="text-muted-foreground">
-                    Access exclusive marketing research, whitepapers, and industry reports.
-                  </p>
-                </CardContent>
-              </Card>
+              {/* Right Column - Stacked Cards */}
+              <div className="flex flex-col gap-6">
+                {/* Knowledge Hub */}
+                <Card className="bg-yellow-50 dark:bg-yellow-950/20" data-testid="card-knowledge-hub">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-2">
+                      <BookOpen className="w-5 h-5 text-[#D4A574] dark:text-[#E5C4A0]" />
+                      <h3 className="text-xl font-bold text-foreground">Knowledge Hub</h3>
+                    </div>
+                    <p className="text-muted-foreground">
+                      Access exclusive marketing research, whitepapers, and industry reports.
+                    </p>
+                  </CardContent>
+                </Card>
 
-              {/* Professional Network */}
-              <Card className="bg-blue-50 dark:bg-blue-950/20" data-testid="card-professional-network">
-                <CardContent className="p-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                    <h3 className="text-2xl font-bold text-foreground">Professional Network</h3>
-                  </div>
-                  <p className="text-muted-foreground">
-                    Connect with 30,000+ marketing professionals worldwide.
-                  </p>
-                </CardContent>
-              </Card>
+                {/* Professional Network */}
+                <Card className="bg-blue-50 dark:bg-blue-950/20" data-testid="card-professional-network">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-2">
+                      <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                      <h3 className="text-xl font-bold text-foreground">Professional Network</h3>
+                    </div>
+                    <p className="text-muted-foreground">
+                      Connect with 30,000+ marketing professionals worldwide.
+                    </p>
+                  </CardContent>
+                </Card>
 
-              {/* Career Advancement */}
-              <Card className="bg-green-50 dark:bg-green-950/20" data-testid="card-career-advancement">
-                <CardContent className="p-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <TrendingUp className="w-6 h-6 text-green-600 dark:text-green-400" />
-                    <h3 className="text-2xl font-bold text-foreground">Career Advancement</h3>
-                  </div>
-                  <p className="text-muted-foreground">
-                    Job board, career coaching, and professional development programs.
-                  </p>
-                </CardContent>
-              </Card>
+                {/* Career Advancement */}
+                <Card className="bg-green-50 dark:bg-green-950/20" data-testid="card-career-advancement">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-2">
+                      <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
+                      <h3 className="text-xl font-bold text-foreground">Career Advancement</h3>
+                    </div>
+                    <p className="text-muted-foreground">
+                      Job board, career coaching, and professional development programs.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </section>
