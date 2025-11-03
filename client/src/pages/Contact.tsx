@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Mail, MapPin, MessageSquare } from "lucide-react";
 import { FaInstagram, FaLinkedin, FaTiktok, FaSpotify } from "react-icons/fa";
@@ -25,6 +26,10 @@ const contactFormSchema = z.object({
 type ContactFormData = z.infer<typeof contactFormSchema>;
 
 export default function Contact() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const { data: settings } = useQuery<Settings>({
     queryKey: ["/api/settings"],
   });
