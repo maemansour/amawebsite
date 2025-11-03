@@ -53,6 +53,15 @@ export const settings = pgTable("settings", {
   joinNowLink: text("join_now_link").notNull().default(""),
   // Event Calendar subscription
   calendarSubscribeUrl: text("calendar_subscribe_url").notNull().default(""),
+  // Podcast Committee page
+  podcastHeroImage: text("podcast_hero_image").notNull().default("https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=800&h=600&fit=crop"),
+  podcastIndustryImage: text("podcast_industry_image").notNull().default("https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop"),
+  podcastCreativeImage: text("podcast_creative_image").notNull().default("https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop"),
+  podcastSpotifyUrl: text("podcast_spotify_url").notNull().default(""),
+  podcastYoutubeUrl: text("podcast_youtube_url").notNull().default(""),
+  podcastInstagramUrl: text("podcast_instagram_url").notNull().default(""),
+  podcastApplyLink: text("podcast_apply_link").notNull().default(""),
+  podcastEmail: text("podcast_email").notNull().default("podcast.sdsuama@gmail.com"),
 });
 
 export const insertSettingsSchema = createInsertSchema(settings).omit({ id: true });
@@ -227,3 +236,21 @@ export const insertAlumniSpotlightSchema = createInsertSchema(alumniSpotlight).o
 });
 export type InsertAlumniSpotlight = z.infer<typeof insertAlumniSpotlightSchema>;
 export type AlumniSpotlight = typeof alumniSpotlight.$inferSelect;
+
+// Featured Speakers table - stores podcast guest speakers
+export const featuredSpeakers = pgTable("featured_speakers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(), // e.g., "Angel Mason Broadus"
+  topic: text("topic").notNull(), // e.g., "Marketing Insights & Career Development"
+  description: text("description").notNull(), // Description of what they discussed
+  category: text("category").notNull(), // "recent" or "past"
+  displayOrder: integer("display_order").notNull().default(0), // For ordering speakers
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertFeaturedSpeakerSchema = createInsertSchema(featuredSpeakers).omit({ 
+  id: true, 
+  createdAt: true 
+});
+export type InsertFeaturedSpeaker = z.infer<typeof insertFeaturedSpeakerSchema>;
+export type FeaturedSpeaker = typeof featuredSpeakers.$inferSelect;

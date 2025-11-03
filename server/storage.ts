@@ -21,6 +21,8 @@ import {
   type InsertPortfolioClient,
   type AlumniSpotlight,
   type InsertAlumniSpotlight,
+  type FeaturedSpeaker,
+  type InsertFeaturedSpeaker,
   users,
   settings as settingsTable,
   events,
@@ -31,7 +33,8 @@ import {
   slideshows,
   slideshowSlides,
   portfolioClients,
-  alumniSpotlight
+  alumniSpotlight,
+  featuredSpeakers
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { neon } from "@neondatabase/serverless";
@@ -111,6 +114,13 @@ export interface IStorage {
   updateAlumniSpotlight(id: string, alumni: Partial<InsertAlumniSpotlight>): Promise<AlumniSpotlight | undefined>;
   deleteAlumniSpotlight(id: string): Promise<boolean>;
   bulkUpdateAlumniSpotlightOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void>;
+  
+  // Featured Speakers management
+  getAllFeaturedSpeakers(): Promise<FeaturedSpeaker[]>;
+  createFeaturedSpeaker(speaker: InsertFeaturedSpeaker): Promise<FeaturedSpeaker>;
+  updateFeaturedSpeaker(id: string, speaker: Partial<InsertFeaturedSpeaker>): Promise<FeaturedSpeaker | undefined>;
+  deleteFeaturedSpeaker(id: string): Promise<boolean>;
+  bulkUpdateFeaturedSpeakersOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -756,6 +766,38 @@ export class DbStorage implements IStorage {
       await this.db.update(alumniSpotlight)
         .set({ displayOrder: update.displayOrder })
         .where(eq(alumniSpotlight.id, update.id));
+    }
+  }
+  
+  // Featured Speakers management
+  async getAllFeaturedSpeakers(): Promise<FeaturedSpeaker[]> {
+    const speakers = await this.db.select().from(featuredSpeakers).orderBy(featuredSpeakers.displayOrder);
+    return speakers;
+  }
+
+  async createFeaturedSpeaker(speaker: InsertFeaturedSpeaker): Promise<FeaturedSpeaker> {
+    const result = await this.db.insert(featuredSpeakers).values(speaker).returning();
+    return result[0];
+  }
+
+  async updateFeaturedSpeaker(id: string, speaker: Partial<InsertFeaturedSpeaker>): Promise<FeaturedSpeaker | undefined> {
+    const result = await this.db.update(featuredSpeakers)
+      .set(speaker)
+      .where(eq(featuredSpeakers.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteFeaturedSpeaker(id: string): Promise<boolean> {
+    const result = await this.db.delete(featuredSpeakers).where(eq(featuredSpeakers.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async bulkUpdateFeaturedSpeakersOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void> {
+    for (const update of updates) {
+      await this.db.update(featuredSpeakers)
+        .set({ displayOrder: update.displayOrder })
+        .where(eq(featuredSpeakers.id, update.id));
     }
   }
 }

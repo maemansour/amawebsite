@@ -8,7 +8,8 @@ import {
   insertEventSchema, 
   insertHighlightSchema,
   insertNewsletterSubscriptionSchema,
-  insertExecutiveMemberSchema
+  insertExecutiveMemberSchema,
+  insertFeaturedSpeakerSchema
 } from "@shared/schema";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 
@@ -830,6 +831,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error reordering alumni spotlight:", error);
       res.status(500).json({ error: "Failed to reorder alumni spotlight" });
+    }
+  });
+
+  // ===== FEATURED SPEAKERS ROUTES =====
+  
+  // GET all featured speakers
+  app.get("/api/featured-speakers", async (_, res) => {
+    const speakers = await storage.getAllFeaturedSpeakers();
+    res.json(speakers);
+  });
+
+  // POST new featured speaker (admin only)
+  app.post("/api/featured-speakers", requireAuth, async (req, res) => {
+    try {
+      const validatedData = insertFeaturedSpeakerSchema.parse(req.body);
+      const speaker = await storage.createFeaturedSpeaker(validatedData);
+      res.status(201).json(speaker);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid featured speaker data", details: error });
+      }
+      console.error("Error creating featured speaker:", error);
+      res.status(500).json({ error: "Failed to create featured speaker" });
+    }
+  });
+
+  // PUT update featured speaker (admin only)
+  app.put("/api/featured-speakers/:id", requireAuth, async (req, res) => {
+    try {
+      const validatedData = insertFeaturedSpeakerSchema.partial().parse(req.body);
+      const updated = await storage.updateFeaturedSpeaker(req.params.id, validatedData);
+      if (!updated) {
+        return res.status(404).json({ error: "Featured speaker not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid featured speaker data", details: error });
+      }
+      console.error("Error updating featured speaker:", error);
+      res.status(500).json({ error: "Failed to update featured speaker" });
+    }
+  });
+
+  // DELETE featured speaker (admin only)
+  app.delete("/api/featured-speakers/:id", requireAuth, async (req, res) => {
+    try {
+      const deleted = await storage.deleteFeaturedSpeaker(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Featured speaker not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting featured speaker:", error);
+      res.status(500).json({ error: "Failed to delete featured speaker" });
+    }
+  });
+
+  // Bulk reorder featured speakers (admin only)
+  app.post("/api/featured-speakers/reorder", requireAuth, async (req, res) => {
+    try {
+      const updates = z.array(z.object({
+        id: z.string(),
+        displayOrder: z.number()
+      })).parse(req.body);
+      
+      await storage.bulkUpdateFeaturedSpeakersOrder(updates);
+      res.status(200).json({ message: "Featured speakers order updated successfully" });
+    } catch (error) {
+      console.error("Error reordering featured speakers:", error);
+      res.status(500).json({ error: "Failed to reorder featured speakers" });
     }
   });
 
