@@ -2769,24 +2769,12 @@ function ManageAlumniSpotlight() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="imageUrl">Image URL (optional)</Label>
-                <Input
-                  id="imageUrl"
-                  type="url"
-                  value={formData.imageUrl || ""}
-                  onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                  placeholder="https://example.com/photo.jpg or /objects/..."
-                  data-testid="input-alumni-image"
+                <Label>Profile Image (optional)</Label>
+                <MemberImageUpload
+                  currentImage={formData.imageUrl || undefined}
+                  onImageChange={(url) => setFormData({ ...formData, imageUrl: url })}
+                  memberName={formData.name || "Alumni"}
                 />
-                {formData.imageUrl && (
-                  <div className="mt-2">
-                    <img 
-                      src={formData.imageUrl} 
-                      alt="Preview" 
-                      className="w-32 h-32 object-cover rounded-md"
-                    />
-                  </div>
-                )}
               </div>
 
               <div className="flex gap-2">
