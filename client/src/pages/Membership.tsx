@@ -287,11 +287,11 @@ export default function Membership() {
                 </div>
               </Card>
 
-              {/* Annual Membership */}
+              {/* Two Semesters */}
               <Card className="p-8" data-testid="card-tier-year">
                 <div className="text-center mb-8">
                   <h3 className="text-2xl font-bold mb-4 text-foreground" data-testid="heading-tier-year">
-                    Annual Membership
+                    Two Semesters
                   </h3>
                   <div className="mb-2">
                     <span className="text-5xl font-bold text-primary" data-testid="price-year">
@@ -299,16 +299,13 @@ export default function Membership() {
                     </span>
                     <span className="text-xl text-muted-foreground">/year</span>
                   </div>
-                  <p className="text-muted-foreground mb-6" data-testid="text-tier-description">
-                    Access to all chapter benefits for the full academic year
-                  </p>
                   <Button 
                     className="w-full" 
                     variant="default"
                     size="lg"
                     data-testid="button-choose-year"
                   >
-                    Choose Annual Membership →
+                    Choose Two Semesters →
                   </Button>
                 </div>
               </Card>
