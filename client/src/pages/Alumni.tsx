@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { GraduationCap, Briefcase, Calendar, Star, Network } from "lucide-react";
+import { GraduationCap, Briefcase, Calendar, Star, Network, Linkedin } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollReveal } from "@/components/ScrollReveal";
-import { type Settings } from "@shared/schema";
+import { type Settings, type AlumniSpotlight } from "@shared/schema";
 
 export default function Alumni() {
   useEffect(() => {
@@ -15,6 +15,10 @@ export default function Alumni() {
 
   const { data: settings } = useQuery<Settings>({
     queryKey: ["/api/settings"],
+  });
+
+  const { data: alumniSpotlight = [], isLoading: isLoadingAlumni } = useQuery<AlumniSpotlight[]>({
+    queryKey: ["/api/alumni-spotlight"],
   });
 
   const [email, setEmail] = useState("");
@@ -157,14 +161,83 @@ export default function Alumni() {
               </div>
             </ScrollReveal>
 
-            <ScrollReveal direction="up" delay={0.2}>
+            {isLoadingAlumni ? (
               <div className="max-w-md mx-auto text-center py-12">
-                <GraduationCap className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
-                <p className="text-muted-foreground" data-testid="text-no-spotlight">
-                  No alumni spotlight available at the moment.
-                </p>
+                <div className="animate-pulse space-y-4">
+                  <div className="h-12 w-12 bg-muted rounded-full mx-auto"></div>
+                  <div className="h-4 bg-muted rounded w-3/4 mx-auto"></div>
+                  <div className="h-4 bg-muted rounded w-1/2 mx-auto"></div>
+                </div>
               </div>
-            </ScrollReveal>
+            ) : alumniSpotlight.length === 0 ? (
+              <ScrollReveal direction="up" delay={0.2}>
+                <div className="max-w-md mx-auto text-center py-12">
+                  <GraduationCap className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
+                  <p className="text-muted-foreground" data-testid="text-no-spotlight">
+                    No alumni spotlight available at the moment.
+                  </p>
+                </div>
+              </ScrollReveal>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {alumniSpotlight.map((alumni, index) => (
+                  <ScrollReveal key={alumni.id} direction="up" delay={index * 0.1}>
+                    <Card className="h-full hover-elevate" data-testid={`alumni-card-${alumni.id}`}>
+                      <CardContent className="p-6">
+                        {alumni.imageUrl && (
+                          <div className="mb-4">
+                            <img
+                              src={alumni.imageUrl}
+                              alt={alumni.name}
+                              className="w-full h-48 object-cover rounded-md"
+                              data-testid={`alumni-image-${alumni.id}`}
+                            />
+                          </div>
+                        )}
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex-1">
+                            <h3 className="text-xl font-bold mb-1 text-foreground" data-testid={`alumni-name-${alumni.id}`}>
+                              {alumni.name}
+                            </h3>
+                            <p className="text-sm text-muted-foreground" data-testid={`alumni-class-${alumni.id}`}>
+                              {alumni.classYear}
+                            </p>
+                          </div>
+                          {alumni.linkedinUrl && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              asChild
+                              data-testid={`alumni-linkedin-${alumni.id}`}
+                            >
+                              <a
+                                href={alumni.linkedinUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`${alumni.name} LinkedIn profile`}
+                              >
+                                <Linkedin className="h-5 w-5 text-[#0077B5]" />
+                              </a>
+                            </Button>
+                          )}
+                        </div>
+                        <div className="mb-3">
+                          <p className="font-semibold text-foreground" data-testid={`alumni-position-${alumni.id}`}>
+                            {alumni.position}
+                          </p>
+                          <p className="text-sm text-[#D4A574] dark:text-[#E5C4A0]" data-testid={`alumni-company-${alumni.id}`}>
+                            {alumni.company}
+                          </p>
+                        </div>
+                        <p className="text-muted-foreground text-sm" data-testid={`alumni-description-${alumni.id}`}>
+                          {alumni.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </ScrollReveal>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 

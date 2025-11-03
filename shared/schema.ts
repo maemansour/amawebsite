@@ -213,7 +213,8 @@ export const alumniSpotlight = pgTable("alumni_spotlight", {
   position: text("position").notNull(), // e.g., "Senior Brand Manager"
   company: text("company").notNull(), // e.g., "The Coca-Cola Company"
   description: text("description").notNull(), // Brief bio about their achievements
-  image: text("image"), // Profile image URL (optional)
+  imageUrl: text("image_url"), // Profile image URL (optional)
+  linkedinUrl: text("linkedin_url"), // LinkedIn profile URL (optional)
   displayOrder: integer("display_order").notNull().default(0), // For ordering alumni
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
