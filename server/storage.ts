@@ -19,6 +19,8 @@ import {
   type InsertSlideshowSlide,
   type PortfolioClient,
   type InsertPortfolioClient,
+  type AlumniSpotlight,
+  type InsertAlumniSpotlight,
   users,
   settings as settingsTable,
   events,
@@ -28,7 +30,8 @@ import {
   sponsors,
   slideshows,
   slideshowSlides,
-  portfolioClients
+  portfolioClients,
+  alumniSpotlight
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { neon } from "@neondatabase/serverless";
@@ -101,6 +104,13 @@ export interface IStorage {
   createPortfolioClient(client: InsertPortfolioClient): Promise<PortfolioClient>;
   updatePortfolioClient(id: string, client: Partial<InsertPortfolioClient>): Promise<PortfolioClient | undefined>;
   deletePortfolioClient(id: string): Promise<boolean>;
+  
+  // Alumni Spotlight management
+  getAllAlumniSpotlight(): Promise<AlumniSpotlight[]>;
+  createAlumniSpotlight(alumni: InsertAlumniSpotlight): Promise<AlumniSpotlight>;
+  updateAlumniSpotlight(id: string, alumni: Partial<InsertAlumniSpotlight>): Promise<AlumniSpotlight | undefined>;
+  deleteAlumniSpotlight(id: string): Promise<boolean>;
+  bulkUpdateAlumniSpotlightOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -715,6 +725,38 @@ export class DbStorage implements IStorage {
   async deletePortfolioClient(id: string): Promise<boolean> {
     const result = await this.db.delete(portfolioClients).where(eq(portfolioClients.id, id)).returning();
     return result.length > 0;
+  }
+  
+  // Alumni Spotlight management
+  async getAllAlumniSpotlight(): Promise<AlumniSpotlight[]> {
+    const alumni = await this.db.select().from(alumniSpotlight).orderBy(alumniSpotlight.displayOrder);
+    return alumni;
+  }
+
+  async createAlumniSpotlight(alumni: InsertAlumniSpotlight): Promise<AlumniSpotlight> {
+    const result = await this.db.insert(alumniSpotlight).values(alumni).returning();
+    return result[0];
+  }
+
+  async updateAlumniSpotlight(id: string, alumni: Partial<InsertAlumniSpotlight>): Promise<AlumniSpotlight | undefined> {
+    const result = await this.db.update(alumniSpotlight)
+      .set(alumni)
+      .where(eq(alumniSpotlight.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteAlumniSpotlight(id: string): Promise<boolean> {
+    const result = await this.db.delete(alumniSpotlight).where(eq(alumniSpotlight.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async bulkUpdateAlumniSpotlightOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void> {
+    for (const update of updates) {
+      await this.db.update(alumniSpotlight)
+        .set({ displayOrder: update.displayOrder })
+        .where(eq(alumniSpotlight.id, update.id));
+    }
   }
 }
 

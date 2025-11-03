@@ -204,3 +204,23 @@ export const insertPortfolioClientSchema = createInsertSchema(portfolioClients).
 });
 export type InsertPortfolioClient = z.infer<typeof insertPortfolioClientSchema>;
 export type PortfolioClient = typeof portfolioClients.$inferSelect;
+
+// Alumni Spotlight table - stores featured alumni profiles
+export const alumniSpotlight = pgTable("alumni_spotlight", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(), // e.g., "Jennifer Park"
+  classYear: text("class_year").notNull(), // e.g., "Class of 2020"
+  position: text("position").notNull(), // e.g., "Senior Brand Manager"
+  company: text("company").notNull(), // e.g., "The Coca-Cola Company"
+  description: text("description").notNull(), // Brief bio about their achievements
+  image: text("image"), // Profile image URL (optional)
+  displayOrder: integer("display_order").notNull().default(0), // For ordering alumni
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertAlumniSpotlightSchema = createInsertSchema(alumniSpotlight).omit({ 
+  id: true, 
+  createdAt: true 
+});
+export type InsertAlumniSpotlight = z.infer<typeof insertAlumniSpotlightSchema>;
+export type AlumniSpotlight = typeof alumniSpotlight.$inferSelect;

@@ -760,6 +760,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===== ALUMNI SPOTLIGHT ROUTES =====
+  
+  // GET all alumni spotlight entries
+  app.get("/api/alumni-spotlight", async (_, res) => {
+    const alumni = await storage.getAllAlumniSpotlight();
+    res.json(alumni);
+  });
+
+  // POST new alumni spotlight entry (admin only)
+  app.post("/api/alumni-spotlight", requireAuth, async (req, res) => {
+    try {
+      const { insertAlumniSpotlightSchema } = await import("@shared/schema");
+      const validatedData = insertAlumniSpotlightSchema.parse(req.body);
+      const newAlumni = await storage.createAlumniSpotlight(validatedData);
+      res.status(201).json(newAlumni);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid alumni spotlight data", details: error });
+      }
+      console.error("Error creating alumni spotlight:", error);
+      res.status(500).json({ error: "Failed to create alumni spotlight entry" });
+    }
+  });
+
+  // PUT update alumni spotlight entry (admin only)
+  app.put("/api/alumni-spotlight/:id", requireAuth, async (req, res) => {
+    try {
+      const { insertAlumniSpotlightSchema } = await import("@shared/schema");
+      const validatedData = insertAlumniSpotlightSchema.partial().parse(req.body);
+      const updated = await storage.updateAlumniSpotlight(req.params.id, validatedData);
+      if (!updated) {
+        return res.status(404).json({ error: "Alumni spotlight entry not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid alumni spotlight data", details: error });
+      }
+      console.error("Error updating alumni spotlight:", error);
+      res.status(500).json({ error: "Failed to update alumni spotlight entry" });
+    }
+  });
+
+  // DELETE alumni spotlight entry (admin only)
+  app.delete("/api/alumni-spotlight/:id", requireAuth, async (req, res) => {
+    try {
+      const deleted = await storage.deleteAlumniSpotlight(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Alumni spotlight entry not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting alumni spotlight:", error);
+      res.status(500).json({ error: "Failed to delete alumni spotlight entry" });
+    }
+  });
+
+  // Bulk reorder alumni spotlight entries (admin only)
+  app.post("/api/alumni-spotlight/reorder", requireAuth, async (req, res) => {
+    try {
+      const updates = z.array(z.object({
+        id: z.string(),
+        displayOrder: z.number()
+      })).parse(req.body);
+      
+      await storage.bulkUpdateAlumniSpotlightOrder(updates);
+      res.status(200).json({ message: "Alumni spotlight order updated successfully" });
+    } catch (error) {
+      console.error("Error reordering alumni spotlight:", error);
+      res.status(500).json({ error: "Failed to reorder alumni spotlight" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
