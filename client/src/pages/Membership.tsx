@@ -345,7 +345,7 @@ export default function Membership() {
                 <CardContent className="p-0 text-center">
                   <h3 className="text-2xl font-bold mb-4 text-foreground">Questions?</h3>
                   <p className="text-muted-foreground mb-6">
-                    Contact us through Instagram <a href={settings?.instagramLink} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold" data-testid="link-instagram">@{settings?.instagramUsername || "sdsuama"}</a> or email at <a href={`mailto:${settings?.email}`} className="text-primary hover:underline font-semibold" data-testid="link-email">{settings?.email || "membership.sdsuama@gmail.com"}</a>
+                    Contact us through Instagram <a href={settings?.instagramLink} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold" data-testid="link-instagram">{settings?.instagramUsername || "@sdsuama"}</a> or email at <a href={`mailto:${settings?.email}`} className="text-primary hover:underline font-semibold" data-testid="link-email">{settings?.email || "membership.sdsuama@gmail.com"}</a>
                   </p>
                   <Button 
                     className="w-full" 
