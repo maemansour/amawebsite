@@ -258,23 +258,15 @@ export default function Membership() {
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {/* One Semester */}
               <Card className="p-8" data-testid="card-tier-semester">
-                <div className="text-center mb-8">
+                <div className="text-center">
                   <h3 className="text-2xl font-bold mb-4 text-foreground" data-testid="heading-tier-semester">
                     One Semester
                   </h3>
-                  <div className="mb-6">
+                  <div>
                     <span className="text-5xl font-bold text-primary" data-testid="price-semester">
                       ${settings?.semesterPrice || "49"}
                     </span>
                   </div>
-                  <Button 
-                    className="w-full" 
-                    variant="default"
-                    size="lg"
-                    data-testid="button-choose-semester"
-                  >
-                    Choose One Semester →
-                  </Button>
                 </div>
               </Card>
 
@@ -290,22 +282,15 @@ export default function Membership() {
                   POPULAR
                 </Badge>
                 
-                <div className="text-center mb-8">
+                <div className="text-center">
                   <h3 className="text-2xl font-bold mb-4 text-foreground" data-testid="heading-tier-year">
                     Two Semesters
                   </h3>
-                  <div className="mb-6">
+                  <div>
                     <span className="text-5xl font-bold text-[#D4A574] dark:text-[#E5C4A0]" data-testid="price-year">
                       ${settings?.yearPrice || "49"}
                     </span>
                   </div>
-                  <Button 
-                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90" 
-                    size="lg"
-                    data-testid="button-choose-year"
-                  >
-                    Choose Two Semesters →
-                  </Button>
                 </div>
               </Card>
             </div>
