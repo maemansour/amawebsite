@@ -155,41 +155,17 @@ export function Navigation() {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm font-medium" data-testid="menu-alumni">
-                    Alumni
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid grid-cols-2 gap-3 p-4 w-[500px]">
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href="/alumni"
-                            className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate"
-                            data-testid="link-alumni-relations"
-                          >
-                            <div className="text-sm font-medium leading-none">Alumni Relations</div>
-                            <p className="text-sm leading-snug text-muted-foreground mt-1">
-                              Stay connected with our alumni network and...
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href="/past-vp-boards"
-                            className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover-elevate"
-                            data-testid="link-past-vp"
-                          >
-                            <div className="text-sm font-medium leading-none">Past VP Executive Boards</div>
-                            <p className="text-sm leading-snug text-muted-foreground mt-1">
-                              Honor the leaders who helped shape our chapter's...
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                    </ul>
-                  </NavigationMenuContent>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      href="/alumni"
+                      className={`text-sm font-medium transition-colors hover:text-primary ${
+                        isActive("/alumni") ? "text-primary" : "text-foreground"
+                      }`}
+                      data-testid="link-nav-alumni"
+                    >
+                      Alumni
+                    </Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
@@ -263,15 +239,14 @@ export function Navigation() {
                     Official AMA
                   </Link>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <span className="text-sm font-semibold text-muted-foreground px-3">Alumni</span>
-                  <Link href="/alumni" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-alumni-relations">
-                    Alumni Relations
-                  </Link>
-                  <Link href="/past-vp-boards" className="text-base py-2 hover-elevate rounded-md px-6" onClick={() => setMobileOpen(false)} data-testid="link-mobile-past-vp">
-                    Past VP Executive Boards
-                  </Link>
-                </div>
+                <Link 
+                  href="/alumni"
+                  className="text-base font-medium py-2 hover-elevate rounded-md px-3"
+                  onClick={() => setMobileOpen(false)}
+                  data-testid="link-mobile-alumni"
+                >
+                  Alumni
+                </Link>
                 <Link 
                   href="/calendar"
                   className="text-base font-medium py-2 hover-elevate rounded-md px-3"

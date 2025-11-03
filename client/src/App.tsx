@@ -17,7 +17,6 @@ import Alumni from "@/pages/Alumni";
 import ExecutiveBoard from "@/pages/ExecutiveBoard";
 import OurChapter from "@/pages/OurChapter";
 import OurSponsors from "@/pages/OurSponsors";
-import PastVPBoards from "@/pages/PastVPBoards";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import NotFound from "@/pages/not-found";
@@ -88,11 +87,6 @@ function Router() {
       <Route path="/alumni">
         <PublicLayout>
           <Alumni />
-        </PublicLayout>
-      </Route>
-      <Route path="/past-vp-boards">
-        <PublicLayout>
-          <PastVPBoards />
         </PublicLayout>
       </Route>
       <Route path="/admin" component={AdminLogin} />
