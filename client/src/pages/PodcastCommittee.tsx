@@ -260,7 +260,7 @@ export default function PodcastCommittee() {
               </div>
             </ScrollReveal>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-1 gap-8 max-w-2xl mx-auto">
               {/* Recent Featured Speakers */}
               <ScrollReveal direction="left">
                 <Card className="p-6" data-testid="card-recent-speakers">
@@ -283,35 +283,6 @@ export default function PodcastCommittee() {
                       ) : (
                         <p className="text-muted-foreground text-center py-8" data-testid="text-no-recent-speakers">
                           No recent speakers yet. Check back soon!
-                        </p>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </ScrollReveal>
-
-              {/* Past Featured Speakers */}
-              <ScrollReveal direction="right" delay={0.1}>
-                <Card className="p-6" data-testid="card-past-speakers">
-                  <CardHeader className="px-0 pt-0">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Mic2 className="w-5 h-5 text-[#D4A574]" />
-                      <CardTitle className="text-2xl" data-testid="heading-past-speakers">Past Featured Speakers</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="px-0 pb-0">
-                    <div className="space-y-6">
-                      {pastSpeakers.length > 0 ? (
-                        pastSpeakers.map((speaker, index) => (
-                          <div key={speaker.id} className="border-l-4 border-[#D4A574] pl-4" data-testid={`speaker-past-${index}`}>
-                            <h4 className="font-bold text-lg mb-1" data-testid={`text-speaker-name-past-${index}`}>{speaker.name}</h4>
-                            <p className="text-[#D4A574] dark:text-[#D4A574] font-semibold text-sm mb-2" data-testid={`text-speaker-topic-past-${index}`}>{speaker.topic}</p>
-                            <p className="text-sm text-muted-foreground" data-testid={`text-speaker-desc-past-${index}`}>{speaker.description}</p>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-muted-foreground text-center py-8" data-testid="text-no-past-speakers">
-                          No past speakers yet.
                         </p>
                       )}
                     </div>
