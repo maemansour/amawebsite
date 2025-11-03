@@ -293,11 +293,10 @@ export default function Membership() {
                   <h3 className="text-2xl font-bold mb-4 text-foreground" data-testid="heading-tier-year">
                     Two Semesters
                   </h3>
-                  <div className="mb-2">
+                  <div className="mb-6">
                     <span className="text-5xl font-bold text-primary" data-testid="price-year">
                       ${settings?.yearPrice || "49"}
                     </span>
-                    <span className="text-xl text-muted-foreground">/year</span>
                   </div>
                   <Button 
                     className="w-full" 
