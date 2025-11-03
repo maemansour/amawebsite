@@ -673,19 +673,36 @@ function GeneralSettings() {
           <div className="pt-6 border-t">
             <h3 className="text-lg font-semibold mb-4">Call to Action Links</h3>
             
-            <div className="space-y-2">
-              <Label htmlFor="joinNowLink">Join Now Button Link</Label>
-              <Input
-                id="joinNowLink"
-                type="url"
-                value={formData.joinNowLink || ""}
-                onChange={(e) => handleChange("joinNowLink", e.target.value)}
-                placeholder="https://forms.gle/..."
-                data-testid="input-join-now-link"
-              />
-              <p className="text-sm text-muted-foreground">
-                Link for the "Join Now" button in the Ready to Join section
-              </p>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="joinNowLink">Join Now Button Link</Label>
+                <Input
+                  id="joinNowLink"
+                  type="url"
+                  value={formData.joinNowLink || ""}
+                  onChange={(e) => handleChange("joinNowLink", e.target.value)}
+                  placeholder="https://forms.gle/..."
+                  data-testid="input-join-now-link"
+                />
+                <p className="text-sm text-muted-foreground">
+                  Link for the "Join Now" button in the Ready to Join section
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="calendarSubscribeUrl">Calendar Subscribe URL</Label>
+                <Input
+                  id="calendarSubscribeUrl"
+                  type="url"
+                  value={formData.calendarSubscribeUrl || ""}
+                  onChange={(e) => handleChange("calendarSubscribeUrl", e.target.value)}
+                  placeholder="https://calendar.google.com/calendar/ical/..."
+                  data-testid="input-calendar-subscribe-url"
+                />
+                <p className="text-sm text-muted-foreground">
+                  Google Calendar or iCal subscription link for the "Subscribe to Events Calendar" button
+                </p>
+              </div>
             </div>
           </div>
         </CardContent>

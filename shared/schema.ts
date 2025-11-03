@@ -51,6 +51,8 @@ export const settings = pgTable("settings", {
   semesterPrice: text("semester_price").notNull().default("49"),
   yearPrice: text("year_price").notNull().default("49"),
   joinNowLink: text("join_now_link").notNull().default(""),
+  // Event Calendar subscription
+  calendarSubscribeUrl: text("calendar_subscribe_url").notNull().default(""),
 });
 
 export const insertSettingsSchema = createInsertSchema(settings).omit({ id: true });

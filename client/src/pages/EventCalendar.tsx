@@ -36,7 +36,11 @@ export default function EventCalendar() {
   };
 
   const handleSubscribeCalendar = () => {
-    console.log("Subscribe to calendar");
+    if (settings?.calendarSubscribeUrl) {
+      window.open(settings.calendarSubscribeUrl, '_blank');
+    } else {
+      console.log("Calendar subscription URL not configured");
+    }
   };
 
   const handleBecomeMember = () => {
