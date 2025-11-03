@@ -256,10 +256,32 @@ export default function Membership() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {/* One Semester - Popular */}
+              {/* One Semester */}
+              <Card className="p-8" data-testid="card-tier-semester">
+                <div className="text-center mb-8">
+                  <h3 className="text-2xl font-bold mb-4 text-foreground" data-testid="heading-tier-semester">
+                    One Semester
+                  </h3>
+                  <div className="mb-6">
+                    <span className="text-5xl font-bold text-primary" data-testid="price-semester">
+                      ${settings?.semesterPrice || "49"}
+                    </span>
+                  </div>
+                  <Button 
+                    className="w-full" 
+                    variant="default"
+                    size="lg"
+                    data-testid="button-choose-semester"
+                  >
+                    Choose One Semester →
+                  </Button>
+                </div>
+              </Card>
+
+              {/* Two Semesters - Popular */}
               <Card 
                 className="relative p-8 bg-yellow-50 dark:bg-yellow-950/20 border-2 border-[#D4A574] dark:border-[#E5C4A0]"
-                data-testid="card-tier-semester"
+                data-testid="card-tier-year"
               >
                 <Badge 
                   className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#D4A574] dark:bg-[#E5C4A0] text-white dark:text-black font-bold px-4 py-1"
@@ -269,38 +291,16 @@ export default function Membership() {
                 </Badge>
                 
                 <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold mb-4 text-foreground" data-testid="heading-tier-semester">
-                    One Semester
-                  </h3>
-                  <div className="mb-6">
-                    <span className="text-5xl font-bold text-[#D4A574] dark:text-[#E5C4A0]" data-testid="price-semester">
-                      ${settings?.semesterPrice || "49"}
-                    </span>
-                  </div>
-                  <Button 
-                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90" 
-                    size="lg"
-                    data-testid="button-choose-semester"
-                  >
-                    Choose One Semester →
-                  </Button>
-                </div>
-              </Card>
-
-              {/* Two Semesters */}
-              <Card className="p-8" data-testid="card-tier-year">
-                <div className="text-center mb-8">
                   <h3 className="text-2xl font-bold mb-4 text-foreground" data-testid="heading-tier-year">
                     Two Semesters
                   </h3>
                   <div className="mb-6">
-                    <span className="text-5xl font-bold text-primary" data-testid="price-year">
+                    <span className="text-5xl font-bold text-[#D4A574] dark:text-[#E5C4A0]" data-testid="price-year">
                       ${settings?.yearPrice || "49"}
                     </span>
                   </div>
                   <Button 
-                    className="w-full" 
-                    variant="default"
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90" 
                     size="lg"
                     data-testid="button-choose-year"
                   >
