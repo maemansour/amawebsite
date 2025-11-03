@@ -37,7 +37,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { type Settings, type Event, type Highlight, type ExecutiveMember, type InsertExecutiveMember, type Slideshow, type InsertSlideshow, type SlideshowSlide, type InsertSlideshowSlide, type PortfolioClient, type InsertPortfolioClient, type AlumniSpotlight, type InsertAlumniSpotlight } from "@shared/schema";
+import { type Settings, type Event, type Highlight, type ExecutiveMember, type InsertExecutiveMember, type Slideshow, type InsertSlideshow, type SlideshowSlide, type InsertSlideshowSlide, type PortfolioClient, type InsertPortfolioClient, type AlumniSpotlight, type InsertAlumniSpotlight, type FeaturedSpeaker } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { ImageUploadWithCrop } from "@/components/ImageUploadWithCrop";
 import { MemberImageUpload } from "@/components/MemberImageUpload";
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 max-w-7xl" data-testid="tabs-admin">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 max-w-7xl" data-testid="tabs-admin">
             <TabsTrigger value="general" data-testid="tab-general">
               <SettingsIcon className="h-4 w-4 mr-2" />
               General Settings
@@ -139,6 +139,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="alumni-spotlight" data-testid="tab-alumni-spotlight">
               <Users className="h-4 w-4 mr-2" />
               Alumni Spotlight
+            </TabsTrigger>
+            <TabsTrigger value="podcast" data-testid="tab-podcast">
+              <ImageIcon className="h-4 w-4 mr-2" />
+              Podcast
             </TabsTrigger>
           </TabsList>
 
@@ -168,6 +172,10 @@ export default function AdminDashboard() {
 
           <TabsContent value="alumni-spotlight">
             <ManageAlumniSpotlight />
+          </TabsContent>
+
+          <TabsContent value="podcast">
+            <ManagePodcast />
           </TabsContent>
         </Tabs>
       </div>
@@ -2880,6 +2888,452 @@ function ManageAlumniSpotlight() {
                 </div>
               ))}
             </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function ManagePodcast() {
+  const { toast } = useToast();
+  const { data: settings } = useQuery<Settings>({
+    queryKey: ["/api/settings"],
+  });
+  const { data: speakers = [], isLoading } = useQuery<FeaturedSpeaker[]>({
+    queryKey: ["/api/featured-speakers"],
+  });
+
+  const [formData, setFormData] = useState<Partial<Settings>>({});
+  const [speakerFormData, setSpeakerFormData] = useState({
+    name: "",
+    topic: "",
+    description: "",
+    category: "recent" as "recent" | "past"
+  });
+  const [isAddingSpeaker, setIsAddingSpeaker] = useState(false);
+  const [editingSpeaker, setEditingSpeaker] = useState<FeaturedSpeaker | null>(null);
+
+  useEffect(() => {
+    if (settings) {
+      setFormData({
+        podcastHeroImage: settings.podcastHeroImage,
+        podcastSpotifyUrl: settings.podcastSpotifyUrl,
+        podcastInstagramUrl: settings.podcastInstagramUrl,
+        podcastYoutubeUrl: settings.podcastYoutubeUrl,
+        podcastEmail: settings.podcastEmail,
+        podcastApplyLink: settings.podcastApplyLink
+      });
+    }
+  }, [settings]);
+
+  const updateSettingsMutation = useMutation({
+    mutationFn: async (data: Partial<Settings>) => {
+      return await apiRequest("POST", "/api/settings", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/settings"] });
+      toast({
+        title: "Success",
+        description: "Podcast settings updated successfully",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to update settings",
+      });
+    },
+  });
+
+  const createSpeakerMutation = useMutation({
+    mutationFn: async (data: typeof speakerFormData & { displayOrder: number }) => {
+      return await apiRequest("POST", "/api/featured-speakers", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/featured-speakers"] });
+      toast({
+        title: "Success",
+        description: "Featured speaker added successfully",
+      });
+      resetSpeakerForm();
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to add speaker",
+      });
+    },
+  });
+
+  const updateSpeakerMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: typeof speakerFormData }) => {
+      return await apiRequest("PATCH", `/api/featured-speakers/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/featured-speakers"] });
+      toast({
+        title: "Success",
+        description: "Featured speaker updated successfully",
+      });
+      resetSpeakerForm();
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to update speaker",
+      });
+    },
+  });
+
+  const deleteSpeakerMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return await apiRequest("DELETE", `/api/featured-speakers/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/featured-speakers"] });
+      toast({
+        title: "Success",
+        description: "Featured speaker deleted successfully",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to delete speaker",
+      });
+    },
+  });
+
+  const handleSettingsSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateSettingsMutation.mutate(formData);
+  };
+
+  const resetSpeakerForm = () => {
+    setSpeakerFormData({
+      name: "",
+      topic: "",
+      description: "",
+      category: "recent"
+    });
+    setIsAddingSpeaker(false);
+    setEditingSpeaker(null);
+  };
+
+  const startEditSpeaker = (speaker: FeaturedSpeaker) => {
+    setEditingSpeaker(speaker);
+    setSpeakerFormData({
+      name: speaker.name,
+      topic: speaker.topic,
+      description: speaker.description,
+      category: speaker.category as "recent" | "past"
+    });
+    setIsAddingSpeaker(true);
+  };
+
+  const handleSpeakerSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingSpeaker) {
+      updateSpeakerMutation.mutate({ id: editingSpeaker.id, data: speakerFormData });
+    } else {
+      const maxOrder = speakers.length > 0 
+        ? Math.max(...speakers.map(s => s.displayOrder || 0))
+        : -1;
+      createSpeakerMutation.mutate({ ...speakerFormData, displayOrder: maxOrder + 1 });
+    }
+  };
+
+  const recentSpeakers = speakers.filter(s => s.category === "recent");
+  const pastSpeakers = speakers.filter(s => s.category === "past");
+
+  return (
+    <div className="space-y-6">
+      {/* Podcast Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Podcast Page Settings</CardTitle>
+          <CardDescription>
+            Configure podcast page content, images, and platform links
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSettingsSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label>Hero Image</Label>
+              <ImageUploadWithCrop
+                aspectRatio={4 / 3}
+                currentImage={formData.podcastHeroImage || undefined}
+                onImageChange={(url) => setFormData({ ...formData, podcastHeroImage: url })}
+                imageType="podcastHero"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="spotifyUrl">Spotify URL</Label>
+                <Input
+                  id="spotifyUrl"
+                  type="url"
+                  value={formData.podcastSpotifyUrl || ""}
+                  onChange={(e) => setFormData({ ...formData, podcastSpotifyUrl: e.target.value })}
+                  placeholder="https://open.spotify.com/..."
+                  data-testid="input-spotify-url"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="instagramUrl">Instagram URL</Label>
+                <Input
+                  id="instagramUrl"
+                  type="url"
+                  value={formData.podcastInstagramUrl || ""}
+                  onChange={(e) => setFormData({ ...formData, podcastInstagramUrl: e.target.value })}
+                  placeholder="https://instagram.com/..."
+                  data-testid="input-instagram-url"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="youtubeUrl">YouTube URL</Label>
+                <Input
+                  id="youtubeUrl"
+                  type="url"
+                  value={formData.podcastYoutubeUrl || ""}
+                  onChange={(e) => setFormData({ ...formData, podcastYoutubeUrl: e.target.value })}
+                  placeholder="https://youtube.com/..."
+                  data-testid="input-youtube-url"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="podcastEmail">Contact Email</Label>
+                <Input
+                  id="podcastEmail"
+                  type="email"
+                  value={formData.podcastEmail || ""}
+                  onChange={(e) => setFormData({ ...formData, podcastEmail: e.target.value })}
+                  placeholder="podcast.sdsuama@gmail.com"
+                  data-testid="input-podcast-email"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="applyLink">Apply Link (for join button)</Label>
+              <Input
+                id="applyLink"
+                type="url"
+                value={formData.podcastApplyLink || ""}
+                onChange={(e) => setFormData({ ...formData, podcastApplyLink: e.target.value })}
+                placeholder="https://forms.gle/..."
+                data-testid="input-apply-link"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={updateSettingsMutation.isPending}
+              data-testid="button-save-podcast-settings"
+            >
+              <Save className="h-4 w-4 mr-2" />
+              Save Podcast Settings
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* Featured Speakers Management */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Manage Featured Speakers</CardTitle>
+          <CardDescription>
+            Add and manage featured speakers for the podcast page
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {!isAddingSpeaker && (
+            <Button onClick={() => setIsAddingSpeaker(true)} className="w-full" data-testid="button-add-speaker">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Featured Speaker
+            </Button>
+          )}
+
+          {isAddingSpeaker && (
+            <form onSubmit={handleSpeakerSubmit} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="speakerName">Speaker Name</Label>
+                  <Input
+                    id="speakerName"
+                    value={speakerFormData.name}
+                    onChange={(e) => setSpeakerFormData({ ...speakerFormData, name: e.target.value })}
+                    placeholder="John Doe"
+                    required
+                    data-testid="input-speaker-name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="speakerTopic">Topic/Title</Label>
+                  <Input
+                    id="speakerTopic"
+                    value={speakerFormData.topic}
+                    onChange={(e) => setSpeakerFormData({ ...speakerFormData, topic: e.target.value })}
+                    placeholder="Marketing Strategy Expert"
+                    required
+                    data-testid="input-speaker-topic"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="speakerDescription">Description</Label>
+                <Textarea
+                  id="speakerDescription"
+                  value={speakerFormData.description}
+                  onChange={(e) => setSpeakerFormData({ ...speakerFormData, description: e.target.value })}
+                  placeholder="Brief description of the speaker and their expertise..."
+                  rows={3}
+                  required
+                  data-testid="input-speaker-description"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="speakerCategory">Category</Label>
+                <select
+                  id="speakerCategory"
+                  value={speakerFormData.category}
+                  onChange={(e) => setSpeakerFormData({ ...speakerFormData, category: e.target.value as ("recent" | "past") })}
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background"
+                  data-testid="select-speaker-category"
+                >
+                  <option value="recent">Recent Featured Speaker</option>
+                  <option value="past">Past Featured Speaker</option>
+                </select>
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  type="submit"
+                  disabled={createSpeakerMutation.isPending || updateSpeakerMutation.isPending}
+                  data-testid="button-save-speaker"
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  {editingSpeaker ? "Update Speaker" : "Add Speaker"}
+                </Button>
+                <Button type="button" variant="outline" onClick={resetSpeakerForm} data-testid="button-cancel-speaker">
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Speakers List */}
+      {speakers.length > 0 && (
+        <>
+          {recentSpeakers.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Featured Speakers</CardTitle>
+                <CardDescription>{recentSpeakers.length} recent speakers</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {recentSpeakers.map((speaker) => (
+                    <div
+                      key={speaker.id}
+                      className="flex items-start gap-4 p-4 border border-border rounded-md hover-elevate"
+                      data-testid={`speaker-recent-${speaker.id}`}
+                    >
+                      <div className="flex-1">
+                        <div className="font-medium text-lg">{speaker.name}</div>
+                        <div className="text-sm font-semibold text-[#D4A574] mt-1">{speaker.topic}</div>
+                        <p className="text-sm text-muted-foreground mt-2">{speaker.description}</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => startEditSpeaker(speaker)}
+                          data-testid={`button-edit-speaker-${speaker.id}`}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => deleteSpeakerMutation.mutate(speaker.id)}
+                          disabled={deleteSpeakerMutation.isPending}
+                          data-testid={`button-delete-speaker-${speaker.id}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {pastSpeakers.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Past Featured Speakers</CardTitle>
+                <CardDescription>{pastSpeakers.length} past speakers</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {pastSpeakers.map((speaker) => (
+                    <div
+                      key={speaker.id}
+                      className="flex items-start gap-4 p-4 border border-border rounded-md hover-elevate"
+                      data-testid={`speaker-past-${speaker.id}`}
+                    >
+                      <div className="flex-1">
+                        <div className="font-medium text-lg">{speaker.name}</div>
+                        <div className="text-sm font-semibold text-[#D4A574] mt-1">{speaker.topic}</div>
+                        <p className="text-sm text-muted-foreground mt-2">{speaker.description}</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => startEditSpeaker(speaker)}
+                          data-testid={`button-edit-speaker-${speaker.id}`}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => deleteSpeakerMutation.mutate(speaker.id)}
+                          disabled={deleteSpeakerMutation.isPending}
+                          data-testid={`button-delete-speaker-${speaker.id}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </>
+      )}
+
+      {speakers.length === 0 && !isAddingSpeaker && (
+        <Card>
+          <CardContent className="py-8 text-center text-muted-foreground">
+            No featured speakers yet. Click "Add Featured Speaker" to create one.
           </CardContent>
         </Card>
       )}

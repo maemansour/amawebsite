@@ -9,11 +9,12 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 interface ImageUploadWithCropProps {
-  label: string;
-  imageType: "hero" | "mission" | "whyChoose" | "services" | "family" | "executiveBoard" | "sponsorsHero" | "sponsorsPartner1" | "sponsorsPartner2" | "committees" | "committeesWhyJoin" | "consultingTeam" | "consultingMission" | "membershipHero" | "membershipEngagement";
+  label?: string;
+  imageType: "hero" | "mission" | "whyChoose" | "services" | "family" | "executiveBoard" | "sponsorsHero" | "sponsorsPartner1" | "sponsorsPartner2" | "committees" | "committeesWhyJoin" | "consultingTeam" | "consultingMission" | "membershipHero" | "membershipEngagement" | "podcastHero";
   currentImage?: string;
   aspectRatio?: number;
   testId?: string;
+  onImageChange?: (url: string) => void;
 }
 
 interface CropArea {
