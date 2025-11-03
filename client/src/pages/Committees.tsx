@@ -208,6 +208,12 @@ export default function Committees() {
                             Learn More
                           </Button>
                         </Link>
+                      ) : committee.id === "podcast" ? (
+                        <Link href="/committees/podcast">
+                          <Button className="w-full" variant="default" data-testid={`button-learn-more-${index}`}>
+                            Learn More
+                          </Button>
+                        </Link>
                       ) : (
                         <Button className="w-full" variant="default" data-testid={`button-learn-more-${index}`}>
                           Learn More
