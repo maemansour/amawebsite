@@ -37,7 +37,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { type Settings, type Event, type Highlight, type ExecutiveMember, type InsertExecutiveMember, type Slideshow, type InsertSlideshow, type SlideshowSlide, type InsertSlideshowSlide, type PortfolioClient, type InsertPortfolioClient } from "@shared/schema";
+import { type Settings, type Event, type Highlight, type ExecutiveMember, type InsertExecutiveMember, type Slideshow, type InsertSlideshow, type SlideshowSlide, type InsertSlideshowSlide, type PortfolioClient, type InsertPortfolioClient, type AlumniSpotlight, type InsertAlumniSpotlight } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { ImageUploadWithCrop } from "@/components/ImageUploadWithCrop";
 import { MemberImageUpload } from "@/components/MemberImageUpload";
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 max-w-6xl" data-testid="tabs-admin">
+          <TabsList className="grid w-full grid-cols-7 max-w-7xl" data-testid="tabs-admin">
             <TabsTrigger value="general" data-testid="tab-general">
               <SettingsIcon className="h-4 w-4 mr-2" />
               General Settings
@@ -135,6 +135,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="portfolio" data-testid="tab-portfolio">
               <ImageIcon className="h-4 w-4 mr-2" />
               Portfolio
+            </TabsTrigger>
+            <TabsTrigger value="alumni-spotlight" data-testid="tab-alumni-spotlight">
+              <Users className="h-4 w-4 mr-2" />
+              Alumni Spotlight
             </TabsTrigger>
           </TabsList>
 
@@ -160,6 +164,10 @@ export default function AdminDashboard() {
 
           <TabsContent value="portfolio">
             <ManagePortfolio />
+          </TabsContent>
+
+          <TabsContent value="alumni-spotlight">
+            <ManageAlumniSpotlight />
           </TabsContent>
         </Tabs>
       </div>
@@ -2539,6 +2547,337 @@ function ManagePortfolio() {
           </CardContent>
         </Card>
       ))}
+    </div>
+  );
+}
+
+function ManageAlumniSpotlight() {
+  const { toast } = useToast();
+  const [isAdding, setIsAdding] = useState(false);
+  const [editingAlumni, setEditingAlumni] = useState<AlumniSpotlight | null>(null);
+  const [formData, setFormData] = useState<Partial<InsertAlumniSpotlight>>({
+    name: "",
+    classYear: "",
+    position: "",
+    company: "",
+    description: "",
+    linkedinUrl: "",
+    imageUrl: "",
+    displayOrder: 0,
+  });
+
+  const { data: alumni = [], isLoading } = useQuery<AlumniSpotlight[]>({
+    queryKey: ["/api/alumni-spotlight"],
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (data: Partial<InsertAlumniSpotlight>) =>
+      apiRequest("POST", "/api/alumni-spotlight", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/alumni-spotlight"] });
+      toast({
+        title: "Alumni added",
+        description: "Alumni spotlight entry has been added successfully.",
+      });
+      resetForm();
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to add alumni spotlight entry. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<InsertAlumniSpotlight> }) =>
+      apiRequest("PUT", `/api/alumni-spotlight/${id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/alumni-spotlight"] });
+      toast({
+        title: "Alumni updated",
+        description: "Alumni spotlight entry has been updated successfully.",
+      });
+      resetForm();
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update alumni spotlight entry. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => apiRequest("DELETE", `/api/alumni-spotlight/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/alumni-spotlight"] });
+      toast({
+        title: "Alumni deleted",
+        description: "Alumni spotlight entry has been deleted successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete alumni spotlight entry. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      classYear: "",
+      position: "",
+      company: "",
+      description: "",
+      linkedinUrl: "",
+      imageUrl: "",
+      displayOrder: 0,
+    });
+    setIsAdding(false);
+    setEditingAlumni(null);
+  };
+
+  const startEdit = (alumniEntry: AlumniSpotlight) => {
+    setEditingAlumni(alumniEntry);
+    setFormData({
+      name: alumniEntry.name,
+      classYear: alumniEntry.classYear,
+      position: alumniEntry.position,
+      company: alumniEntry.company,
+      description: alumniEntry.description,
+      linkedinUrl: alumniEntry.linkedinUrl || "",
+      imageUrl: alumniEntry.imageUrl || "",
+      displayOrder: alumniEntry.displayOrder,
+    });
+    setIsAdding(true);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingAlumni) {
+      updateMutation.mutate({ id: editingAlumni.id, data: formData });
+    } else {
+      const maxOrder = alumni.length > 0 
+        ? Math.max(...alumni.map(a => a.displayOrder || 0))
+        : -1;
+      createMutation.mutate({ ...formData, displayOrder: maxOrder + 1 });
+    }
+  };
+
+  if (isLoading) {
+    return <div className="text-center py-8">Loading alumni spotlight...</div>;
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Manage Alumni Spotlight</CardTitle>
+          <CardDescription>
+            Add and manage alumni spotlight entries for the Alumni page. These featured alumni will be displayed prominently.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {!isAdding && (
+            <Button onClick={() => setIsAdding(true)} className="w-full" data-testid="button-add-alumni">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Alumni Spotlight
+            </Button>
+          )}
+
+          {isAdding && (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    id="name"
+                    value={formData.name || ""}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="John Doe"
+                    required
+                    data-testid="input-alumni-name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="classYear">Class Year</Label>
+                  <Input
+                    id="classYear"
+                    value={formData.classYear || ""}
+                    onChange={(e) => setFormData({ ...formData, classYear: e.target.value })}
+                    placeholder="Class of 2023"
+                    required
+                    data-testid="input-alumni-class-year"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="position">Position</Label>
+                  <Input
+                    id="position"
+                    value={formData.position || ""}
+                    onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                    placeholder="Marketing Manager"
+                    required
+                    data-testid="input-alumni-position"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="company">Company</Label>
+                  <Input
+                    id="company"
+                    value={formData.company || ""}
+                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                    placeholder="Google"
+                    required
+                    data-testid="input-alumni-company"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description || ""}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Share their success story and impact..."
+                  rows={4}
+                  required
+                  data-testid="input-alumni-description"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="linkedinUrl">LinkedIn URL (optional)</Label>
+                <Input
+                  id="linkedinUrl"
+                  type="url"
+                  value={formData.linkedinUrl || ""}
+                  onChange={(e) => setFormData({ ...formData, linkedinUrl: e.target.value })}
+                  placeholder="https://www.linkedin.com/in/johndoe"
+                  data-testid="input-alumni-linkedin"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="imageUrl">Image URL (optional)</Label>
+                <Input
+                  id="imageUrl"
+                  type="url"
+                  value={formData.imageUrl || ""}
+                  onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                  placeholder="https://example.com/photo.jpg or /objects/..."
+                  data-testid="input-alumni-image"
+                />
+                {formData.imageUrl && (
+                  <div className="mt-2">
+                    <img 
+                      src={formData.imageUrl} 
+                      alt="Preview" 
+                      className="w-32 h-32 object-cover rounded-md"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  type="submit"
+                  disabled={createMutation.isPending || updateMutation.isPending}
+                  data-testid="button-save-alumni"
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  {editingAlumni ? "Update Alumni" : "Add Alumni"}
+                </Button>
+                <Button type="button" variant="outline" onClick={resetForm} data-testid="button-cancel-alumni">
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          )}
+        </CardContent>
+      </Card>
+
+      {alumni.length === 0 && !isAdding && (
+        <Card>
+          <CardContent className="py-8 text-center text-muted-foreground">
+            No alumni spotlight entries yet. Click "Add Alumni Spotlight" to create one.
+          </CardContent>
+        </Card>
+      )}
+
+      {alumni.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Alumni Spotlight Entries</CardTitle>
+            <CardDescription>{alumni.length} featured alumni</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {alumni.map((alumniEntry) => (
+                <div
+                  key={alumniEntry.id}
+                  className="flex items-start gap-4 p-4 border border-border rounded-md hover-elevate"
+                  data-testid={`alumni-entry-${alumniEntry.id}`}
+                >
+                  {alumniEntry.imageUrl && (
+                    <img
+                      src={alumniEntry.imageUrl}
+                      alt={alumniEntry.name}
+                      className="w-16 h-16 object-cover rounded-md"
+                    />
+                  )}
+                  <div className="flex-1">
+                    <div className="font-medium text-lg">{alumniEntry.name}</div>
+                    <div className="text-sm text-muted-foreground">{alumniEntry.classYear}</div>
+                    <div className="text-sm font-medium mt-1">{alumniEntry.position} at {alumniEntry.company}</div>
+                    <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{alumniEntry.description}</p>
+                    {alumniEntry.linkedinUrl && (
+                      <a
+                        href={alumniEntry.linkedinUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary hover:underline mt-1 inline-block"
+                        data-testid={`link-linkedin-${alumniEntry.id}`}
+                      >
+                        LinkedIn Profile
+                      </a>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => startEdit(alumniEntry)}
+                      data-testid={`button-edit-alumni-${alumniEntry.id}`}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => deleteMutation.mutate(alumniEntry.id)}
+                      disabled={deleteMutation.isPending}
+                      data-testid={`button-delete-alumni-${alumniEntry.id}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
