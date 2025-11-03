@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { type Settings, type AlumniSpotlight } from "@shared/schema";
 
@@ -185,13 +186,11 @@ export default function Alumni() {
                     <Card className="h-full hover-elevate" data-testid={`alumni-card-${alumni.id}`}>
                       <CardContent className="p-6">
                         {alumni.imageUrl && (
-                          <div className="mb-4">
-                            <img
-                              src={alumni.imageUrl}
-                              alt={alumni.name}
-                              className="w-full h-48 object-cover rounded-md"
-                              data-testid={`alumni-image-${alumni.id}`}
-                            />
+                          <div className="mb-4 flex justify-center">
+                            <Avatar className="w-32 h-32" data-testid={`alumni-image-${alumni.id}`}>
+                              <AvatarImage src={alumni.imageUrl} alt={alumni.name} />
+                              <AvatarFallback>{alumni.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                            </Avatar>
                           </div>
                         )}
                         <div className="flex items-start justify-between mb-2">
