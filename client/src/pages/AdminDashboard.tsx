@@ -2941,8 +2941,9 @@ function ManageCommittees() {
     mutationFn: async ({ slug, data }: { slug: string; data: Partial<InsertCommitteeConfig> }) => {
       return await apiRequest("PUT", `/api/committees/${slug}`, data);
     },
-    onSuccess: () => {
+    onSuccess: (_, { slug }) => {
       queryClient.invalidateQueries({ queryKey: ["/api/committees"] });
+      queryClient.invalidateQueries({ queryKey: [`/api/committees/${slug}`] });
       toast({
         title: "Success",
         description: "Committee settings updated successfully",
@@ -2961,8 +2962,11 @@ function ManageCommittees() {
     mutationFn: async (data: InsertCommitteeConfig) => {
       return await apiRequest("POST", "/api/committees", data);
     },
-    onSuccess: () => {
+    onSuccess: (_, data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/committees"] });
+      if (data.slug) {
+        queryClient.invalidateQueries({ queryKey: [`/api/committees/${data.slug}`] });
+      }
       toast({
         title: "Success",
         description: "Committee configuration created successfully",
