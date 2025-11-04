@@ -23,6 +23,8 @@ import {
   type InsertAlumniSpotlight,
   type FeaturedSpeaker,
   type InsertFeaturedSpeaker,
+  type CommitteeConfig,
+  type InsertCommitteeConfig,
   users,
   settings as settingsTable,
   events,
@@ -34,7 +36,8 @@ import {
   slideshowSlides,
   portfolioClients,
   alumniSpotlight,
-  featuredSpeakers
+  featuredSpeakers,
+  committeeConfigs
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { neon } from "@neondatabase/serverless";
@@ -121,6 +124,13 @@ export interface IStorage {
   updateFeaturedSpeaker(id: string, speaker: Partial<InsertFeaturedSpeaker>): Promise<FeaturedSpeaker | undefined>;
   deleteFeaturedSpeaker(id: string): Promise<boolean>;
   bulkUpdateFeaturedSpeakersOrder(updates: Array<{ id: string; displayOrder: number }>): Promise<void>;
+  
+  // Committee Configs management
+  getAllCommitteeConfigs(): Promise<CommitteeConfig[]>;
+  getCommitteeConfigBySlug(slug: string): Promise<CommitteeConfig | undefined>;
+  createCommitteeConfig(config: InsertCommitteeConfig): Promise<CommitteeConfig>;
+  updateCommitteeConfig(slug: string, config: Partial<InsertCommitteeConfig>): Promise<CommitteeConfig | undefined>;
+  deleteCommitteeConfig(slug: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -799,6 +809,35 @@ export class DbStorage implements IStorage {
         .set({ displayOrder: update.displayOrder })
         .where(eq(featuredSpeakers.id, update.id));
     }
+  }
+  
+  // Committee Configs management
+  async getAllCommitteeConfigs(): Promise<CommitteeConfig[]> {
+    const configs = await this.db.select().from(committeeConfigs).orderBy(committeeConfigs.displayOrder);
+    return configs;
+  }
+
+  async getCommitteeConfigBySlug(slug: string): Promise<CommitteeConfig | undefined> {
+    const result = await this.db.select().from(committeeConfigs).where(eq(committeeConfigs.slug, slug));
+    return result[0];
+  }
+
+  async createCommitteeConfig(config: InsertCommitteeConfig): Promise<CommitteeConfig> {
+    const result = await this.db.insert(committeeConfigs).values(config).returning();
+    return result[0];
+  }
+
+  async updateCommitteeConfig(slug: string, config: Partial<InsertCommitteeConfig>): Promise<CommitteeConfig | undefined> {
+    const result = await this.db.update(committeeConfigs)
+      .set(config)
+      .where(eq(committeeConfigs.slug, slug))
+      .returning();
+    return result[0];
+  }
+
+  async deleteCommitteeConfig(slug: string): Promise<boolean> {
+    const result = await this.db.delete(committeeConfigs).where(eq(committeeConfigs.slug, slug)).returning();
+    return result.length > 0;
   }
 }
 

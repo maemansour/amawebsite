@@ -254,3 +254,30 @@ export const insertFeaturedSpeakerSchema = createInsertSchema(featuredSpeakers).
 });
 export type InsertFeaturedSpeaker = z.infer<typeof insertFeaturedSpeakerSchema>;
 export type FeaturedSpeaker = typeof featuredSpeakers.$inferSelect;
+
+// Committee Configs table - stores configuration for all committee pages
+export const committeeConfigs = pgTable("committee_configs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  slug: text("slug").notNull().unique(), // e.g., "consulting", "podcast", "event-planning"
+  name: text("name").notNull(), // e.g., "Consulting Committee"
+  heroImage: text("hero_image"), // Main hero/banner image
+  missionImage: text("mission_image"), // Image for mission/about section
+  image1: text("image_1"), // Flexible additional image slot 1
+  image2: text("image_2"), // Flexible additional image slot 2
+  image3: text("image_3"), // Flexible additional image slot 3
+  description: text("description"), // Optional description text
+  applyLink: text("apply_link"), // Application form URL
+  email: text("email"), // Contact email
+  spotifyUrl: text("spotify_url"), // For podcast committee
+  instagramUrl: text("instagram_url"), // For podcast committee
+  youtubeUrl: text("youtube_url"), // For podcast committee
+  displayOrder: integer("display_order").notNull().default(0), // For ordering on main committees page
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertCommitteeConfigSchema = createInsertSchema(committeeConfigs).omit({ 
+  id: true, 
+  createdAt: true 
+});
+export type InsertCommitteeConfig = z.infer<typeof insertCommitteeConfigSchema>;
+export type CommitteeConfig = typeof committeeConfigs.$inferSelect;

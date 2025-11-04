@@ -9,7 +9,8 @@ import {
   insertHighlightSchema,
   insertNewsletterSubscriptionSchema,
   insertExecutiveMemberSchema,
-  insertFeaturedSpeakerSchema
+  insertFeaturedSpeakerSchema,
+  insertCommitteeConfigSchema
 } from "@shared/schema";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 
@@ -902,6 +903,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error reordering featured speakers:", error);
       res.status(500).json({ error: "Failed to reorder featured speakers" });
+    }
+  });
+
+  // ===== COMMITTEE CONFIGS ROUTES =====
+
+  // GET all committee configs
+  app.get("/api/committees", async (_, res) => {
+    const configs = await storage.getAllCommitteeConfigs();
+    res.json(configs);
+  });
+
+  // GET committee config by slug
+  app.get("/api/committees/:slug", async (req, res) => {
+    const config = await storage.getCommitteeConfigBySlug(req.params.slug);
+    if (!config) {
+      return res.status(404).json({ error: "Committee not found" });
+    }
+    res.json(config);
+  });
+
+  // POST new committee config (admin only)
+  app.post("/api/committees", requireAuth, async (req, res) => {
+    try {
+      const validatedData = insertCommitteeConfigSchema.parse(req.body);
+      const config = await storage.createCommitteeConfig(validatedData);
+      res.status(201).json(config);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid committee config data", details: error });
+      }
+      console.error("Error creating committee config:", error);
+      res.status(500).json({ error: "Failed to create committee config" });
+    }
+  });
+
+  // PUT update committee config (admin only)
+  app.put("/api/committees/:slug", requireAuth, async (req, res) => {
+    try {
+      const validatedData = insertCommitteeConfigSchema.partial().parse(req.body);
+      const updated = await storage.updateCommitteeConfig(req.params.slug, validatedData);
+      if (!updated) {
+        return res.status(404).json({ error: "Committee not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ error: "Invalid committee config data", details: error });
+      }
+      console.error("Error updating committee config:", error);
+      res.status(500).json({ error: "Failed to update committee config" });
+    }
+  });
+
+  // DELETE committee config (admin only)
+  app.delete("/api/committees/:slug", requireAuth, async (req, res) => {
+    try {
+      const deleted = await storage.deleteCommitteeConfig(req.params.slug);
+      if (!deleted) {
+        return res.status(404).json({ error: "Committee not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting committee config:", error);
+      res.status(500).json({ error: "Failed to delete committee config" });
     }
   });
 
