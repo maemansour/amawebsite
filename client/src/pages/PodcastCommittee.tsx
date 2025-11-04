@@ -126,59 +126,6 @@ export default function PodcastCommittee() {
                     Join our <span className="font-semibold text-foreground">podcast committee</span> and create compelling content that educates and inspires.
                   </p>
                   
-                  <Card className="bg-[#FEF9C3] dark:bg-[#854D0E] border-[#FDE047] dark:border-[#A16207] p-4 mb-8">
-                    <div className="flex items-center gap-3">
-                      <Headphones className="w-6 h-6 text-[#854D0E] dark:text-[#FEF9C3]" />
-                      <p className="text-sm md:text-base font-semibold text-[#854D0E] dark:text-[#FEF9C3]" data-testid="text-listen-banner">
-                        Listen on Spotify, YouTube & More
-                      </p>
-                    </div>
-                  </Card>
-
-                  <div className="flex gap-3 flex-wrap" data-testid="section-social-links">
-                    {committeeConfig?.spotifyUrl && (
-                      <Button
-                        variant="outline"
-                        size="default"
-                        className="bg-[#1DB954] hover:bg-[#1ED760] dark:bg-[#1DB954] dark:hover:bg-[#1ED760] text-white border-[#1DB954] dark:border-[#1DB954]"
-                        asChild
-                        data-testid="button-spotify"
-                      >
-                        <a href={committeeConfig.spotifyUrl} target="_blank" rel="noopener noreferrer">
-                          <SiSpotify className="w-4 h-4 mr-2" />
-                          Spotify
-                        </a>
-                      </Button>
-                    )}
-                    {committeeConfig?.youtubeUrl && (
-                      <Button
-                        variant="outline"
-                        size="default"
-                        className="bg-[#FF0000] hover:bg-[#CC0000] dark:bg-[#FF0000] dark:hover:bg-[#CC0000] text-white border-[#FF0000] dark:border-[#FF0000]"
-                        asChild
-                        data-testid="button-youtube"
-                      >
-                        <a href={committeeConfig.youtubeUrl} target="_blank" rel="noopener noreferrer">
-                          <SiYoutube className="w-4 h-4 mr-2" />
-                          YouTube
-                        </a>
-                      </Button>
-                    )}
-                    {committeeConfig?.instagramUrl && (
-                      <Button
-                        variant="outline"
-                        size="default"
-                        className="bg-gradient-to-r from-[#833AB4] via-[#E1306C] to-[#F77737] hover:opacity-90 dark:opacity-100 dark:hover:opacity-90 text-white border-[#E1306C] dark:border-[#E1306C]"
-                        asChild
-                        data-testid="button-instagram"
-                      >
-                        <a href={committeeConfig.instagramUrl} target="_blank" rel="noopener noreferrer">
-                          <SiInstagram className="w-4 h-4 mr-2" />
-                          Instagram
-                        </a>
-                      </Button>
-                    )}
-                  </div>
                 </div>
               </ScrollReveal>
 
