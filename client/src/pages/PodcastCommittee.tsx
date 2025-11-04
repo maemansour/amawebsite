@@ -5,12 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { useQuery } from "@tanstack/react-query";
-import type { Settings, FeaturedSpeaker } from "@shared/schema";
+import type { CommitteeConfig, FeaturedSpeaker } from "@shared/schema";
 import { useEffect } from "react";
 
 export default function PodcastCommittee() {
-  const { data: settings } = useQuery<Settings>({
-    queryKey: ["/api/settings"],
+  const { data: committeeConfig } = useQuery<CommitteeConfig>({
+    queryKey: ["/api/committees/podcast"],
   });
 
   const { data: featuredSpeakers = [] } = useQuery<FeaturedSpeaker[]>({
@@ -78,7 +78,7 @@ export default function PodcastCommittee() {
       description: "Listen to all episodes on Spotify and other podcast platforms",
       buttonText: "Listen on Spotify",
       buttonColor: "bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-white",
-      url: settings?.podcastSpotifyUrl || ""
+      url: committeeConfig?.spotifyUrl || ""
     },
     {
       name: "Instagram",
@@ -86,7 +86,7 @@ export default function PodcastCommittee() {
       description: "Follow us on Instagram for behind-the-scenes content and updates",
       buttonText: "Follow on Instagram",
       buttonColor: "bg-pink-600 hover:bg-pink-700 dark:bg-pink-700 dark:hover:bg-pink-800 text-white",
-      url: settings?.podcastInstagramUrl || ""
+      url: committeeConfig?.instagramUrl || ""
     },
     {
       name: "YouTube",
@@ -94,7 +94,7 @@ export default function PodcastCommittee() {
       description: "Subscribe and watch video episodes on YouTube",
       buttonText: "Subscribe on YouTube",
       buttonColor: "bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 text-white",
-      url: settings?.podcastYoutubeUrl || ""
+      url: committeeConfig?.youtubeUrl || ""
     }
   ];
 
@@ -140,7 +140,7 @@ export default function PodcastCommittee() {
               <ScrollReveal direction="right" delay={0.2}>
                 <div className="rounded-lg overflow-hidden shadow-lg" data-testid="img-podcast-hero">
                   <img 
-                    src={settings?.podcastHeroImage || "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=800&h=600&fit=crop"} 
+                    src={committeeConfig?.heroImage || "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=800&h=600&fit=crop"} 
                     alt="The AMA Way Podcast"
                     className="w-full h-full object-cover min-h-[400px]"
                   />
@@ -181,7 +181,7 @@ export default function PodcastCommittee() {
                   <Card className="overflow-hidden h-full" data-testid="card-industry-image">
                     <div className="relative h-48">
                       <img 
-                        src={settings?.podcastIndustryImage || "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop"} 
+                        src={committeeConfig?.image1 || "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop"} 
                         alt="Industry Connections"
                         className="w-full h-full object-cover"
                       />
@@ -202,7 +202,7 @@ export default function PodcastCommittee() {
                   <Card className="overflow-hidden h-full" data-testid="card-creative-image">
                     <div className="relative h-48">
                       <img 
-                        src={settings?.podcastCreativeImage || "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop"} 
+                        src={committeeConfig?.image2 || "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop"} 
                         alt="Creative Skills"
                         className="w-full h-full object-cover"
                       />
@@ -376,7 +376,7 @@ export default function PodcastCommittee() {
                     asChild
                     data-testid="button-apply-podcast"
                   >
-                    <a href={settings?.podcastApplyLink || "#"} target={settings?.podcastApplyLink ? "_blank" : undefined} rel={settings?.podcastApplyLink ? "noopener noreferrer" : undefined}>
+                    <a href={committeeConfig?.applyLink || "#"} target={committeeConfig?.applyLink ? "_blank" : undefined} rel={committeeConfig?.applyLink ? "noopener noreferrer" : undefined}>
                       Apply to Podcast Committee
                     </a>
                   </Button>
@@ -399,7 +399,7 @@ export default function PodcastCommittee() {
                       </li>
                       <li className="flex gap-3" data-testid="step-3">
                         <span className="font-bold text-[#D4A574]">3.</span>
-                        <span>Speak to an Executive Member at AMA GBMs for more information or email <span className="font-semibold text-primary">{settings?.podcastEmail || "podcast.sdsuama@gmail.com"}</span></span>
+                        <span>Speak to an Executive Member at AMA GBMs for more information or email <span className="font-semibold text-primary">{committeeConfig?.email || "podcast.sdsuama@gmail.com"}</span></span>
                       </li>
                     </ol>
                   </Card>
@@ -407,7 +407,7 @@ export default function PodcastCommittee() {
                   <Card className="p-6 bg-muted/50" data-testid="card-guest-info">
                     <h3 className="text-lg font-bold mb-3" data-testid="heading-guest-info">Interested in being a guest?</h3>
                     <p className="text-sm text-muted-foreground">
-                      Contact <span className="font-semibold text-foreground">{settings?.podcastEmail || "podcast.sdsuama@gmail.com"}</span> to share your expertise with our audience!
+                      Contact <span className="font-semibold text-foreground">{committeeConfig?.email || "podcast.sdsuama@gmail.com"}</span> to share your expertise with our audience!
                     </p>
                   </Card>
                 </div>

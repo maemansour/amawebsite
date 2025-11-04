@@ -6,15 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Footer } from "@/components/Footer";
 import { ScrollReveal } from "@/components/ScrollReveal";
-import type { Settings, PortfolioClient } from "@shared/schema";
+import type { CommitteeConfig, PortfolioClient } from "@shared/schema";
 
 export default function ConsultingCommittee() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const { data: settings } = useQuery<Settings>({
-    queryKey: ["/api/settings"],
+  const { data: committeeConfig } = useQuery<CommitteeConfig>({
+    queryKey: ["/api/committees/consulting"],
   });
 
   const { data: portfolioClients = [] } = useQuery<PortfolioClient[]>({
@@ -141,7 +141,7 @@ export default function ConsultingCommittee() {
                 <div className="relative">
                   <div className="rounded-lg overflow-hidden shadow-xl">
                     <img 
-                      src={settings?.consultingTeamImage || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop"} 
+                      src={committeeConfig?.image1 || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop"} 
                       alt="Consulting Committee Team"
                       className="w-full h-auto"
                       data-testid="img-team"
@@ -192,7 +192,7 @@ export default function ConsultingCommittee() {
                 <div className="relative">
                   <div className="rounded-lg overflow-hidden shadow-lg">
                     <img 
-                      src={settings?.consultingMissionImage || "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop"} 
+                      src={committeeConfig?.missionImage || "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop"} 
                       alt="Collaborative Learning"
                       className="w-full h-auto"
                       data-testid="img-mission"
@@ -387,9 +387,9 @@ export default function ConsultingCommittee() {
                 <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto" data-testid="text-cta-description">
                   Get hands-on consulting experience while helping local businesses grow their marketing efforts.
                 </p>
-                {settings?.consultingApplyLink ? (
+                {committeeConfig?.applyLink ? (
                   <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90" asChild data-testid="button-apply">
-                    <a href={settings.consultingApplyLink} target="_blank" rel="noopener noreferrer">
+                    <a href={committeeConfig.applyLink} target="_blank" rel="noopener noreferrer">
                       Apply to Consulting Committee
                     </a>
                   </Button>

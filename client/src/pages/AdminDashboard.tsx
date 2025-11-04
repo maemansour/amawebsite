@@ -37,7 +37,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { type Settings, type Event, type Highlight, type ExecutiveMember, type InsertExecutiveMember, type Slideshow, type InsertSlideshow, type SlideshowSlide, type InsertSlideshowSlide, type PortfolioClient, type InsertPortfolioClient, type AlumniSpotlight, type InsertAlumniSpotlight, type FeaturedSpeaker } from "@shared/schema";
+import { type Settings, type Event, type Highlight, type ExecutiveMember, type InsertExecutiveMember, type Slideshow, type InsertSlideshow, type SlideshowSlide, type InsertSlideshowSlide, type PortfolioClient, type InsertPortfolioClient, type AlumniSpotlight, type InsertAlumniSpotlight, type FeaturedSpeaker, type CommitteeConfig, type InsertCommitteeConfig } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { ImageUploadWithCrop } from "@/components/ImageUploadWithCrop";
 import { MemberImageUpload } from "@/components/MemberImageUpload";
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 max-w-7xl" data-testid="tabs-admin">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-9 max-w-7xl" data-testid="tabs-admin">
             <TabsTrigger value="general" data-testid="tab-general">
               <SettingsIcon className="h-4 w-4 mr-2" />
               General Settings
@@ -131,6 +131,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="executive-members" data-testid="tab-executive-members">
               <Users className="h-4 w-4 mr-2" />
               Executive Board
+            </TabsTrigger>
+            <TabsTrigger value="committees" data-testid="tab-committees">
+              <ImageIcon className="h-4 w-4 mr-2" />
+              Committees
             </TabsTrigger>
             <TabsTrigger value="portfolio" data-testid="tab-portfolio">
               <ImageIcon className="h-4 w-4 mr-2" />
@@ -164,6 +168,10 @@ export default function AdminDashboard() {
 
           <TabsContent value="executive-members">
             <ManageExecutiveMembers />
+          </TabsContent>
+
+          <TabsContent value="committees">
+            <ManageCommittees />
           </TabsContent>
 
           <TabsContent value="portfolio">
@@ -2887,6 +2895,390 @@ function ManageAlumniSpotlight() {
                   </div>
                 </div>
               ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function ManageCommittees() {
+  const { toast } = useToast();
+  const { data: committees = [], isLoading } = useQuery<CommitteeConfig[]>({
+    queryKey: ["/api/committees"],
+  });
+
+  const [formData, setFormData] = useState<Partial<InsertCommitteeConfig>>({
+    slug: "",
+    name: "",
+    heroImage: "",
+    missionImage: "",
+    image1: "",
+    image2: "",
+    image3: "",
+    description: "",
+    applyLink: "",
+    email: "",
+    spotifyUrl: "",
+    instagramUrl: "",
+    youtubeUrl: "",
+    displayOrder: 0
+  });
+  const [selectedCommittee, setSelectedCommittee] = useState<CommitteeConfig | null>(null);
+
+  const allCommittees = [
+    { slug: "consulting", name: "Consulting Committee" },
+    { slug: "podcast", name: "Podcast Committee" },
+    { slug: "event-planning", name: "Event Planning Committee" },
+    { slug: "adobe", name: "Adobe Committee" },
+    { slug: "sales", name: "Sales Committee" },
+    { slug: "competitions", name: "Competitions Committee" },
+    { slug: "multimedia", name: "Multimedia Committee" }
+  ];
+
+  const updateCommitteeMutation = useMutation({
+    mutationFn: async ({ slug, data }: { slug: string; data: Partial<InsertCommitteeConfig> }) => {
+      return await apiRequest("PUT", `/api/committees/${slug}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/committees"] });
+      toast({
+        title: "Success",
+        description: "Committee settings updated successfully",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to update committee settings",
+      });
+    },
+  });
+
+  const createCommitteeMutation = useMutation({
+    mutationFn: async (data: InsertCommitteeConfig) => {
+      return await apiRequest("POST", "/api/committees", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/committees"] });
+      toast({
+        title: "Success",
+        description: "Committee configuration created successfully",
+      });
+      setFormData({
+        slug: "",
+        name: "",
+        heroImage: "",
+        missionImage: "",
+        image1: "",
+        image2: "",
+        image3: "",
+        description: "",
+        applyLink: "",
+        email: "",
+        spotifyUrl: "",
+        instagramUrl: "",
+        youtubeUrl: "",
+        displayOrder: 0
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to create committee configuration",
+      });
+    },
+  });
+
+  const handleCommitteeSelect = (slug: string) => {
+    const committee = committees.find(c => c.slug === slug);
+    if (committee) {
+      setSelectedCommittee(committee);
+      setFormData({
+        slug: committee.slug,
+        name: committee.name,
+        heroImage: committee.heroImage || "",
+        missionImage: committee.missionImage || "",
+        image1: committee.image1 || "",
+        image2: committee.image2 || "",
+        image3: committee.image3 || "",
+        description: committee.description || "",
+        applyLink: committee.applyLink || "",
+        email: committee.email || "",
+        spotifyUrl: committee.spotifyUrl || "",
+        instagramUrl: committee.instagramUrl || "",
+        youtubeUrl: committee.youtubeUrl || "",
+        displayOrder: committee.displayOrder || 0
+      });
+    } else {
+      const defaultCommittee = allCommittees.find(c => c.slug === slug);
+      if (defaultCommittee) {
+        setSelectedCommittee(null);
+        setFormData({
+          slug: defaultCommittee.slug,
+          name: defaultCommittee.name,
+          heroImage: "",
+          missionImage: "",
+          image1: "",
+          image2: "",
+          image3: "",
+          description: "",
+          applyLink: "",
+          email: "",
+          spotifyUrl: "",
+          instagramUrl: "",
+          youtubeUrl: "",
+          displayOrder: committees.length
+        });
+      }
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedCommittee) {
+      updateCommitteeMutation.mutate({ slug: selectedCommittee.slug, data: formData });
+    } else {
+      if (!formData.slug || !formData.name) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Committee slug and name are required",
+        });
+        return;
+      }
+      createCommitteeMutation.mutate(formData as InsertCommitteeConfig);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Committees Configuration</CardTitle>
+          <CardDescription>
+            Manage images and content for all committee pages
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="committeeSelect">Select Committee</Label>
+            <select
+              id="committeeSelect"
+              className="w-full rounded-md border border-input bg-background px-3 py-2"
+              onChange={(e) => handleCommitteeSelect(e.target.value)}
+              value={formData.slug}
+              data-testid="select-committee"
+            >
+              <option value="">-- Select a committee --</option>
+              {allCommittees.map(committee => {
+                const exists = committees.some(c => c.slug === committee.slug);
+                return (
+                  <option key={committee.slug} value={committee.slug}>
+                    {committee.name} {exists ? "(configured)" : "(not configured)"}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          {formData.slug && (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="committeeName">Committee Name</Label>
+                <Input
+                  id="committeeName"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="e.g., Consulting Committee"
+                  data-testid="input-committee-name"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Hero Image</Label>
+                <ImageUploadWithCrop
+                  aspectRatio={4 / 3}
+                  currentImage={formData.heroImage || undefined}
+                  onImageChange={(url) => setFormData({ ...formData, heroImage: url })}
+                  imageType="hero"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Mission/About Image</Label>
+                <ImageUploadWithCrop
+                  aspectRatio={4 / 3}
+                  currentImage={formData.missionImage || undefined}
+                  onImageChange={(url) => setFormData({ ...formData, missionImage: url })}
+                  imageType="mission"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Additional Image 1</Label>
+                <ImageUploadWithCrop
+                  aspectRatio={4 / 3}
+                  currentImage={formData.image1 || undefined}
+                  onImageChange={(url) => setFormData({ ...formData, image1: url })}
+                  imageType="whyChoose"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Additional Image 2</Label>
+                <ImageUploadWithCrop
+                  aspectRatio={4 / 3}
+                  currentImage={formData.image2 || undefined}
+                  onImageChange={(url) => setFormData({ ...formData, image2: url })}
+                  imageType="services"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Additional Image 3</Label>
+                <ImageUploadWithCrop
+                  aspectRatio={4 / 3}
+                  currentImage={formData.image3 || undefined}
+                  onImageChange={(url) => setFormData({ ...formData, image3: url })}
+                  imageType="family"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="committeeDescription">Description</Label>
+                <Textarea
+                  id="committeeDescription"
+                  value={formData.description || ""}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Optional description text"
+                  rows={3}
+                  data-testid="input-committee-description"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="applyLink">Apply Link</Label>
+                  <Input
+                    id="applyLink"
+                    type="url"
+                    value={formData.applyLink || ""}
+                    onChange={(e) => setFormData({ ...formData, applyLink: e.target.value })}
+                    placeholder="https://..."
+                    data-testid="input-apply-link"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="committeeEmail">Contact Email</Label>
+                  <Input
+                    id="committeeEmail"
+                    type="email"
+                    value={formData.email || ""}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="committee@example.com"
+                    data-testid="input-committee-email"
+                  />
+                </div>
+              </div>
+
+              {formData.slug === "podcast" && (
+                <div className="space-y-4 border-t pt-4">
+                  <h3 className="font-semibold">Podcast-Specific Settings</h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="spotifyUrl">Spotify URL</Label>
+                      <Input
+                        id="spotifyUrl"
+                        type="url"
+                        value={formData.spotifyUrl || ""}
+                        onChange={(e) => setFormData({ ...formData, spotifyUrl: e.target.value })}
+                        placeholder="https://open.spotify.com/..."
+                        data-testid="input-spotify-url"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="instagramUrl">Instagram URL</Label>
+                      <Input
+                        id="instagramUrl"
+                        type="url"
+                        value={formData.instagramUrl || ""}
+                        onChange={(e) => setFormData({ ...formData, instagramUrl: e.target.value })}
+                        placeholder="https://instagram.com/..."
+                        data-testid="input-instagram-url"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="youtubeUrl">YouTube URL</Label>
+                      <Input
+                        id="youtubeUrl"
+                        type="url"
+                        value={formData.youtubeUrl || ""}
+                        onChange={(e) => setFormData({ ...formData, youtubeUrl: e.target.value })}
+                        placeholder="https://youtube.com/..."
+                        data-testid="input-youtube-url"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                disabled={updateCommitteeMutation.isPending || createCommitteeMutation.isPending}
+                data-testid="button-save-committee"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                {selectedCommittee ? "Update Committee" : "Create Committee"}
+              </Button>
+            </form>
+          )}
+        </CardContent>
+      </Card>
+
+      {isLoading && (
+        <Card>
+          <CardContent className="py-8 text-center text-muted-foreground">
+            Loading committees...
+          </CardContent>
+        </Card>
+      )}
+
+      {!isLoading && committees.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Configured Committees</CardTitle>
+            <CardDescription>
+              {committees.length} of {allCommittees.length} committees configured
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-3">
+              {committees
+                .sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0))
+                .map((committee) => (
+                  <div
+                    key={committee.id}
+                    className="flex items-center justify-between p-4 border rounded-md hover-elevate"
+                    data-testid={`committee-card-${committee.slug}`}
+                  >
+                    <div className="flex-1">
+                      <h3 className="font-semibold">{committee.name}</h3>
+                      <p className="text-sm text-muted-foreground">/{committee.slug}</p>
+                    </div>
+                    <Button
+                      variant="outline"
+                      onClick={() => handleCommitteeSelect(committee.slug)}
+                      data-testid={`button-edit-committee-${committee.slug}`}
+                    >
+                      <Pencil className="h-4 w-4 mr-2" />
+                      Edit
+                    </Button>
+                  </div>
+                ))}
             </div>
           </CardContent>
         </Card>

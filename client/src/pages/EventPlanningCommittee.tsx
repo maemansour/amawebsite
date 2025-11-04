@@ -6,15 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Footer } from "@/components/Footer";
 import { ScrollReveal } from "@/components/ScrollReveal";
-import type { Settings } from "@shared/schema";
+import type { CommitteeConfig } from "@shared/schema";
 
 export default function EventPlanningCommittee() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const { data: settings } = useQuery<Settings>({
-    queryKey: ["/api/settings"],
+  const { data: committeeConfig } = useQuery<CommitteeConfig>({
+    queryKey: ["/api/committees/event-planning"],
   });
 
   const benefits = [
@@ -108,7 +108,7 @@ export default function EventPlanningCommittee() {
                 <div className="relative">
                   <div className="rounded-lg overflow-hidden shadow-xl">
                     <img 
-                      src={settings?.consultingTeamImage || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop"} 
+                      src={committeeConfig?.heroImage || "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&h=600&fit=crop"} 
                       alt="Consulting Committee Team"
                       className="w-full h-auto"
                       data-testid="img-team"
@@ -159,7 +159,7 @@ export default function EventPlanningCommittee() {
                 <div className="relative">
                   <div className="rounded-lg overflow-hidden shadow-lg">
                     <img 
-                      src={settings?.consultingMissionImage || "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop"} 
+                      src={committeeConfig?.missionImage || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop"} 
                       alt="Collaborative Learning"
                       className="w-full h-auto"
                       data-testid="img-mission"
