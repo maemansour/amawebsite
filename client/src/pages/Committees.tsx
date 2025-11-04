@@ -188,7 +188,7 @@ export default function Committees() {
                         <div className="w-2 h-2 rounded-full bg-primary" />
                         <h4 className="font-semibold text-primary">Why Join:</h4>
                       </div>
-                      <ul className="space-y-2 mb-6">
+                      <ul className="space-y-2">
                         {committee.whyJoin.map((item, i) => (
                           <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground" data-testid={`committee-benefit-${index}-${i}`}>
                             <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
@@ -196,29 +196,6 @@ export default function Committees() {
                           </li>
                         ))}
                       </ul>
-                      {committee.id === "consulting" ? (
-                        <Link href="/committees/consulting">
-                          <Button className="w-full" variant="default" data-testid={`button-learn-more-${index}`}>
-                            Learn More
-                          </Button>
-                        </Link>
-                      ) : committee.id === "event-planning" ? (
-                        <Link href="/committees/event-planning">
-                          <Button className="w-full" variant="default" data-testid={`button-learn-more-${index}`}>
-                            Learn More
-                          </Button>
-                        </Link>
-                      ) : committee.id === "podcast" ? (
-                        <Link href="/committees/podcast">
-                          <Button className="w-full" variant="default" data-testid={`button-learn-more-${index}`}>
-                            Learn More
-                          </Button>
-                        </Link>
-                      ) : (
-                        <Button className="w-full" variant="default" data-testid={`button-learn-more-${index}`}>
-                          Learn More
-                        </Button>
-                      )}
                     </div>
                   </Card>
                 </ScrollReveal>
@@ -246,7 +223,7 @@ export default function Committees() {
                       <div className="w-2 h-2 rounded-full bg-primary" />
                       <h4 className="font-semibold text-primary">Why Join:</h4>
                     </div>
-                    <ul className="space-y-2 mb-6">
+                    <ul className="space-y-2">
                       {committees[6].whyJoin.map((item, i) => (
                         <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground" data-testid={`committee-benefit-6-${i}`}>
                           <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
@@ -254,9 +231,6 @@ export default function Committees() {
                         </li>
                       ))}
                     </ul>
-                    <Button className="w-full" variant="default" data-testid="button-learn-more-6">
-                      Learn More
-                    </Button>
                   </div>
                 </Card>
               </ScrollReveal>
