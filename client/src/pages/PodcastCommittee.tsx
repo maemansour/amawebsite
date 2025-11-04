@@ -269,8 +269,53 @@ export default function PodcastCommittee() {
           </div>
         </section>
 
+        {/* Listen & Follow Section */}
+        <section className="py-16 md:py-20 bg-background" data-testid="section-platforms">
+          <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+            <ScrollReveal direction="up">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4" data-testid="heading-listen-follow">
+                  Listen & Follow
+                </h2>
+                <p className="text-lg text-muted-foreground" data-testid="text-platforms-subtitle">
+                  Connect with us across all platforms
+                </p>
+              </div>
+            </ScrollReveal>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {platforms.map((platform, index) => (
+                <ScrollReveal key={index} delay={index * 0.1}>
+                  <Card className="p-6 text-center h-full flex flex-col" data-testid={`card-platform-${index}`}>
+                    <div className="mb-4">
+                      <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center mb-4">
+                        <platform.icon className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                      <h3 className="text-xl font-bold mb-3" data-testid={`text-platform-name-${index}`}>{platform.name}</h3>
+                      <p className="text-sm text-muted-foreground mb-6" data-testid={`text-platform-desc-${index}`}>
+                        {platform.description}
+                      </p>
+                    </div>
+                    <div className="mt-auto">
+                      <Button
+                        className={`w-full ${platform.buttonColor}`}
+                        asChild
+                        data-testid={`button-platform-${index}`}
+                      >
+                        <a href={platform.url || "#"} target={platform.url ? "_blank" : undefined} rel={platform.url ? "noopener noreferrer" : undefined}>
+                          {platform.buttonText}
+                        </a>
+                      </Button>
+                    </div>
+                  </Card>
+                </ScrollReveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Why Join Our Committee Section */}
-        <section className="py-16 md:py-20 bg-background" data-testid="section-benefits">
+        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-benefits">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <ScrollReveal direction="up">
               <div className="text-center mb-12">
@@ -353,51 +398,6 @@ export default function PodcastCommittee() {
                   </CardContent>
                 </Card>
               </ScrollReveal>
-            </div>
-          </div>
-        </section>
-
-        {/* Listen & Follow Section */}
-        <section className="py-16 md:py-20 bg-background" data-testid="section-platforms">
-          <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <ScrollReveal direction="up">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4" data-testid="heading-listen-follow">
-                  Listen & Follow
-                </h2>
-                <p className="text-lg text-muted-foreground" data-testid="text-platforms-subtitle">
-                  Connect with us across all platforms
-                </p>
-              </div>
-            </ScrollReveal>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {platforms.map((platform, index) => (
-                <ScrollReveal key={index} delay={index * 0.1}>
-                  <Card className="p-6 text-center h-full flex flex-col" data-testid={`card-platform-${index}`}>
-                    <div className="mb-4">
-                      <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center mb-4">
-                        <platform.icon className="w-8 h-8 text-muted-foreground" />
-                      </div>
-                      <h3 className="text-xl font-bold mb-3" data-testid={`text-platform-name-${index}`}>{platform.name}</h3>
-                      <p className="text-sm text-muted-foreground mb-6" data-testid={`text-platform-desc-${index}`}>
-                        {platform.description}
-                      </p>
-                    </div>
-                    <div className="mt-auto">
-                      <Button
-                        className={`w-full ${platform.buttonColor}`}
-                        asChild
-                        data-testid={`button-platform-${index}`}
-                      >
-                        <a href={platform.url || "#"} target={platform.url ? "_blank" : undefined} rel={platform.url ? "noopener noreferrer" : undefined}>
-                          {platform.buttonText}
-                        </a>
-                      </Button>
-                    </div>
-                  </Card>
-                </ScrollReveal>
-              ))}
             </div>
           </div>
         </section>
