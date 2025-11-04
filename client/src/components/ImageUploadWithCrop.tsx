@@ -30,6 +30,7 @@ export function ImageUploadWithCrop({
   currentImage,
   aspectRatio = 16 / 9,
   testId,
+  onImageChange,
 }: ImageUploadWithCropProps) {
   const { toast } = useToast();
   const [showDialog, setShowDialog] = useState(false);
@@ -130,10 +131,16 @@ export function ImageUploadWithCrop({
       }
 
       // Update settings - the server will normalize the URL to /objects/xxx format
-      await apiRequest("PUT", "/api/chapter-images", {
+      const normalizeResponse = await apiRequest("PUT", "/api/chapter-images", {
         imageType,
         imageURL: uploadData.uploadURL,
       });
+      const normalizeData = await normalizeResponse.json() as { objectPath: string };
+
+      // Call the onImageChange callback to update parent component's form data
+      if (onImageChange) {
+        onImageChange(normalizeData.objectPath);
+      }
 
       // Invalidate and refetch settings query to refresh the image
       await queryClient.invalidateQueries({ queryKey: ["/api/settings"] });
