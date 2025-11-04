@@ -175,29 +175,47 @@ export default function PodcastCommittee() {
                 </Card>
               </ScrollReveal>
 
-              {/* Right - Highlight Cards */}
+              {/* Right - Images */}
               <div className="space-y-6">
                 <ScrollReveal direction="up" delay={0.1}>
-                  <Card className="bg-[#FEF9C3] dark:bg-[#854D0E] border-[#FDE047] dark:border-[#A16207] p-6" data-testid="card-industry-connections">
-                    <div className="flex items-center gap-3 mb-3">
-                      <Users className="w-6 h-6 text-[#854D0E] dark:text-[#FEF9C3]" />
-                      <h3 className="text-lg font-bold text-[#854D0E] dark:text-[#FEF9C3]">Industry Connections</h3>
+                  <Card className="overflow-hidden h-full" data-testid="card-industry-image">
+                    <div className="relative h-48">
+                      <img 
+                        src={settings?.podcastIndustryImage || "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop"} 
+                        alt="Industry Connections"
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
+                        <div className="text-white">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Users className="w-5 h-5" />
+                            <h3 className="text-lg font-bold">Industry Connections</h3>
+                          </div>
+                          <p className="text-sm text-white/90">Network with professionals and thought leaders</p>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-sm text-[#854D0E] dark:text-[#FEF9C3]/90">
-                      Network with professionals, professors, and thought leaders
-                    </p>
                   </Card>
                 </ScrollReveal>
 
                 <ScrollReveal direction="up" delay={0.2}>
-                  <Card className="bg-[#FEF9C3] dark:bg-[#854D0E] border-[#FDE047] dark:border-[#A16207] p-6" data-testid="card-creative-skills">
-                    <div className="flex items-center gap-3 mb-3">
-                      <Lightbulb className="w-6 h-6 text-[#854D0E] dark:text-[#FEF9C3]" />
-                      <h3 className="text-lg font-bold text-[#854D0E] dark:text-[#FEF9C3]">Creative Skills</h3>
+                  <Card className="overflow-hidden h-full" data-testid="card-creative-image">
+                    <div className="relative h-48">
+                      <img 
+                        src={settings?.podcastCreativeImage || "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop"} 
+                        alt="Creative Skills"
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
+                        <div className="text-white">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Lightbulb className="w-5 h-5" />
+                            <h3 className="text-lg font-bold">Creative Skills</h3>
+                          </div>
+                          <p className="text-sm text-white/90">Develop content creation expertise</p>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-sm text-[#854D0E] dark:text-[#FEF9C3]/90">
-                      Develop content creation and production expertise
-                    </p>
                   </Card>
                 </ScrollReveal>
               </div>

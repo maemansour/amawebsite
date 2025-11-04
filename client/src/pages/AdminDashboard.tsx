@@ -2918,6 +2918,8 @@ function ManagePodcast() {
     if (settings) {
       setFormData({
         podcastHeroImage: settings.podcastHeroImage,
+        podcastIndustryImage: settings.podcastIndustryImage,
+        podcastCreativeImage: settings.podcastCreativeImage,
         podcastSpotifyUrl: settings.podcastSpotifyUrl,
         podcastInstagramUrl: settings.podcastInstagramUrl,
         podcastYoutubeUrl: settings.podcastYoutubeUrl,
@@ -3070,6 +3072,26 @@ function ManagePodcast() {
                 currentImage={formData.podcastHeroImage || undefined}
                 onImageChange={(url) => setFormData({ ...formData, podcastHeroImage: url })}
                 imageType="podcastHero"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Industry Connections Image</Label>
+              <ImageUploadWithCrop
+                aspectRatio={4 / 3}
+                currentImage={formData.podcastIndustryImage || undefined}
+                onImageChange={(url) => setFormData({ ...formData, podcastIndustryImage: url })}
+                imageType="podcastIndustry"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Creative Skills Image</Label>
+              <ImageUploadWithCrop
+                aspectRatio={4 / 3}
+                currentImage={formData.podcastCreativeImage || undefined}
+                onImageChange={(url) => setFormData({ ...formData, podcastCreativeImage: url })}
+                imageType="podcastCreative"
               />
             </div>
 
