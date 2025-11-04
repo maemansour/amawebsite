@@ -59,26 +59,26 @@ export default function Alumni() {
     <div className="min-h-screen flex flex-col">
       <div className="flex-1">
         {/* Hero Section */}
-        <section className="py-16 md:py-20" data-testid="section-alumni-header">
+        <section className="py-12 md:py-16" data-testid="section-alumni-header">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <div className="grid md:grid-cols-2 gap-12 items-start">
+            <div className="grid md:grid-cols-2 gap-8 items-center">
               {/* Left Column */}
               <div>
                 <ScrollReveal direction="left">
-                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6" data-testid="heading-alumni">
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4" data-testid="heading-alumni">
                     Alumni <span className="text-[#D4A574] dark:text-[#E5C4A0]">Relations</span> <GraduationCap className="inline-block w-10 h-10 md:w-12 md:h-12" />
                   </h1>
-                  <p className="text-lg text-muted-foreground mb-8" data-testid="text-alumni-description">
+                  <p className="text-lg text-muted-foreground mb-6" data-testid="text-alumni-description">
                     Stay connected with our <span className="font-semibold text-foreground">amazing alumni community</span> and learn about the incredible careers our former members have built.
                   </p>
                 </ScrollReveal>
 
                 <ScrollReveal direction="left" delay={0.1}>
                   <Card className="bg-yellow-50 dark:bg-yellow-950/20 border-2 border-[#D4A574] dark:border-[#E5C4A0]">
-                    <CardContent className="p-6">
+                    <CardContent className="p-4">
                       <div className="flex items-center gap-3">
-                        <Star className="w-6 h-6 text-[#D4A574] dark:text-[#E5C4A0]" />
-                        <span className="font-bold text-lg text-foreground">Lifelong Professional Network</span>
+                        <Star className="w-5 h-5 text-[#D4A574] dark:text-[#E5C4A0]" />
+                        <span className="font-bold text-foreground">Lifelong Professional Network</span>
                       </div>
                     </CardContent>
                   </Card>
@@ -89,10 +89,10 @@ export default function Alumni() {
               <div className="space-y-4">
                 <ScrollReveal direction="right">
                   <Card className="bg-primary text-primary-foreground">
-                    <CardContent className="p-8 text-center">
-                      <Network className="w-12 h-12 mx-auto mb-4" />
-                      <h3 className="text-2xl font-bold mb-2">Join Our Network</h3>
-                      <p className="text-primary-foreground/90">
+                    <CardContent className="p-6 text-center">
+                      <Network className="w-10 h-10 mx-auto mb-3" />
+                      <h3 className="text-xl font-bold mb-2">Join Our Network</h3>
+                      <p className="text-sm text-primary-foreground/90">
                         Connect with 500+ successful alumni worldwide
                       </p>
                     </CardContent>
@@ -101,10 +101,10 @@ export default function Alumni() {
 
                 <ScrollReveal direction="right" delay={0.1}>
                   <Card className="bg-card border-2 border-[#D4A574] dark:border-[#E5C4A0]">
-                    <CardContent className="p-8 text-center">
-                      <Star className="w-12 h-12 text-[#D4A574] dark:text-[#E5C4A0] mx-auto mb-4" />
-                      <h3 className="text-2xl font-bold mb-2 text-foreground">Award-Winning Alumni</h3>
-                      <p className="text-muted-foreground">
+                    <CardContent className="p-6 text-center">
+                      <Star className="w-10 h-10 text-[#D4A574] dark:text-[#E5C4A0] mx-auto mb-3" />
+                      <h3 className="text-xl font-bold mb-2 text-foreground">Award-Winning Alumni</h3>
+                      <p className="text-sm text-muted-foreground">
                         Recognized leaders in marketing and business
                       </p>
                     </CardContent>
@@ -116,30 +116,30 @@ export default function Alumni() {
         </section>
 
         {/* Alumni Benefits */}
-        <section className="py-16 md:py-20" data-testid="section-alumni-benefits">
+        <section className="py-12 md:py-16 bg-muted/30" data-testid="section-alumni-benefits">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <div className="text-center mb-12">
+            <div className="text-center mb-8">
               <ScrollReveal direction="up">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4" data-testid="heading-alumni-benefits">
+                <h2 className="text-3xl md:text-4xl font-bold mb-3" data-testid="heading-alumni-benefits">
                   Alumni Benefits
                 </h2>
               </ScrollReveal>
               <ScrollReveal direction="up" delay={0.1}>
-                <p className="text-lg text-muted-foreground">
+                <p className="text-muted-foreground">
                   Exclusive opportunities for our graduate community
                 </p>
               </ScrollReveal>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-3 gap-6">
               {/* Mentorship Program */}
               <ScrollReveal direction="up" delay={0.1}>
-                <Card className="bg-blue-50 dark:bg-blue-950/20 p-8 text-center" data-testid="card-mentorship">
-                  <GraduationCap className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold mb-3 text-foreground" data-testid="heading-mentorship">
+                <Card className="bg-blue-50 dark:bg-blue-950/20 p-6 text-center" data-testid="card-mentorship">
+                  <GraduationCap className="w-10 h-10 text-blue-600 dark:text-blue-400 mx-auto mb-3" />
+                  <h3 className="text-xl font-bold mb-2 text-foreground" data-testid="heading-mentorship">
                     Mentorship Program
                   </h3>
-                  <p className="text-muted-foreground" data-testid="text-mentorship">
+                  <p className="text-sm text-muted-foreground" data-testid="text-mentorship">
                     Mentor current students and share your professional experience
                   </p>
                 </Card>
@@ -147,12 +147,12 @@ export default function Alumni() {
 
               {/* Career Network */}
               <ScrollReveal direction="up" delay={0.2}>
-                <Card className="bg-green-50 dark:bg-green-950/20 p-8 text-center" data-testid="card-career-network">
-                  <Briefcase className="w-12 h-12 text-green-600 dark:text-green-400 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold mb-3 text-foreground" data-testid="heading-career-network">
+                <Card className="bg-green-50 dark:bg-green-950/20 p-6 text-center" data-testid="card-career-network">
+                  <Briefcase className="w-10 h-10 text-green-600 dark:text-green-400 mx-auto mb-3" />
+                  <h3 className="text-xl font-bold mb-2 text-foreground" data-testid="heading-career-network">
                     Career Network
                   </h3>
-                  <p className="text-muted-foreground" data-testid="text-career-network">
+                  <p className="text-sm text-muted-foreground" data-testid="text-career-network">
                     Connect with fellow alumni for career opportunities and advice
                   </p>
                 </Card>
@@ -160,12 +160,12 @@ export default function Alumni() {
 
               {/* Alumni Events */}
               <ScrollReveal direction="up" delay={0.3}>
-                <Card className="bg-purple-50 dark:bg-purple-950/20 p-8 text-center" data-testid="card-alumni-events">
-                  <Calendar className="w-12 h-12 text-purple-600 dark:text-purple-400 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold mb-3 text-foreground" data-testid="heading-alumni-events">
+                <Card className="bg-purple-50 dark:bg-purple-950/20 p-6 text-center" data-testid="card-alumni-events">
+                  <Calendar className="w-10 h-10 text-purple-600 dark:text-purple-400 mx-auto mb-3" />
+                  <h3 className="text-xl font-bold mb-2 text-foreground" data-testid="heading-alumni-events">
                     Alumni Events
                   </h3>
-                  <p className="text-muted-foreground" data-testid="text-alumni-events">
+                  <p className="text-sm text-muted-foreground" data-testid="text-alumni-events">
                     Attend exclusive alumni networking events and reunions
                   </p>
                 </Card>
@@ -175,14 +175,14 @@ export default function Alumni() {
         </section>
 
         {/* Alumni Spotlight */}
-        <section className="py-16 md:py-20 bg-muted/30" data-testid="section-alumni-spotlight">
+        <section className="py-12 md:py-16" data-testid="section-alumni-spotlight">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <ScrollReveal direction="up">
-              <div className="text-center">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4" data-testid="heading-alumni-spotlight">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl md:text-4xl font-bold mb-3" data-testid="heading-alumni-spotlight">
                   Alumni Spotlight
                 </h2>
-                <p className="text-lg text-muted-foreground mb-12">
+                <p className="text-muted-foreground">
                   Celebrating the success of our graduates
                 </p>
               </div>
@@ -267,16 +267,16 @@ export default function Alumni() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 md:py-20 bg-primary text-primary-foreground" data-testid="section-cta">
+        <section className="py-12 md:py-16 bg-primary text-primary-foreground" data-testid="section-cta">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <div className="text-center mb-8">
+            <div className="text-center mb-6">
               <ScrollReveal direction="up">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4" data-testid="heading-cta">
+                <h2 className="text-3xl md:text-4xl font-bold mb-3" data-testid="heading-cta">
                   Alumni? Get Involved.
                 </h2>
               </ScrollReveal>
               <ScrollReveal direction="up" delay={0.1}>
-                <p className="text-lg text-primary-foreground/90 max-w-3xl mx-auto mb-8">
+                <p className="text-primary-foreground/90 max-w-2xl mx-auto">
                   Join our exclusive alumni network and continue to benefit from the AMA SDSU community.
                 </p>
               </ScrollReveal>
