@@ -11,7 +11,8 @@ import {
   LogOut,
   Users,
   GripVertical,
-  Pencil
+  Pencil,
+  Mail
 } from "lucide-react";
 import {
   DndContext,
@@ -111,7 +112,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-9 max-w-7xl" data-testid="tabs-admin">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-10 max-w-7xl" data-testid="tabs-admin">
             <TabsTrigger value="general" data-testid="tab-general">
               <SettingsIcon className="h-4 w-4 mr-2" />
               General Settings
@@ -147,6 +148,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="podcast" data-testid="tab-podcast">
               <ImageIcon className="h-4 w-4 mr-2" />
               Podcast
+            </TabsTrigger>
+            <TabsTrigger value="email-list" data-testid="tab-email-list">
+              <Mail className="h-4 w-4 mr-2" />
+              Email List
             </TabsTrigger>
           </TabsList>
 
@@ -184,6 +189,10 @@ export default function AdminDashboard() {
 
           <TabsContent value="podcast">
             <ManagePodcast />
+          </TabsContent>
+
+          <TabsContent value="email-list">
+            <ManageEmailList />
           </TabsContent>
         </Tabs>
       </div>
@@ -3766,6 +3775,134 @@ function ManagePodcast() {
           </CardContent>
         </Card>
       )}
+    </div>
+  );
+}
+
+function ManageEmailList() {
+  const { toast } = useToast();
+
+  const { data: subscriptions = [], isLoading } = useQuery<Array<{ id: string; email: string; subscribedAt: string }>>({
+    queryKey: ["/api/newsletter/subscriptions"],
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => apiRequest("DELETE", `/api/newsletter/subscriptions/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/newsletter/subscriptions"] });
+      toast({
+        title: "Email removed",
+        description: "The email has been removed from the list.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to remove email. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleCopyEmails = () => {
+    const emailList = subscriptions.map(sub => sub.email).join(", ");
+    navigator.clipboard.writeText(emailList);
+    toast({
+      title: "Copied!",
+      description: "All emails have been copied to clipboard.",
+    });
+  };
+
+  const handleExportCSV = () => {
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + "Email,Subscribed At\n"
+      + subscriptions.map(sub => `${sub.email},${new Date(sub.subscribedAt).toLocaleDateString()}`).join("\n");
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `alumni_emails_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast({
+      title: "Exported!",
+      description: "Email list has been exported as CSV.",
+    });
+  };
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Alumni Email List</CardTitle>
+              <CardDescription>
+                {subscriptions.length} {subscriptions.length === 1 ? 'email' : 'emails'} collected
+              </CardDescription>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={handleCopyEmails}
+                disabled={subscriptions.length === 0}
+                data-testid="button-copy-emails"
+              >
+                Copy All Emails
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handleExportCSV}
+                disabled={subscriptions.length === 0}
+                data-testid="button-export-csv"
+              >
+                Export CSV
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <div className="text-center py-8 text-muted-foreground">
+              Loading emails...
+            </div>
+          ) : subscriptions.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              No emails collected yet.
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {subscriptions.map((subscription) => (
+                <div
+                  key={subscription.id}
+                  className="flex items-center justify-between p-4 border border-border rounded-md hover-elevate"
+                  data-testid={`email-item-${subscription.id}`}
+                >
+                  <div className="flex-1">
+                    <div className="font-medium" data-testid={`email-address-${subscription.id}`}>
+                      {subscription.email}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Subscribed: {new Date(subscription.subscribedAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => deleteMutation.mutate(subscription.id)}
+                    disabled={deleteMutation.isPending}
+                    data-testid={`button-delete-email-${subscription.id}`}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

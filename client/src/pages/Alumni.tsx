@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { GraduationCap, Briefcase, Calendar, Star, Network, Linkedin } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,12 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import { type Settings, type AlumniSpotlight } from "@shared/schema";
 
 export default function Alumni() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const { toast } = useToast();
 
   const { data: settings } = useQuery<Settings>({
     queryKey: ["/api/settings"],
@@ -24,9 +28,31 @@ export default function Alumni() {
 
   const [email, setEmail] = useState("");
 
+  const subscribeMutation = useMutation({
+    mutationFn: async (email: string) => {
+      return await apiRequest("POST", "/api/newsletter/subscribe", { email });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success!",
+        description: "You've joined our alumni network.",
+      });
+      setEmail("");
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to join network. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleJoinNetwork = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Join network with email:", email);
+    if (email) {
+      subscribeMutation.mutate(email);
+    }
   };
 
   return (
@@ -271,9 +297,10 @@ export default function Alumni() {
                   type="submit"
                   className="bg-[#D4A574] dark:bg-[#E5C4A0] text-white dark:text-black hover:bg-[#C49464] dark:hover:bg-[#D4B48A] whitespace-nowrap"
                   size="lg"
+                  disabled={subscribeMutation.isPending}
                   data-testid="button-join-network"
                 >
-                  Join Network
+                  {subscribeMutation.isPending ? "Joining..." : "Join Network"}
                 </Button>
               </form>
             </ScrollReveal>

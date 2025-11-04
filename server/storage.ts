@@ -72,6 +72,7 @@ export interface IStorage {
   getAllNewsletterSubscriptions(): Promise<NewsletterSubscription[]>;
   getNewsletterSubscription(email: string): Promise<NewsletterSubscription | undefined>;
   createNewsletterSubscription(subscription: InsertNewsletterSubscription): Promise<NewsletterSubscription>;
+  deleteNewsletterSubscription(id: string): Promise<boolean>;
   
   // Executive Members management
   getAllExecutiveMembers(): Promise<ExecutiveMember[]>;
@@ -359,6 +360,16 @@ export class MemStorage implements IStorage {
     this.newsletterSubscriptions.set(subscription.email, newSubscription);
     return newSubscription;
   }
+
+  async deleteNewsletterSubscription(id: string): Promise<boolean> {
+    for (const [email, subscription] of this.newsletterSubscriptions.entries()) {
+      if (subscription.id === id) {
+        this.newsletterSubscriptions.delete(email);
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 // Database storage using PostgreSQL
@@ -567,6 +578,11 @@ export class DbStorage implements IStorage {
   async createNewsletterSubscription(subscription: InsertNewsletterSubscription): Promise<NewsletterSubscription> {
     const result = await this.db.insert(newsletterSubscriptions).values(subscription).returning();
     return result[0];
+  }
+
+  async deleteNewsletterSubscription(id: string): Promise<boolean> {
+    const result = await this.db.delete(newsletterSubscriptions).where(eq(newsletterSubscriptions.id, id)).returning();
+    return result.length > 0;
   }
   
   // Executive Members management

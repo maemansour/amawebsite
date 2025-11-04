@@ -213,6 +213,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // DELETE newsletter subscription (admin only)
+  app.delete("/api/newsletter/subscriptions/:id", requireAuth, async (req, res) => {
+    try {
+      const deleted = await storage.deleteNewsletterSubscription(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Subscription not found" });
+      }
+      res.json({ message: "Subscription deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete subscription" });
+    }
+  });
+
   // ===== ADMIN AUTH ROUTES =====
   
   // POST login
