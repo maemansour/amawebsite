@@ -271,6 +271,7 @@ export const committeeConfigs = pgTable("committee_configs", {
   spotifyUrl: text("spotify_url"), // For podcast committee
   instagramUrl: text("instagram_url"), // For podcast committee
   youtubeUrl: text("youtube_url"), // For podcast committee
+  tiktokUrl: text("tiktok_url"), // For podcast committee
   displayOrder: integer("display_order").notNull().default(0), // For ordering on main committees page
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

@@ -3192,7 +3192,7 @@ function ManageCommittees() {
               {formData.slug === "podcast" && (
                 <div className="space-y-4 border-t pt-4">
                   <h3 className="font-semibold">Podcast-Specific Settings</h3>
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="spotifyUrl">Spotify URL</Label>
                       <Input
@@ -3224,6 +3224,17 @@ function ManageCommittees() {
                         onChange={(e) => setFormData({ ...formData, youtubeUrl: e.target.value })}
                         placeholder="https://youtube.com/..."
                         data-testid="input-youtube-url"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="tiktokUrl">TikTok URL</Label>
+                      <Input
+                        id="tiktokUrl"
+                        type="url"
+                        value={formData.tiktokUrl || ""}
+                        onChange={(e) => setFormData({ ...formData, tiktokUrl: e.target.value })}
+                        placeholder="https://tiktok.com/@..."
+                        data-testid="input-tiktok-url"
                       />
                     </div>
                   </div>

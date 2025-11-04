@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { ArrowLeft, Mic2, Users, Lightbulb, TrendingUp, Heart, Headphones, Target, Music, Instagram, Youtube } from "lucide-react";
+import { ArrowLeft, Mic2, Users, Lightbulb, TrendingUp, Heart, Headphones, Target, Music, Instagram, Youtube, Video } from "lucide-react";
 import { SiSpotify, SiInstagram, SiYoutube, SiTiktok } from "react-icons/si";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -230,7 +230,7 @@ export default function PodcastCommittee() {
               </div>
             </ScrollReveal>
 
-            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
               {committeeConfig?.spotifyUrl && (
                 <ScrollReveal delay={0.1}>
                   <Card className="p-6 text-center h-full flex flex-col" data-testid="card-platform-spotify">
@@ -303,6 +303,32 @@ export default function PodcastCommittee() {
                       >
                         <a href={committeeConfig.youtubeUrl} target="_blank" rel="noopener noreferrer">
                           Subscribe on YouTube
+                        </a>
+                      </Button>
+                    </div>
+                  </Card>
+                </ScrollReveal>
+              )}
+              {committeeConfig?.tiktokUrl && (
+                <ScrollReveal delay={0.4}>
+                  <Card className="p-6 text-center h-full flex flex-col" data-testid="card-platform-tiktok">
+                    <div className="mb-4">
+                      <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center mb-4">
+                        <Video className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                      <h3 className="text-xl font-bold mb-3" data-testid="text-platform-name-tiktok">TikTok</h3>
+                      <p className="text-sm text-muted-foreground mb-6" data-testid="text-platform-desc-tiktok">
+                        Watch short clips and highlights on TikTok
+                      </p>
+                    </div>
+                    <div className="mt-auto">
+                      <Button
+                        className="w-full bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 dark:text-black text-white border-black dark:border-white"
+                        asChild
+                        data-testid="button-tiktok"
+                      >
+                        <a href={committeeConfig.tiktokUrl} target="_blank" rel="noopener noreferrer">
+                          Follow on TikTok
                         </a>
                       </Button>
                     </div>
