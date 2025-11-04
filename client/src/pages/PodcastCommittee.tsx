@@ -270,47 +270,60 @@ export default function PodcastCommittee() {
         </section>
 
         {/* Listen & Follow Section */}
-        <section className="py-16 md:py-20 bg-background" data-testid="section-platforms">
+        <section className="py-12 md:py-16 bg-background" data-testid="section-platforms">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <ScrollReveal direction="up">
-              <div className="text-center mb-12">
+              <div className="text-center mb-8">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4" data-testid="heading-listen-follow">
                   Listen & Follow
                 </h2>
-                <p className="text-lg text-muted-foreground" data-testid="text-platforms-subtitle">
+                <p className="text-lg text-muted-foreground mb-8" data-testid="text-platforms-subtitle">
                   Connect with us across all platforms
                 </p>
+                
+                <div className="flex flex-wrap gap-4 justify-center">
+                  {committeeConfig?.spotifyUrl && (
+                    <Button
+                      size="lg"
+                      className="bg-[#1DB954] hover:bg-[#1ED760] dark:bg-[#1DB954] dark:hover:bg-[#1ED760] text-white border-[#1DB954] dark:border-[#1DB954]"
+                      asChild
+                      data-testid="button-spotify"
+                    >
+                      <a href={committeeConfig.spotifyUrl} target="_blank" rel="noopener noreferrer">
+                        <SiSpotify className="w-5 h-5 mr-2" />
+                        Listen on Spotify
+                      </a>
+                    </Button>
+                  )}
+                  {committeeConfig?.youtubeUrl && (
+                    <Button
+                      size="lg"
+                      className="bg-[#FF0000] hover:bg-[#CC0000] dark:bg-[#FF0000] dark:hover:bg-[#CC0000] text-white border-[#FF0000] dark:border-[#FF0000]"
+                      asChild
+                      data-testid="button-youtube"
+                    >
+                      <a href={committeeConfig.youtubeUrl} target="_blank" rel="noopener noreferrer">
+                        <SiYoutube className="w-5 h-5 mr-2" />
+                        Watch on YouTube
+                      </a>
+                    </Button>
+                  )}
+                  {committeeConfig?.instagramUrl && (
+                    <Button
+                      size="lg"
+                      className="bg-gradient-to-r from-[#833AB4] via-[#E1306C] to-[#F77737] hover:opacity-90 dark:opacity-100 dark:hover:opacity-90 text-white border-[#E1306C] dark:border-[#E1306C]"
+                      asChild
+                      data-testid="button-instagram"
+                    >
+                      <a href={committeeConfig.instagramUrl} target="_blank" rel="noopener noreferrer">
+                        <SiInstagram className="w-5 h-5 mr-2" />
+                        Follow on Instagram
+                      </a>
+                    </Button>
+                  )}
+                </div>
               </div>
             </ScrollReveal>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {platforms.map((platform, index) => (
-                <ScrollReveal key={index} delay={index * 0.1}>
-                  <Card className="p-6 text-center h-full flex flex-col" data-testid={`card-platform-${index}`}>
-                    <div className="mb-4">
-                      <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center mb-4">
-                        <platform.icon className="w-8 h-8 text-muted-foreground" />
-                      </div>
-                      <h3 className="text-xl font-bold mb-3" data-testid={`text-platform-name-${index}`}>{platform.name}</h3>
-                      <p className="text-sm text-muted-foreground mb-6" data-testid={`text-platform-desc-${index}`}>
-                        {platform.description}
-                      </p>
-                    </div>
-                    <div className="mt-auto">
-                      <Button
-                        className={`w-full ${platform.buttonColor}`}
-                        asChild
-                        data-testid={`button-platform-${index}`}
-                      >
-                        <a href={platform.url || "#"} target={platform.url ? "_blank" : undefined} rel={platform.url ? "noopener noreferrer" : undefined}>
-                          {platform.buttonText}
-                        </a>
-                      </Button>
-                    </div>
-                  </Card>
-                </ScrollReveal>
-              ))}
-            </div>
           </div>
         </section>
 
