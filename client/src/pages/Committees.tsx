@@ -319,14 +319,9 @@ export default function Committees() {
               <p className="text-lg text-primary-foreground/90 mb-8 max-w-2xl mx-auto" data-testid="text-cta-description">
                 Join a committee today and start building the skills, network, and experience that will set you apart in your career.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90" data-testid="button-apply-now">
-                  Apply Now
-                </Button>
-                <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10" data-testid="button-learn-more-cta">
-                  Learn More
-                </Button>
-              </div>
+              <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90" data-testid="button-apply-now">
+                Apply Now
+              </Button>
             </ScrollReveal>
           </div>
         </section>
