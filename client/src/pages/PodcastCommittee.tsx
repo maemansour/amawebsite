@@ -217,60 +217,99 @@ export default function PodcastCommittee() {
         </section>
 
         {/* Listen & Follow Section */}
-        <section className="py-12 md:py-16 bg-background" data-testid="section-platforms">
+        <section className="py-16 md:py-20 bg-background" data-testid="section-platforms">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <ScrollReveal direction="up">
-              <div className="text-center mb-8">
+              <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4" data-testid="heading-listen-follow">
                   Listen & Follow
                 </h2>
-                <p className="text-lg text-muted-foreground mb-8" data-testid="text-platforms-subtitle">
+                <p className="text-lg text-muted-foreground" data-testid="text-platforms-subtitle">
                   Connect with us across all platforms
                 </p>
-                
-                <div className="flex flex-wrap gap-4 justify-center">
-                  {committeeConfig?.spotifyUrl && (
-                    <Button
-                      size="lg"
-                      className="bg-[#1DB954] hover:bg-[#1ED760] dark:bg-[#1DB954] dark:hover:bg-[#1ED760] text-white border-[#1DB954] dark:border-[#1DB954]"
-                      asChild
-                      data-testid="button-spotify"
-                    >
-                      <a href={committeeConfig.spotifyUrl} target="_blank" rel="noopener noreferrer">
-                        <SiSpotify className="w-5 h-5 mr-2" />
-                        Listen on Spotify
-                      </a>
-                    </Button>
-                  )}
-                  {committeeConfig?.youtubeUrl && (
-                    <Button
-                      size="lg"
-                      className="bg-[#FF0000] hover:bg-[#CC0000] dark:bg-[#FF0000] dark:hover:bg-[#CC0000] text-white border-[#FF0000] dark:border-[#FF0000]"
-                      asChild
-                      data-testid="button-youtube"
-                    >
-                      <a href={committeeConfig.youtubeUrl} target="_blank" rel="noopener noreferrer">
-                        <SiYoutube className="w-5 h-5 mr-2" />
-                        Watch on YouTube
-                      </a>
-                    </Button>
-                  )}
-                  {committeeConfig?.instagramUrl && (
-                    <Button
-                      size="lg"
-                      className="bg-gradient-to-r from-[#833AB4] via-[#E1306C] to-[#F77737] hover:opacity-90 dark:opacity-100 dark:hover:opacity-90 text-white border-[#E1306C] dark:border-[#E1306C]"
-                      asChild
-                      data-testid="button-instagram"
-                    >
-                      <a href={committeeConfig.instagramUrl} target="_blank" rel="noopener noreferrer">
-                        <SiInstagram className="w-5 h-5 mr-2" />
-                        Follow on Instagram
-                      </a>
-                    </Button>
-                  )}
-                </div>
               </div>
             </ScrollReveal>
+
+            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {committeeConfig?.spotifyUrl && (
+                <ScrollReveal delay={0.1}>
+                  <Card className="p-6 text-center h-full flex flex-col" data-testid="card-platform-spotify">
+                    <div className="mb-4">
+                      <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center mb-4">
+                        <Music className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                      <h3 className="text-xl font-bold mb-3" data-testid="text-platform-name-spotify">Spotify</h3>
+                      <p className="text-sm text-muted-foreground mb-6" data-testid="text-platform-desc-spotify">
+                        Listen to all episodes on Spotify and other podcast platforms
+                      </p>
+                    </div>
+                    <div className="mt-auto">
+                      <Button
+                        className="w-full bg-[#1DB954] hover:bg-[#1ED760] dark:bg-[#1DB954] dark:hover:bg-[#1ED760] text-white border-[#1DB954] dark:border-[#1DB954]"
+                        asChild
+                        data-testid="button-spotify"
+                      >
+                        <a href={committeeConfig.spotifyUrl} target="_blank" rel="noopener noreferrer">
+                          Listen on Spotify
+                        </a>
+                      </Button>
+                    </div>
+                  </Card>
+                </ScrollReveal>
+              )}
+              {committeeConfig?.instagramUrl && (
+                <ScrollReveal delay={0.2}>
+                  <Card className="p-6 text-center h-full flex flex-col" data-testid="card-platform-instagram">
+                    <div className="mb-4">
+                      <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center mb-4">
+                        <Instagram className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                      <h3 className="text-xl font-bold mb-3" data-testid="text-platform-name-instagram">Instagram</h3>
+                      <p className="text-sm text-muted-foreground mb-6" data-testid="text-platform-desc-instagram">
+                        Follow us on Instagram for behind-the-scenes content and updates
+                      </p>
+                    </div>
+                    <div className="mt-auto">
+                      <Button
+                        className="w-full bg-gradient-to-r from-[#833AB4] via-[#E1306C] to-[#F77737] hover:opacity-90 dark:opacity-100 dark:hover:opacity-90 text-white border-[#E1306C] dark:border-[#E1306C]"
+                        asChild
+                        data-testid="button-instagram"
+                      >
+                        <a href={committeeConfig.instagramUrl} target="_blank" rel="noopener noreferrer">
+                          Follow on Instagram
+                        </a>
+                      </Button>
+                    </div>
+                  </Card>
+                </ScrollReveal>
+              )}
+              {committeeConfig?.youtubeUrl && (
+                <ScrollReveal delay={0.3}>
+                  <Card className="p-6 text-center h-full flex flex-col" data-testid="card-platform-youtube">
+                    <div className="mb-4">
+                      <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center mb-4">
+                        <Youtube className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                      <h3 className="text-xl font-bold mb-3" data-testid="text-platform-name-youtube">YouTube</h3>
+                      <p className="text-sm text-muted-foreground mb-6" data-testid="text-platform-desc-youtube">
+                        Subscribe and watch video episodes on YouTube
+                      </p>
+                    </div>
+                    <div className="mt-auto">
+                      <Button
+                        className="w-full bg-[#FF0000] hover:bg-[#CC0000] dark:bg-[#FF0000] dark:hover:bg-[#CC0000] text-white border-[#FF0000] dark:border-[#FF0000]"
+                        asChild
+                        data-testid="button-youtube"
+                      >
+                        <a href={committeeConfig.youtubeUrl} target="_blank" rel="noopener noreferrer">
+                          Subscribe on YouTube
+                        </a>
+                      </Button>
+                    </div>
+                  </Card>
+                </ScrollReveal>
+              )}
+            </div>
           </div>
         </section>
 
