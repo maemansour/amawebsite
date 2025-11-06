@@ -50,6 +50,8 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updatePassword(userId: string, newPassword: string): Promise<boolean>;
+  verifyPassword(username: string, password: string): Promise<boolean>;
 
   // Settings management
   getSettings(): Promise<Settings | undefined>;
@@ -265,6 +267,20 @@ export class MemStorage implements IStorage {
     const user: User = { ...insertUser, id };
     this.users.set(id, user);
     return user;
+  }
+
+  async updatePassword(userId: string, newPassword: string): Promise<boolean> {
+    const user = this.users.get(userId);
+    if (!user) return false;
+    user.password = newPassword; // In memory storage - not hashed for simplicity
+    this.users.set(userId, user);
+    return true;
+  }
+
+  async verifyPassword(username: string, password: string): Promise<boolean> {
+    const user = await this.getUserByUsername(username);
+    if (!user) return false;
+    return user.password === password; // Simple comparison for in-memory
   }
 
   // Settings methods
@@ -494,6 +510,21 @@ export class DbStorage implements IStorage {
     const user = await this.getUserByUsername(username);
     if (!user) return false;
     return await bcrypt.compare(password, user.password);
+  }
+
+  async updatePassword(userId: string, newPassword: string): Promise<boolean> {
+    try {
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const result = await this.db
+        .update(users)
+        .set({ password: hashedPassword })
+        .where(eq(users.id, userId))
+        .returning();
+      return result.length > 0;
+    } catch (error) {
+      console.error("Error updating password:", error);
+      return false;
+    }
   }
 
   // Settings methods
