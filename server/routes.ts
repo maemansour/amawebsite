@@ -274,6 +274,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // POST change password (admin only)
+  app.post("/api/admin/change-password", requireAuth, async (req, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      const userId = req.session.userId;
+
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Current password and new password are required" });
+      }
+
+      if (newPassword.length < 6) {
+        return res.status(400).json({ message: "New password must be at least 6 characters" });
+      }
+
+      // Get the user to verify current password
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Verify current password
+      const isValid = await storage.verifyPassword(user.username, currentPassword);
+      if (!isValid) {
+        return res.status(401).json({ message: "Current password is incorrect" });
+      }
+
+      // Update to new password
+      const success = await storage.updatePassword(userId, newPassword);
+      if (!success) {
+        return res.status(500).json({ message: "Failed to update password" });
+      }
+
+      res.json({ message: "Password updated successfully" });
+    } catch (error) {
+      console.error("Error changing password:", error);
+      res.status(500).json({ message: "Failed to change password" });
+    }
+  });
+
   // ===== OBJECT STORAGE ROUTES =====
   // Referenced from blueprint:javascript_object_storage
   
