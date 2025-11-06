@@ -12,7 +12,8 @@ import {
   Users,
   GripVertical,
   Pencil,
-  Mail
+  Mail,
+  Key
 } from "lucide-react";
 import {
   DndContext,
@@ -112,7 +113,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-10 max-w-7xl" data-testid="tabs-admin">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-11 max-w-7xl" data-testid="tabs-admin">
             <TabsTrigger value="general" data-testid="tab-general">
               <SettingsIcon className="h-4 w-4 mr-2" />
               General Settings
@@ -152,6 +153,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="email-list" data-testid="tab-email-list">
               <Mail className="h-4 w-4 mr-2" />
               Email List
+            </TabsTrigger>
+            <TabsTrigger value="password" data-testid="tab-password">
+              <Key className="h-4 w-4 mr-2" />
+              Password
             </TabsTrigger>
           </TabsList>
 
@@ -193,6 +198,10 @@ export default function AdminDashboard() {
 
           <TabsContent value="email-list">
             <ManageEmailList />
+          </TabsContent>
+
+          <TabsContent value="password">
+            <PasswordChange />
           </TabsContent>
         </Tabs>
       </div>
@@ -3901,6 +3910,135 @@ function ManageEmailList() {
               ))}
             </div>
           )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function PasswordChange() {
+  const { toast } = useToast();
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const changePasswordMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest("POST", "/api/admin/change-password", {
+        currentPassword,
+        newPassword,
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Password Changed",
+        description: "Your password has been updated successfully.",
+      });
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to change password. Please check your current password.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      toast({
+        title: "Error",
+        description: "All fields are required.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: "Error",
+        description: "New passwords do not match.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      toast({
+        title: "Error",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    changePasswordMutation.mutate();
+  };
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Change Password</CardTitle>
+          <CardDescription>
+            Update your admin password. Make sure to use a strong password.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
+            <div>
+              <Label htmlFor="current-password">Current Password</Label>
+              <Input
+                id="current-password"
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder="Enter current password"
+                data-testid="input-current-password"
+                disabled={changePasswordMutation.isPending}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="new-password">New Password</Label>
+              <Input
+                id="new-password"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Enter new password (min. 6 characters)"
+                data-testid="input-new-password"
+                disabled={changePasswordMutation.isPending}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="confirm-password">Confirm New Password</Label>
+              <Input
+                id="confirm-password"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Re-enter new password"
+                data-testid="input-confirm-password"
+                disabled={changePasswordMutation.isPending}
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={changePasswordMutation.isPending}
+              data-testid="button-change-password"
+            >
+              <Key className="h-4 w-4 mr-2" />
+              {changePasswordMutation.isPending ? "Changing Password..." : "Change Password"}
+            </Button>
+          </form>
         </CardContent>
       </Card>
     </div>
