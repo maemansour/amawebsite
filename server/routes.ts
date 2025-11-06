@@ -24,7 +24,24 @@ declare module "express-session" {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Session configuration
+  // Session configuration with PostgreSQL store
+  const PgSession = connectPgSimple(session);
+  const sql = neon(process.env.DATABASE_URL!);
+  
+  // Create session table if it doesn't exist
+  await sql`
+    CREATE TABLE IF NOT EXISTS "session" (
+      "sid" varchar NOT NULL COLLATE "default",
+      "sess" json NOT NULL,
+      "expire" timestamp(6) NOT NULL,
+      PRIMARY KEY ("sid")
+    );
+  `;
+  
+  await sql`
+    CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "session" ("expire");
+  `;
+  
   // On Replit deployments, check for REPLIT_DEPLOYMENT or if we're using HTTPS
   const isDeployed = process.env.REPLIT_DEPLOYMENT === '1' || 
                      process.env.NODE_ENV === "production" ||
@@ -32,6 +49,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.use(
     session({
+      store: new PgSession({
+        conString: process.env.DATABASE_URL,
+        createTableIfMissing: false, // We already created it above
+      }),
       secret: process.env.SESSION_SECRET || "ama-sdsu-secret-key-change-in-production",
       resave: false,
       saveUninitialized: false,
