@@ -56,10 +56,11 @@ export default function AdminDashboard() {
   });
 
   // Redirect if not authenticated
-  if (authStatus && !authStatus.authenticated) {
-    setLocation("/admin");
-    return null;
-  }
+  useEffect(() => {
+    if (authStatus && !authStatus.authenticated) {
+      setLocation("/admin");
+    }
+  }, [authStatus, setLocation]);
 
   const handleLogout = async () => {
     try {
