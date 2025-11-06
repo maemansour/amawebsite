@@ -23,13 +23,18 @@ declare module "express-session" {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Session configuration
+  // On Replit deployments, check for REPLIT_DEPLOYMENT or if we're using HTTPS
+  const isDeployed = process.env.REPLIT_DEPLOYMENT === '1' || 
+                     process.env.NODE_ENV === "production" ||
+                     process.env.REPL_SLUG !== undefined;
+  
   app.use(
     session({
       secret: process.env.SESSION_SECRET || "ama-sdsu-secret-key-change-in-production",
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: process.env.NODE_ENV === "production",
+        secure: isDeployed,
         httpOnly: true,
         sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
