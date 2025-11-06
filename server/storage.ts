@@ -151,11 +151,11 @@ export class MemStorage implements IStorage {
     this.newsletterSubscriptions = new Map();
     
     // Initialize with default admin user (password: admin123)
-    // In production, this should be hashed properly
+    // Note: For development only - production uses DbStorage with proper hashing
     this.users.set("admin", {
       id: "admin",
       username: "admin",
-      password: "admin123" // In production, use bcrypt
+      password: "admin123"
     });
     
     // Initialize with default settings
@@ -272,7 +272,8 @@ export class MemStorage implements IStorage {
   async updatePassword(userId: string, newPassword: string): Promise<boolean> {
     const user = this.users.get(userId);
     if (!user) return false;
-    user.password = newPassword; // In memory storage - not hashed for simplicity
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
     this.users.set(userId, user);
     return true;
   }
@@ -280,7 +281,12 @@ export class MemStorage implements IStorage {
   async verifyPassword(username: string, password: string): Promise<boolean> {
     const user = await this.getUserByUsername(username);
     if (!user) return false;
-    return user.password === password; // Simple comparison for in-memory
+    // Check if password is hashed (bcrypt hashes start with $2)
+    if (user.password.startsWith('$2')) {
+      return await bcrypt.compare(password, user.password);
+    }
+    // Fallback for plaintext (development seed data only)
+    return user.password === password;
   }
 
   // Settings methods
