@@ -1,6 +1,8 @@
 import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
+import { neon } from "@neondatabase/serverless";
 import { z } from "zod";
 import { storage } from "./storage";
 import { 
