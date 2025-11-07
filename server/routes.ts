@@ -30,9 +30,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const isProduction = process.env.NODE_ENV === "production";
   const useSecureCookies = isReplitDeployment || isProduction;
   
+  console.log("[SESSION CONFIG] Environment detection:");
+  console.log("  - REPL_ID exists:", !!process.env.REPL_ID);
+  console.log("  - NODE_ENV:", process.env.NODE_ENV);
+  console.log("  - isReplitDeployment:", isReplitDeployment);
+  console.log("  - useSecureCookies:", useSecureCookies);
+  console.log("  - DATABASE_URL exists:", !!process.env.DATABASE_URL);
+  
   const PgSession = connectPgSimple(session);
   
-  // Create PostgreSQL session store
+  // Create PostgreSQL session store with error handling
   const sessionStore = new PgSession({
     conObject: {
       connectionString: process.env.DATABASE_URL,
@@ -40,6 +47,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     },
     tableName: 'session', // Session table name
     createTableIfMissing: true, // Auto-create session table
+  });
+  
+  // Add error handler for session store
+  sessionStore.on('error', (error) => {
+    console.error("[SESSION STORE] Error:", error);
+  });
+  
+  sessionStore.on('connect', () => {
+    console.log("[SESSION STORE] Successfully connected to PostgreSQL");
   });
   
   app.use(

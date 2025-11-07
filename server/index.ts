@@ -5,6 +5,10 @@ import { storage } from "./storage";
 
 const app = express();
 
+// Trust Replit's proxy for secure cookies to work correctly
+// This is CRITICAL for session cookies to work in deployed Replit apps
+app.set('trust proxy', 1);
+
 declare module 'http' {
   interface IncomingMessage {
     rawBody: unknown
