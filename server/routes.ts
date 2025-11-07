@@ -25,7 +25,11 @@ declare module "express-session" {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Session configuration with PostgreSQL-backed storage
+  // Detect if we're on a deployed Replit site (uses HTTPS) or truly in local dev
+  const isReplitDeployment = process.env.REPL_ID !== undefined;
   const isProduction = process.env.NODE_ENV === "production";
+  const useSecureCookies = isReplitDeployment || isProduction;
+  
   const PgSession = connectPgSimple(session);
   
   // Create PostgreSQL session store
@@ -45,7 +49,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: isProduction, // Only require HTTPS in production
+        secure: useSecureCookies, // Use secure cookies on Replit deployments and production
         httpOnly: true,
         sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
