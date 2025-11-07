@@ -276,6 +276,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.json({ message: "Login successful", user: { id: user.id, username: user.username } });
       });
     } catch (error) {
+      console.error("Login error:", error);
       res.status(500).json({ message: "Login failed" });
     }
   });
