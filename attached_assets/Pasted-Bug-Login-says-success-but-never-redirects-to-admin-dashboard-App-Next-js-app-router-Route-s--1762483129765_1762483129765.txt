@@ -1,0 +1,140 @@
+Bug: Login says “success” but never redirects to admin dashboard
+
+App: Next.js (app router)
+Route(s): /admin/login (login page) → /admin (admin dashboard)
+Hosting/Dev: Replit (also reproducible on Vercel)
+
+What I see
+
+I enter username/password on /admin/login.
+
+A toast appears: “Login successful, redirecting to admin dashboard…”
+
+But I stay on the login screen forever (no redirect happens).
+
+Expected
+
+After successful login, navigate to /admin and show the admin dashboard.
+
+Repro
+
+Open /admin/login
+
+Fill in credentials → submit
+
+Toast says success, but the page doesn’t change
+
+Likely cause
+
+There’s a mismatch between the login page and the admin page’s auth check and/or the client navigation:
+
+The login page likely isn’t doing a client-side redirect (e.g., missing e.preventDefault(), using the wrong router, or not a "use client" component).
+
+Or it sets one auth mechanism (e.g., cookie) while /admin checks another (e.g., sessionStorage), so the dashboard never thinks I’m logged in.
+
+Two acceptable fixes (pick one)
+✅ Fix Option A (simplest): No-redirect, store a session flag and render dashboard immediately
+
+Make /admin/page.tsx self-contained using sessionStorage:
+
+"use client"
+import { useEffect } from "react"
+// ...existing imports
+
+export default function AdminPage() {
+  // existing state...
+  useEffect(() => {
+    if (sessionStorage.getItem("adminAuthed") === "1") {
+      setIsAuthenticated(true)
+    }
+  }, [])
+
+  const handleLogin = async () => {
+    if (password === (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123")) {
+      sessionStorage.setItem("adminAuthed", "1")
+      setIsAuthenticated(true)
+      setPassword("")
+      await loadData()
+    } else {
+      alert("Incorrect password")
+    }
+  }
+
+  // optional logout somewhere:
+  // <Button onClick={() => { sessionStorage.removeItem("adminAuthed"); setIsAuthenticated(false) }}>Logout</Button>
+
+  // rest of the component unchanged
+}
+
+
+Why this works: No separate /admin/login page or redirect is needed. The same page flips from login → dashboard as soon as the flag is set.
+
+✅ Fix Option B (keep separate login page): Use cookie + client router and protect /admin with middleware
+
+Ensure the login page is a client component, prevents default submit, sets a cookie, and navigates with next/navigation:
+
+// app/admin/login/page.tsx
+"use client"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+
+export default function AdminLogin() {
+  const [user, setUser] = useState("")
+  const [password, setPassword] = useState("")
+  const router = useRouter()
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault()                 // prevent full refresh
+    const ok = password === (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123")
+    if (!ok) return alert("Incorrect password")
+
+    document.cookie = "admin=1; Path=/; Max-Age=86400; SameSite=Lax"
+    router.replace("/admin")           // or window.location.assign("/admin")
+  }
+
+  return (
+    <form onSubmit={onSubmit}>
+      {/* inputs and button */}
+    </form>
+  )
+}
+
+
+Add middleware to guard /admin:
+
+// middleware.ts
+import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
+
+export function middleware(req: NextRequest) {
+  if (req.nextUrl.pathname.startsWith("/admin")) {
+    const authed = req.cookies.get("admin")?.value === "1"
+    if (!authed && !req.nextUrl.pathname.startsWith("/admin/login")) {
+      return NextResponse.redirect(new URL("/admin/login", req.url))
+    }
+  }
+  return NextResponse.next()
+}
+
+export const config = { matcher: ["/admin/:path*"] }
+
+
+Key gotchas this fixes:
+
+Using next/router in app directory (should be next/navigation)
+
+Missing e.preventDefault() → browser reload cancels SPA redirect
+
+Login writing to localStorage/sessionStorage while /admin expects a cookie (or vice-versa)
+
+Login page not marked "use client" so the router never fires
+
+Acceptance criteria
+
+Submitting valid credentials on /admin/login always lands me on /admin
+
+Refreshing /admin keeps me logged in (until cookie/session expires)
+
+Invalid credentials keep me on the login page with an error
+
+If you prefer Option A or B, apply that one across the codebase and remove any leftover conflicting auth checks.
