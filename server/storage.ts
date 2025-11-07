@@ -412,6 +412,15 @@ export class DbStorage implements IStorage {
         username: "admin",
         password: "AMA@SDSU2024!"
       });
+    } else {
+      // Admin user exists - update password to ensure it's the correct one
+      // This handles cases where production was deployed with old password
+      const newPasswordHash = await bcrypt.hash("AMA@SDSU2024!", 10);
+      await this.db
+        .update(users)
+        .set({ password: newPasswordHash })
+        .where(eq(users.username, "admin"));
+      console.log("Admin password updated to current standard");
     }
 
     // Initialize default settings if they don't exist
