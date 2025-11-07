@@ -410,7 +410,7 @@ export class DbStorage implements IStorage {
       // createUser() will hash the password, so pass plaintext here
       await this.createUser({
         username: "admin",
-        password: "admin123"
+        password: "AMA@SDSU2024!"
       });
     }
 
