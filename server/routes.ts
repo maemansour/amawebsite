@@ -27,9 +27,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Session configuration
   // Note: Using default memory store for development
   // For production with multiple instances, consider using a database-backed store
-  const isDeployed = process.env.REPLIT_DEPLOYMENT === '1' || 
-                     process.env.NODE_ENV === "production" ||
-                     process.env.REPL_SLUG !== undefined;
+  const isProduction = process.env.NODE_ENV === "production";
   
   app.use(
     session({
@@ -37,7 +35,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: isDeployed,
+        secure: isProduction, // Only require HTTPS in production
         httpOnly: true,
         sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
