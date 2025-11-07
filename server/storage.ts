@@ -136,7 +136,9 @@ export interface IStorage {
   deleteCommitteeConfig(slug: string): Promise<boolean>;
 }
 
-export class MemStorage implements IStorage {
+// MemStorage is kept for reference but not used in production
+// The app uses DbStorage with PostgreSQL
+export class MemStorage {
   private users: Map<string, User>;
   private settings: Settings | null;
   private events: Map<string, Event>;
@@ -158,17 +160,17 @@ export class MemStorage implements IStorage {
       password: "admin123"
     });
     
-    // Initialize with default settings
+    // Initialize with default settings (MemStorage not used in production)
     this.settings = {
       id: "default",
-      heroDescription: "Aiming to educate and empower young professionals looking to break into the marketing, sales, and advertising industries. At SDSU AMA we accomplish this through weekly meetings with industry professional guest speakers and elite marketing company and agency tours. We promote growth and learning through case studies, workshops, and events. Open to SDSU students of all majors and invites you to connect with our fAMAly!",
+      heroDescription: "Aiming to educate and empower young professionals looking to break into the marketing, sales, and advertising industries.",
       memberCount: 280,
       meetingDay: "Tuesday",
       meetingTime: "5:00 PM",
       meetingLocation: "On Campus",
       meetingRoom: "Varies",
       meetingSemester: "Fall & Spring Semesters",
-      joinLink: "https://docs.google.com/forms/d/e/1FAIpQLSe...",
+      joinLink: "",
       instagramLink: "https://www.instagram.com/sdsuama/",
       instagramUsername: "@sdsuama",
       instagramFollowers: "2,774 followers",
@@ -176,8 +178,37 @@ export class MemStorage implements IStorage {
       linkedinUsername: "AMA San Diego State",
       tiktokLink: "https://www.tiktok.com/@sdsuama",
       tiktokUsername: "@sdsuama",
-      spotifyLink: "https://open.spotify.com/show/2LsTf0B9ohPZ",
-      email: "membership.sdsuama@gmail.com"
+      spotifyLink: "",
+      email: "membership.sdsuama@gmail.com",
+      ourChapterHeroImage: "",
+      ourChapterMissionImage: "",
+      ourChapterWhyChooseImage: "",
+      ourChapterServicesImage: "",
+      familyImage: "",
+      executiveBoardHeroImage: "",
+      executiveBoardCaption: "",
+      sponsorsHeroImage: "",
+      sponsorsPartnerImage1: "",
+      sponsorsPartnerImage2: "",
+      committeesImage: "",
+      committeesWhyJoinImage: "",
+      consultingTeamImage: "",
+      consultingMissionImage: "",
+      consultingApplyLink: "",
+      membershipHeroImage: "",
+      membershipEngagementImage: "",
+      semesterPrice: "49",
+      yearPrice: "49",
+      joinNowLink: "",
+      calendarSubscribeUrl: "",
+      podcastHeroImage: "",
+      podcastIndustryImage: "",
+      podcastCreativeImage: "",
+      podcastSpotifyUrl: "",
+      podcastYoutubeUrl: "",
+      podcastInstagramUrl: "",
+      podcastApplyLink: "",
+      podcastEmail: "podcast.sdsuama@gmail.com"
     };
     
     // Initialize with sample events
@@ -295,10 +326,12 @@ export class MemStorage implements IStorage {
   }
 
   async updateSettings(settings: InsertSettings): Promise<Settings> {
+    // Merge with existing settings to ensure all required fields are present
     const updated: Settings = {
-      id: this.settings?.id || "default",
-      ...settings
-    };
+      ...(this.settings || {}),
+      ...settings,
+      id: this.settings?.id || "default"
+    } as Settings;
     this.settings = updated;
     return updated;
   }
@@ -384,7 +417,7 @@ export class MemStorage implements IStorage {
   }
 
   async deleteNewsletterSubscription(id: string): Promise<boolean> {
-    for (const [email, subscription] of this.newsletterSubscriptions.entries()) {
+    for (const [email, subscription] of Array.from(this.newsletterSubscriptions.entries())) {
       if (subscription.id === id) {
         this.newsletterSubscriptions.delete(email);
         return true;
