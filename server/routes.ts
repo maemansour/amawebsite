@@ -51,7 +51,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       cookie: {
         secure: useSecureCookies, // Use secure cookies on Replit deployments and production
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: useSecureCookies ? 'none' : 'lax', // Use 'none' for HTTPS deployments to allow cookies during redirects
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
       },
     })
@@ -254,6 +254,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { username, password } = req.body;
       
+      console.log("[LOGIN] Attempt for username:", username);
+      console.log("[LOGIN] Request headers:", req.headers);
+      
       if (!username || !password) {
         return res.status(400).json({ message: "Username and password required" });
       }
@@ -261,26 +264,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const isValid = await storage.verifyPassword(username, password);
       
       if (!isValid) {
+        console.log("[LOGIN] Invalid credentials for:", username);
         return res.status(401).json({ message: "Invalid credentials" });
       }
       
       const user = await storage.getUserByUsername(username);
       if (!user) {
+        console.log("[LOGIN] User not found:", username);
         return res.status(401).json({ message: "Invalid credentials" });
       }
       
       req.session.userId = user.id;
       
+      console.log("[LOGIN] Session ID before save:", req.sessionID);
+      console.log("[LOGIN] Session data before save:", req.session);
+      
       // Explicitly save the session before sending response
       req.session.save((err) => {
         if (err) {
-          console.error("Session save error:", err);
+          console.error("[LOGIN] Session save error:", err);
           return res.status(500).json({ message: "Session save failed" });
         }
+        
+        console.log("[LOGIN] Session saved successfully!");
+        console.log("[LOGIN] Session ID:", req.sessionID);
+        console.log("[LOGIN] Session userId:", req.session.userId);
+        console.log("[LOGIN] Response headers:", res.getHeaders());
+        
         res.json({ message: "Login successful", user: { id: user.id, username: user.username } });
       });
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("[LOGIN] Login error:", error);
       res.status(500).json({ message: "Login failed" });
     }
   });
@@ -297,9 +311,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // GET auth status
   app.get("/api/admin/status", (req, res) => {
+    console.log("[AUTH STATUS] Request received");
+    console.log("[AUTH STATUS] Session ID:", req.sessionID);
+    console.log("[AUTH STATUS] Session data:", req.session);
+    console.log("[AUTH STATUS] Session userId:", req.session.userId);
+    console.log("[AUTH STATUS] Cookies:", req.headers.cookie);
+    
     if (req.session.userId) {
+      console.log("[AUTH STATUS] Authenticated: true");
       res.json({ authenticated: true, userId: req.session.userId });
     } else {
+      console.log("[AUTH STATUS] Authenticated: false");
       res.json({ authenticated: false });
     }
   });
