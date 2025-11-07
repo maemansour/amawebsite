@@ -258,12 +258,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       req.session.userId = user.id;
+      console.log("Login - setting session userId:", user.id, "sessionID:", req.sessionID);
       
       // Explicitly save the session before sending response
       req.session.save((err) => {
         if (err) {
+          console.error("Session save error:", err);
           return res.status(500).json({ message: "Session save failed" });
         }
+        console.log("Session saved successfully, userId:", req.session.userId);
         res.json({ message: "Login successful", user: { id: user.id, username: user.username } });
       });
     } catch (error) {
@@ -283,6 +286,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // GET auth status
   app.get("/api/admin/status", (req, res) => {
+    console.log("Session check:", {
+      sessionID: req.sessionID,
+      session: req.session,
+      userId: req.session?.userId,
+      cookie: req.session?.cookie
+    });
     if (req.session.userId) {
       res.json({ authenticated: true, userId: req.session.userId });
     } else {
