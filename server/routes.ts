@@ -24,13 +24,23 @@ declare module "express-session" {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Session configuration
-  // Note: Using default memory store for development
-  // For production with multiple instances, consider using a database-backed store
+  // Session configuration with PostgreSQL-backed storage
   const isProduction = process.env.NODE_ENV === "production";
+  const PgSession = connectPgSimple(session);
+  
+  // Create PostgreSQL session store
+  const sessionStore = new PgSession({
+    conObject: {
+      connectionString: process.env.DATABASE_URL,
+      ssl: false // Neon handles SSL internally
+    },
+    tableName: 'session', // Session table name
+    createTableIfMissing: true, // Auto-create session table
+  });
   
   app.use(
     session({
+      store: sessionStore, // Use PostgreSQL for session persistence
       secret: process.env.SESSION_SECRET || "ama-sdsu-secret-key-change-in-production",
       resave: false,
       saveUninitialized: false,
@@ -256,7 +266,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       req.session.userId = user.id;
-      console.log("Login - setting session userId:", user.id, "sessionID:", req.sessionID);
       
       // Explicitly save the session before sending response
       req.session.save((err) => {
@@ -264,7 +273,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.error("Session save error:", err);
           return res.status(500).json({ message: "Session save failed" });
         }
-        console.log("Session saved successfully, userId:", req.session.userId);
         res.json({ message: "Login successful", user: { id: user.id, username: user.username } });
       });
     } catch (error) {
@@ -284,12 +292,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // GET auth status
   app.get("/api/admin/status", (req, res) => {
-    console.log("Session check:", {
-      sessionID: req.sessionID,
-      session: req.session,
-      userId: req.session?.userId,
-      cookie: req.session?.cookie
-    });
     if (req.session.userId) {
       res.json({ authenticated: true, userId: req.session.userId });
     } else {

@@ -453,7 +453,6 @@ export class DbStorage implements IStorage {
         .update(users)
         .set({ password: newPasswordHash })
         .where(eq(users.username, "admin"));
-      console.log("Admin password updated to current standard");
     }
 
     // Initialize default settings if they don't exist
